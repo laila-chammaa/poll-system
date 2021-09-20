@@ -1,31 +1,26 @@
 import model.Choice;
 import model.Poll;
 import model.PollStatus;
+import model.Vote;
 
 import javax.xml.soap.Text;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Set;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PollManager {
 
-    public static Poll currentPoll;
+    private static Poll currentPoll = null;
 
     public static Poll createPoll(String name, Text question, ArrayList<Choice> choices)
             throws PollException.IllegalPollOperation, PollException.TooFewChoices, PollException.DuplicateChoices {
 
         validateChoices(choices);
 
-        Hashtable<Choice, Integer> choicesWithCount = new Hashtable<>();
-        for (Choice choice : choices) {
-            choicesWithCount.put(choice, 0);
-        }
         if (currentPoll == null) {
-            Poll newPoll = new Poll(name, question, choicesWithCount);
+            Poll newPoll = new Poll(name, question, choices, new ArrayList<>());
             currentPoll = newPoll;
             return newPoll;
         } else {
@@ -57,14 +52,8 @@ public class PollManager {
             currentPoll.setStatus(PollStatus.CREATED);
             currentPoll.setName(name);
             currentPoll.setQuestion(question);
-
-            // updating a poll will clear its results
-            Hashtable<Choice, Integer> choicesWithCount = new Hashtable<>();
-            for (Choice choice : choices) {
-                choicesWithCount.put(choice, 0);
-            }
-            currentPoll.setChoices(choicesWithCount);
-            //TODO: how do u just update one of these?
+            currentPoll.setChoices(choices);
+            //TODO: how do you just update one of these?
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is already released. Cannot update an already released poll", currentPoll.getName()));
@@ -73,9 +62,9 @@ public class PollManager {
 
     public static void clearPoll() throws PollException.IllegalPollOperation {
         if (currentPoll.getStatus() == PollStatus.RUNNING) {
-            currentPoll.getChoices().clear();
+            currentPoll.getVotes().clear();
         } else if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            currentPoll.getChoices().clear();
+            currentPoll.getVotes().clear();
             currentPoll.setStatus(PollStatus.CREATED);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
@@ -85,7 +74,6 @@ public class PollManager {
 
     public void closePoll() throws PollException.IllegalPollOperation {
         if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            //TODO: how to close a poll?
             currentPoll = null;
         } else {
             throw new PollException.IllegalPollOperation(String.format(
@@ -122,14 +110,20 @@ public class PollManager {
 
     public static void vote(String participant, Choice choice)
             throws PollException.IllegalPollOperation, PollException.ChoiceNotFound {
-        if (!currentPoll.getChoices().containsKey(choice)) {
+        if (!currentPoll.getChoices().contains(choice)) {
             throw new PollException.ChoiceNotFound(String.format("'%s' is not a valid choice in the poll '%s'",
                     choice.getText(), currentPoll.getName()));
         }
-        //TODO no clue about participants
         if (currentPoll.getStatus() == PollStatus.RUNNING) {
-            int count = currentPoll.getChoices().get(choice);
-            currentPoll.getChoices().put(choice, count + 1);
+            Optional<Vote> previousVote = currentPoll.getVotes().stream()
+                    .filter(v -> v.getVoterId().equals(participant)).findFirst();
+            if (previousVote.isPresent()) {
+                previousVote.get().setChoice(choice);
+                previousVote.get().setTimestamp(ZonedDateTime.now());
+            } else {
+                Vote vote = new Vote(participant, choice, ZonedDateTime.now());
+                currentPoll.getVotes().add(vote);
+            }
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not running. Votes are allowed while the poll is running", currentPoll.getName()));
@@ -137,7 +131,12 @@ public class PollManager {
     }
 
     public static Hashtable<Choice, Integer> getPollResults() {
-        return currentPoll.getChoices();
+        Hashtable<Choice, Integer> results = new Hashtable<>();
+        currentPoll.getVotes().forEach(v -> {
+            int count = results.get(v.getChoice());
+            results.put(v.getChoice(), count + 1);
+        });
+        return results;
     }
 
     public static void downloadPollDetails(PrintWriter output, String filename) throws FileNotFoundException,
@@ -150,5 +149,9 @@ public class PollManager {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not released. Cannot download details of an unreleased poll", currentPoll.getName()));
         }
+    }
+
+    public static Poll getCurrentPoll() {
+        return currentPoll;
     }
 }

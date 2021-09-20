@@ -10,17 +10,16 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-@WebServlet(name = "PollServlet")
+@WebServlet(name = "PollServlet", urlPatterns = "/pollSystem")
 public class PollServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         //get the vote sent by the user
         String choiceName = request.getParameter("choice");
-        Optional<Choice> choice = PollManager.currentPoll.getChoices().keySet()
+        Optional<Choice> choice = PollManager.getCurrentPoll().getChoices()
                 .stream().filter(c -> c.getText().equals(choiceName)).findFirst();
         if (choice.isPresent()) {
             String sessionId = request.getSession().getId();
-            //TODO: Use HttpSession to maintain the user session. All user's answer in an active session may be counted as one
             PollManager.vote(sessionId, choice.get());
         } else {
             throw new PollException.InvalidParam(String.format("Invalid choice, choice %s is not found", choiceName));
@@ -30,8 +29,8 @@ public class PollServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
         String format = request.getParameter("format");
-        if (name.equals(PollManager.currentPoll.getName()) && format.equals("text")) {
-            download(name, format, response);
+        if (name.equals(PollManager.getCurrentPoll().getName()) && format.equals("text")) {
+            download(name, format, response); //TODO: change to PollManager.downloadPollResults?
         } else {
             //TODO: the exception text is printed to the server output stream
             throw new PollException.InvalidParam(String.format("Current poll is not %s, or format is not 'text'", name));
@@ -57,7 +56,7 @@ public class PollServlet extends HttpServlet {
         OutputStream out;
         try {
             out = response.getOutputStream();
-            msg = PollManager.currentPoll.toString();
+            msg = PollManager.getCurrentPoll().toString();
 
             out.write(msg.getBytes(StandardCharsets.UTF_8));
             out.flush();
