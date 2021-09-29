@@ -58,6 +58,11 @@ public class PollManager {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is already released. Cannot update an already released poll", currentPoll.getName()));
         }
+
+        //clearing poll results
+        if (currentPoll.getStatus() == PollStatus.RUNNING) {
+            clearPoll();
+        }
     }
 
     public static void clearPoll() throws PollException.IllegalPollOperation {
@@ -130,13 +135,18 @@ public class PollManager {
         }
     }
 
-    public static Hashtable<Choice, Integer> getPollResults() {
-        Hashtable<Choice, Integer> results = new Hashtable<>();
-        currentPoll.getVotes().forEach(v -> {
-            int count = results.get(v.getChoice());
-            results.put(v.getChoice(), count + 1);
-        });
-        return results;
+    public static Hashtable<Choice, Integer> getPollResults() throws PollException.IllegalPollOperation {
+        if (currentPoll.getStatus() == PollStatus.RELEASED) {
+            Hashtable<Choice, Integer> results = new Hashtable<>();
+            currentPoll.getVotes().forEach(v -> {
+                int count = results.get(v.getChoice());
+                results.put(v.getChoice(), count + 1);
+            });
+            return results;
+        } else {
+            throw new PollException.IllegalPollOperation(String.format(
+                    "Poll %s is not released. Not allowed to return poll results.", currentPoll.getName()));
+        }
     }
 
     public static void downloadPollDetails(PrintWriter output, String filename) throws FileNotFoundException,
