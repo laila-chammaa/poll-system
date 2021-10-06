@@ -1,0 +1,8 @@
+{
+  "short_name": "Poll System",
+  "name": "Poll System for SOEN 387",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
