@@ -6,7 +6,7 @@ import model.Vote;
 import javax.xml.soap.Text;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,6 +48,10 @@ public class PollManager {
 
     public static void updatePoll(String name, Text question, ArrayList<Choice> choices)
             throws PollException.IllegalPollOperation {
+        //clearing poll results
+        if (currentPoll.getStatus() == PollStatus.RUNNING) {
+            clearPoll();
+        }
         if (currentPoll.getStatus() == PollStatus.CREATED || currentPoll.getStatus() == PollStatus.RUNNING) {
             currentPoll.setStatus(PollStatus.CREATED);
             currentPoll.setName(name);
@@ -57,11 +61,6 @@ public class PollManager {
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is already released. Cannot update an already released poll", currentPoll.getName()));
-        }
-
-        //clearing poll results
-        if (currentPoll.getStatus() == PollStatus.RUNNING) {
-            clearPoll();
         }
     }
 
@@ -124,9 +123,9 @@ public class PollManager {
                     .filter(v -> v.getVoterId().equals(participant)).findFirst();
             if (previousVote.isPresent()) {
                 previousVote.get().setChoice(choice);
-                previousVote.get().setTimestamp(ZonedDateTime.now());
+                previousVote.get().setTimestamp(LocalDateTime.now());
             } else {
-                Vote vote = new Vote(participant, choice, ZonedDateTime.now());
+                Vote vote = new Vote(participant, choice, LocalDateTime.now());
                 currentPoll.getVotes().add(vote);
             }
         } else {

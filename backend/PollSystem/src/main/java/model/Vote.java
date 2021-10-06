@@ -1,14 +1,14 @@
 package model;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Vote {
     private String voterId; //sessionId
     private Choice choice;
-    private ZonedDateTime timestamp; //TODO separate into date, timestamp?
+    private LocalDateTime timestamp;
 
-    public Vote(String voterId, Choice choice, ZonedDateTime timestamp) {
+    public Vote(String voterId, Choice choice, LocalDateTime timestamp) {
         this.voterId = voterId;
         this.choice = choice;
         this.timestamp = timestamp;
@@ -30,11 +30,11 @@ public class Vote {
         this.choice = choice;
     }
 
-    public ZonedDateTime getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(ZonedDateTime timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
