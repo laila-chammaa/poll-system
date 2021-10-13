@@ -1,12 +1,27 @@
 import './App.css';
-import {Container} from "react-bootstrap";
-import Login from '../src/components/Login/Login';
+import React from "react";
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route
+} from "react-router-dom";
+import Roles from './components/Roles/Roles';
+import AdminLogin from "./components/AdminLogin/AdminLogin";
 
 function App() {
   return (
-    <div className="App">
-        <Login></Login>
-    </div>
+    <Router>
+        <div className="App">
+            <Switch>
+                <Route exact path="/">
+                    <Roles/>
+                </Route>
+                <Route path="/AdminLogin">
+                    <AdminLogin/>
+                </Route>
+            </Switch>
+        </div>
+    </Router>
   );
 }
 
