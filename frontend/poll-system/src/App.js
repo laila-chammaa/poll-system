@@ -1,9 +1,11 @@
 import './App.css';
+import {Container} from "react-bootstrap";
+import Login from '../src/components/Login/Login';
 
 function App() {
   return (
     <div className="App">
-      <h1>Hello World</h1>
+        <Login></Login>
     </div>
   );
 }

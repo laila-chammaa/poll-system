@@ -1,0 +1,51 @@
+div.login{
+    height: 100%;
+    margin: 0;
+}
+
+.main-div{
+    display: flex;
+    justifyContent: center;
+    alignItems: center;
+    height: 100%;
+    width: 40%;
+    background-color: #F4F4F4 !important;
+    margin: auto;
+    border-radius: 18px 18px 0px 0px !important;
+}
+
+.card-title{
+    font-size: 56px !important;
+    padding: 4%;
+}
+
+.div-body{
+    display: flex;
+    justifyContent: center;
+    alignItems: center;
+    height: 100%;
+    background-color: #FFFEFF;
+    border-radius: 18px 18px 0px 0px !important;
+    -webkit-box-shadow: 0px -4px 15px 1px rgba(0,0,0,0.18);
+    box-shadow: 0px -4px 15px 1px rgba(0,0,0,0.18);
+    text-align: center;
+}
+
+.description{
+    font-size: 32px;
+    margin-top: 30%;
+}
+
+.login-btn{
+    background-color: #EDF7FB !important;
+    border-color: #EDF7FB !important;
+    color: black !important;
+    font-size: 22px !important;
+    margin: 10px;
+    width: 20% !important;
+    border-radius: 15px !important;
+}
+
+.login-btn:hover {
+    background-color: #c7efff !important;
+}
