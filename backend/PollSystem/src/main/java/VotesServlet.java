@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 @WebServlet(name = "PollServlet", urlPatterns = "/api/votes")
-public class VotesServlet extends HttpServlet {
+public class PollServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         //get the vote sent by the user
