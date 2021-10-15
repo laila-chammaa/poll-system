@@ -7,7 +7,7 @@ export const updatePollStatus = async (pollStatus) => {
   let changeableUrl = `${url}/poll`;
 
   try {
-    const { data: status } = await axios.post(changeableUrl, {
+    const { data: status } = await axios.put(changeableUrl, {
       status: pollStatus
     });
     if (status === 200) {
