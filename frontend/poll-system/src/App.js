@@ -1,10 +1,7 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Roles from './components/Roles/Roles';
-import AdminLogin from './components/AdminLogin/AdminLogin';
-import VoteForm from './components/VoteForm/VoteForm';
-import PollResults from './components/PollResults/PollResults';
+import { Roles, AdminLogin, VoteForm, PollResults } from './components';
 
 function App() {
   return (
