@@ -3,7 +3,6 @@ import model.Poll;
 import model.PollStatus;
 import model.Vote;
 
-import javax.xml.soap.Text;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ public class PollManager {
 
     private static Poll currentPoll = null;
 
-    public static Poll createPoll(String name, Text question, ArrayList<Choice> choices)
+    public static Poll createPoll(String name, String question, ArrayList<Choice> choices)
             throws PollException.IllegalPollOperation, PollException.TooFewChoices, PollException.DuplicateChoices {
 
         validateChoices(choices);
@@ -46,7 +45,7 @@ public class PollManager {
         }
     }
 
-    public static void updatePoll(String name, Text question, ArrayList<Choice> choices)
+    public static void updatePoll(String name, String question, ArrayList<Choice> choices)
             throws PollException.IllegalPollOperation {
         //clearing poll results
         if (currentPoll.getStatus() == PollStatus.RUNNING) {
@@ -76,7 +75,7 @@ public class PollManager {
         }
     }
 
-    public void closePoll() throws PollException.IllegalPollOperation {
+    public static void closePoll() throws PollException.IllegalPollOperation {
         if (currentPoll.getStatus() == PollStatus.RELEASED) {
             currentPoll = null;
         } else {

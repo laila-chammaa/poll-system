@@ -57,6 +57,18 @@ export const fetchResults = async () => {
   }
 };
 
+//TODO: need to check that it works
+export const downloadResults = async () => {
+  let changeableUrl = `${url}/votes`;
+
+  try {
+    const { data } = await axios.get(changeableUrl);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const vote = async (choice) => {
   try {
     const { data: status } = await axios.post(`${url}/poll`, {

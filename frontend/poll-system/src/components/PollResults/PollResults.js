@@ -3,6 +3,7 @@ import '../../Cards.css';
 import { Card, Button } from 'react-bootstrap';
 import Chart from 'react-google-charts';
 import { useState } from 'react';
+import { downloadResults } from '../../api';
 
 const PollResults = () => {
   const [chartType, setChartType] = useState('LineChart');
@@ -57,6 +58,14 @@ const PollResults = () => {
               }}
             />
           </div>
+          <Button
+            className="btn-1"
+            onClick={() => {
+              downloadResults();
+            }}
+          >
+            download
+          </Button>
         </Card>
       </Card>
     </div>
