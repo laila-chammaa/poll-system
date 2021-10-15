@@ -1,54 +1,56 @@
-.form-style {
+.main-div .form-style {
   margin: 8% 10% 8% 10%;
 }
 
-.group-style {
+.main-div .group-style {
   margin-top: 5%;
   margin-bottom: 5%;
 }
 
-.label-style {
+.main-div .label-style {
   text-align: start;
   font-weight: bold;
-  font-size: 20px !important;
+  font-size: 20px;
 }
 
-.text-box[type='text'] {
-  background-color: #edf7fb !important;
-  border-color: #edf7fb !important;
+.main-div .text-box[type='text'] {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
   outline: none;
-  box-shadow: none !important;
-  display: inline-block;
-  border-radius: 20px !important;
-  margin-top: 5px;
-  width: 100%;
-  float: right;
-  font-size: 18px !important;
-}
-
-#text-area-style {
-  background-color: #edf7fb !important;
-  border-color: #edf7fb !important;
-  outline: none;
-  box-shadow: none !important;
-  display: inline-block;
-  border-radius: 20px !important;
+  box-shadow: none;
+  border-radius: 20px;
   margin-top: 5px;
   width: 100%;
   float: right;
   font-size: 18px;
 }
 
-#add-style {
-  background-color: transparent !important;
-  border-style: none !important;
-  color: black !important;
+.main-div #text-area-style {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  outline: none;
+  box-shadow: none;
+  border-radius: 20px;
+  margin-top: 5px;
+  width: 100%;
+  float: right;
+  font-size: 18px;
+}
+
+.main-div #add-style {
+  background-color: transparent;
+  border-style: none;
+  color: black;
   float: left;
-  box-shadow: none !important;
-  margin-left: 0 !important;
+  box-shadow: none;
+  margin-left: 0;
   padding-left: 0;
 }
 
-#create-btn {
-  margin-left: 8% !important;
+.main-div #create-btn {
+  margin-left: 8%;
+}
+
+.main-div {
+  height: 120%;
 }

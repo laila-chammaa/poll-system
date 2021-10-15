@@ -1,7 +1,13 @@
 import './App.css';
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Roles, AdminLogin, VoteForm, PollResults } from './components';
+import {
+  Roles,
+  AdminLogin,
+  VoteForm,
+  PollResults,
+  PollForm
+} from './components';
 
 function App() {
   return (
@@ -19,6 +25,9 @@ function App() {
           </Route>
           <Route path="/results">
             <PollResults />
+          </Route>
+          <Route path="/create">
+            <PollForm />
           </Route>
         </Switch>
       </div>

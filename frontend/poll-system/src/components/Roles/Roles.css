@@ -4,18 +4,18 @@
   margin-bottom: 3%;
 }
 
-.role-btn {
-  background-color: #edf7fb !important;
-  border-color: #edf7fb !important;
-  color: black !important;
-  font-size: 22px !important;
+.card-div-body .role-btn {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  color: black;
+  font-size: 22px;
   margin: 2%;
-  width: 20% !important;
-  border-radius: 25px !important;
+  width: 20%;
+  border-radius: 25px;
   padding: 2% 5%;
   text-decoration: none;
 }
 
-.role-btn:hover {
-  background-color: #c7efff !important;
+.card-div-body .role-btn:hover {
+  background-color: #c7efff;
 }
