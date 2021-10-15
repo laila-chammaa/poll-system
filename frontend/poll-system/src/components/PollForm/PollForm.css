@@ -1,58 +1,54 @@
-.form-style{
-    margin: 8% 10% 8% 10%;
+.form-style {
+  margin: 8% 10% 8% 10%;
 }
 
-.group-style{
-    margin-top: 5%;
-    margin-bottom: 5%;
+.group-style {
+  margin-top: 5%;
+  margin-bottom: 5%;
 }
 
-.label-style{
-    text-align: start;
-    font-weight: bold;
-    font-size: 20px !important;
+.label-style {
+  text-align: start;
+  font-weight: bold;
+  font-size: 20px !important;
 }
 
-.text-box[type="text"] {
-    background-color: #EDF7FB !important;
-    border-color: #EDF7FB !important;
-    outline: none;
-    box-shadow: none !important;
-    display: inline-block;
-    border-radius: 20px !important;
-    margin-top: 5px;
-    width: 100%;
-    float: right;
-    font-size: 18px !important;
+.text-box[type='text'] {
+  background-color: #edf7fb !important;
+  border-color: #edf7fb !important;
+  outline: none;
+  box-shadow: none !important;
+  display: inline-block;
+  border-radius: 20px !important;
+  margin-top: 5px;
+  width: 100%;
+  float: right;
+  font-size: 18px !important;
 }
 
-#text-area-style{
-    background-color: #EDF7FB !important;
-    border-color: #EDF7FB !important;
-    outline: none;
-    box-shadow: none !important;
-    display: inline-block;
-    border-radius: 20px !important;
-    margin-top: 5px;
-    width: 100%;
-    float: right;
-    font-size: 18px;
+#text-area-style {
+  background-color: #edf7fb !important;
+  border-color: #edf7fb !important;
+  outline: none;
+  box-shadow: none !important;
+  display: inline-block;
+  border-radius: 20px !important;
+  margin-top: 5px;
+  width: 100%;
+  float: right;
+  font-size: 18px;
 }
 
-#add-style{
-    background-color: transparent !important;
-    border-style: none !important;
-    color: black !important;
-    float: left;
-    box-shadow: none !important;
-    margin-left: 0 !important;
-    padding-left: 0;
+#add-style {
+  background-color: transparent !important;
+  border-style: none !important;
+  color: black !important;
+  float: left;
+  box-shadow: none !important;
+  margin-left: 0 !important;
+  padding-left: 0;
 }
 
-#create-btn{
-    margin-left: 8% !important;
+#create-btn {
+  margin-left: 8% !important;
 }
-
-
-
-
