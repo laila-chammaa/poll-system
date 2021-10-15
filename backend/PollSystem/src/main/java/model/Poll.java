@@ -1,17 +1,16 @@
 package model;
 
-import javax.xml.soap.Text;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Poll {
     private String name;
-    private Text question; //TODO: right representation of text?
+    private String question;
     private PollStatus status;
     private ArrayList<Choice> choices;
     private ArrayList<Vote> votes;
 
-    public Poll(String name, Text question, ArrayList<Choice> choices, ArrayList<Vote> votes) {
+    public Poll(String name, String question, ArrayList<Choice> choices, ArrayList<Vote> votes) {
         this.name = name;
         this.question = question;
         this.choices = choices;
@@ -27,11 +26,11 @@ public class Poll {
         this.name = name;
     }
 
-    public Text getQuestion() {
+    public String getQuestion() {
         return question;
     }
 
-    public void setQuestion(Text question) {
+    public void setQuestion(String question) {
         this.question = question;
     }
 

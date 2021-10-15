@@ -1,11 +1,10 @@
 package model;
 
-import javax.xml.soap.Text;
 import java.util.Objects;
 
 public class Choice {
     private String text;
-    private Text description;
+    private String description;
 
     public String getText() {
         return text;
@@ -15,11 +14,11 @@ public class Choice {
         this.text = text;
     }
 
-    public Text getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(Text description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 

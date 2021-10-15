@@ -1,0 +1,15 @@
+.card-body .inner button {
+  font-size: 14px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.card-body .outer {
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.card-body button:focus {
+  box-shadow: none;
+}
