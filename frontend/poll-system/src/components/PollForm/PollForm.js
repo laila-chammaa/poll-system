@@ -28,6 +28,13 @@ const PollForm = ({
     setPoll(JSON.parse(JSON.stringify(poll)));
   };
 
+  const disableCreate = () => {
+    let choicesAreFilled = poll.choices.some(
+      (c) => c.text === '' || c.text == null
+    );
+    return poll.title === '' || poll.title == null || choicesAreFilled;
+  };
+
   return (
     <div className="poll-form main-div">
       <Card className="card-title-div">
@@ -96,7 +103,7 @@ const PollForm = ({
             <Button id="add-style" onClick={() => addChoice()}>
               Add more +
             </Button>
-            <Button type="submit" id="create-btn">
+            <Button type="submit" id="create-btn" disabled={disableCreate()}>
               create
             </Button>
           </Form>
