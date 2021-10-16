@@ -10,15 +10,6 @@ import {
 } from './components';
 
 function App() {
-  let poll = {
-    title: 'hi',
-    description: 'lol',
-    choices: [
-      { text: 'l', description: '1' },
-      { text: '', description: '3' },
-      { text: '', description: '' }
-    ]
-  };
   return (
     <Router>
       <div className="App">
@@ -36,7 +27,7 @@ function App() {
             <PollResults />
           </Route>
           <Route path="/create">
-            <PollForm poll={poll} />
+            <PollForm />
           </Route>
         </Switch>
       </div>
