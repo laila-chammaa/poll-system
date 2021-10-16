@@ -62,26 +62,3 @@
   box-shadow: 0px 10px 15px 1px rgba(0, 0, 0, 0.329);
   letter-spacing: -1px;
 }
-
-.main-div .group-style .delete-btn {
-  border: none;
-  background-color: unset;
-  color: black;
-  margin-left: 10px;
-}
-.main-div .group-style .choice {
-  display: flex;
-}
-
-.main-div .group-style .inner {
-  display: inline-block;
-}
-
-.main-div .group-style .name {
-  width: 150px;
-  margin-right: 10px;
-}
-
-.main-div .group-style .description {
-  width: 240px;
-}

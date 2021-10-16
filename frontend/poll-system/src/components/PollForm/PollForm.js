@@ -2,6 +2,7 @@ import './PollForm.css';
 import '../../Cards.css';
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { useState } from 'react';
+import Choice from './Choice/Choice';
 
 const PollForm = ({
   currentPoll = {
@@ -39,9 +40,13 @@ const PollForm = ({
                   type="text"
                   value={poll.title}
                   key={poll.title}
+                  id={'todoName' + poll.title}
                   className="text-box"
                   placeholder="Title"
-                  onChange={(e) => (poll.title = e.target.value)}
+                  onChange={(e) => {
+                    poll.title = e.target.value;
+                    setPoll(poll);
+                  }}
                 />
               </Col>
             </Form.Group>
@@ -72,35 +77,7 @@ const PollForm = ({
                 Description
               </Form.Label>
               {poll.choices.map((c, i) => (
-                <Form.Group
-                  as={Row}
-                  className="group-style"
-                  controlId="poll-choice1"
-                  key={i}
-                >
-                  <Col lg={1} className="choice">
-                    <Form.Control
-                      type="text"
-                      value={c.text}
-                      className="text-box name inner"
-                      placeholder="Name"
-                    />
-                    <Form.Control
-                      type="text"
-                      value={c.description}
-                      className="text-box description inner"
-                      placeholder="Description"
-                    />
-                    <Button
-                      className="delete-btn inner"
-                      onClick={() => {
-                        deleteChoice(i);
-                      }}
-                    >
-                      -
-                    </Button>
-                  </Col>
-                </Form.Group>
+                <Choice c={c} i={i} deleteChoice={deleteChoice} />
               ))}
             </fieldset>
             <Button id="add-style" onClick={() => addChoice()}>
