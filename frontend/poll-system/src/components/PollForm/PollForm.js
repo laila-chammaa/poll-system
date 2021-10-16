@@ -35,7 +35,7 @@ const PollForm = ({
         <Card className="card-div-body">
           <Form className="form-style">
             <Form.Group as={Row} className="group-style" controlId="poll-title">
-              <Form.Label className="label-style" column="lg" lg={3}>
+              <Form.Label className="label-style" column="lg" lg={4}>
                 Title
               </Form.Label>
               <Col sm={8}>
@@ -56,7 +56,7 @@ const PollForm = ({
               className="group-style"
               controlId="poll-description"
             >
-              <Form.Label className="label-style" column="lg" lg={3}>
+              <Form.Label className="label-style" column="lg" lg={4}>
                 Description
               </Form.Label>
               <Col sm={8}>
