@@ -24,6 +24,9 @@ const PollForm = ({
     poll.choices.splice(i, 1);
     setPoll(JSON.parse(JSON.stringify(poll)));
   };
+  const updatePoll = () => {
+    setPoll(JSON.parse(JSON.stringify(poll)));
+  };
 
   return (
     <div className="poll-form main-div">
@@ -39,13 +42,11 @@ const PollForm = ({
                 <Form.Control
                   type="text"
                   value={poll.title}
-                  key={poll.title}
-                  id={'todoName' + poll.title}
                   className="text-box"
                   placeholder="Title"
                   onChange={(e) => {
                     poll.title = e.target.value;
-                    setPoll(poll);
+                    setPoll(JSON.parse(JSON.stringify(poll)));
                   }}
                 />
               </Col>
@@ -64,6 +65,10 @@ const PollForm = ({
                   className="text-box"
                   id="text-area-style"
                   value={poll.description}
+                  onChange={(e) => {
+                    poll.description = e.target.value;
+                    setPoll(JSON.parse(JSON.stringify(poll)));
+                  }}
                   rows={5}
                   placeholder="Description"
                 />
@@ -77,7 +82,12 @@ const PollForm = ({
                 Description
               </Form.Label>
               {poll.choices.map((c, i) => (
-                <Choice c={c} i={i} deleteChoice={deleteChoice} />
+                <Choice
+                  c={c}
+                  i={i}
+                  deleteChoice={deleteChoice}
+                  updatePoll={updatePoll}
+                />
               ))}
             </fieldset>
             <Button id="add-style" onClick={() => addChoice()}>

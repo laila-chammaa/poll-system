@@ -2,7 +2,7 @@ import './Choice.css';
 import '../../../Cards.css';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 
-const Choice = ({ c, i, deleteChoice }) => {
+const Choice = ({ c, i, deleteChoice, updatePoll }) => {
   return (
     <Form.Group
       as={Row}
@@ -16,12 +16,20 @@ const Choice = ({ c, i, deleteChoice }) => {
           value={c.text}
           className="text-box name inner"
           placeholder="Name"
+          onChange={(e) => {
+            c.text = e.target.value;
+            updatePoll();
+          }}
         />
         <Form.Control
           type="text"
           value={c.description}
           className="text-box description inner"
           placeholder="Description"
+          onChange={(e) => {
+            c.description = e.target.value;
+            updatePoll();
+          }}
         />
         <Button
           className="delete-btn inner"
