@@ -29,14 +29,20 @@ const PollForm = ({
   };
 
   const disableCreate = () => {
-    let choicesAreFilled = poll.choices.some(
+    let choicesAreEmpty = poll.choices.some(
       (c) => c.text === '' || c.text == null
     );
+
+    let choiceNames = poll.choices.map((e) => e['text']);
+    var set = new Set(choiceNames);
+    let duplicateChoices = set.size !== choiceNames.length;
+
     return (
       poll.title === '' ||
       poll.title == null ||
-      choicesAreFilled ||
-      poll.choices.length < 2
+      choicesAreEmpty ||
+      poll.choices.length < 2 ||
+      duplicateChoices
     );
   };
 
