@@ -45,12 +45,16 @@
   box-shadow: none;
   margin-left: 0;
   padding-left: 0;
+  font-size: 20px;
 }
 
-.main-div #create-btn {
-  margin-left: 8%;
-}
-
-.main-div {
-  height: 120%;
+.main-div #create-btn{
+  padding: 10px 16px;
+  border-radius: 90px;
+  position: absolute;
+  right: -30px;
+  bottom: 30px;
+  font-size: 27px;
+  box-shadow: 0px 10px 15px 1px rgba(0, 0, 0, 0.329);
+  letter-spacing: -1px;
 }

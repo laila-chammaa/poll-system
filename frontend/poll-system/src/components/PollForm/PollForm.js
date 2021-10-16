@@ -92,13 +92,9 @@ const PollForm = () => {
               </Form.Group>
             </fieldset>
             <Button id="add-style">Add more +</Button>
-            <Form.Group as={Row} className="group-style">
-              <Col sm={12}>
-                <Button type="submit" id="create-btn">
-                  create
-                </Button>
-              </Col>
-            </Form.Group>
+            <Button type="submit" id="create-btn">
+              create
+            </Button>
           </Form>
         </Card>
       </Card>
