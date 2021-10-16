@@ -75,6 +75,9 @@ const PollForm = ({
               </Col>
             </Form.Group>
             <fieldset>
+              <Form.Label className="label-style" column="lg" lg={12}>
+                Choices
+              </Form.Label>
               <Form.Label className="label-style" column="lg" lg={4}>
                 Name
               </Form.Label>
