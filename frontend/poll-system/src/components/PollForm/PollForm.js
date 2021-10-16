@@ -32,7 +32,12 @@ const PollForm = ({
     let choicesAreFilled = poll.choices.some(
       (c) => c.text === '' || c.text == null
     );
-    return poll.title === '' || poll.title == null || choicesAreFilled;
+    return (
+      poll.title === '' ||
+      poll.title == null ||
+      choicesAreFilled ||
+      poll.choices.length < 2
+    );
   };
 
   return (
