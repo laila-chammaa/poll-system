@@ -25,7 +25,7 @@ const PollForm = ({
   };
 
   return (
-    <div className="main-div">
+    <div className="poll-form main-div">
       <Card className="card-title-div">
         <Card.Title className="card-title">Start creating!</Card.Title>
         <Card className="card-div-body">
