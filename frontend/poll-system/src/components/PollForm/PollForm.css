@@ -2,6 +2,10 @@
   margin: 8% 10% 8% 10%;
 }
 
+.main-div.poll-form {
+  height: unset;
+}
+
 .main-div .group-style {
   margin-top: 5%;
   margin-bottom: 5%;
@@ -20,7 +24,7 @@
   box-shadow: none;
   border-radius: 20px;
   margin-top: 5px;
-  width: 100%;
+  width: 90%;
   float: right;
   font-size: 18px;
 }
@@ -32,7 +36,7 @@
   box-shadow: none;
   border-radius: 20px;
   margin-top: 5px;
-  width: 100%;
+  width: 90%;
   float: right;
   font-size: 18px;
 }
@@ -48,7 +52,7 @@
   font-size: 20px;
 }
 
-.main-div #create-btn{
+.main-div #create-btn {
   padding: 10px 16px;
   border-radius: 90px;
   position: absolute;

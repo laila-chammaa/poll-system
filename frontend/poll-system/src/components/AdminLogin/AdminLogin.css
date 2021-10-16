@@ -4,12 +4,12 @@
   width: 70%;
 }
 
-#input-group-style{
+#input-group-style {
   width: 50%;
   margin: 2% auto;
 }
 
-.main-div #passcode-box[type='text']{
+.main-div #passcode-box[type='text'] {
   background-color: #edf7fb;
   border-color: #edf7fb;
   outline: none;
@@ -18,11 +18,11 @@
   font-size: 20px;
 }
 
-.main-div #passcode-box[type='text']:focus{
+.main-div #passcode-box[type='text']:focus {
   z-index: 0;
 }
 
-#enter-btn{
+#enter-btn {
   padding: 10px 16px;
   border-radius: 90px;
   position: absolute;
@@ -36,7 +36,7 @@
   color: white;
 }
 
-#incorrectMessage{
+#incorrectMessage {
   margin-top: 3%;
   font-size: 20px;
   color: red;

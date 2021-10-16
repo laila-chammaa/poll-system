@@ -1,31 +1,31 @@
 import './AdminLogin.css';
 import '../../Cards.css';
-import {Button, Card, FormControl, InputGroup} from 'react-bootstrap';
-import {useHistory} from "react-router-dom";
-import React, {useState} from 'react';
+import { Button, Card, FormControl, InputGroup } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import React, { useState } from 'react';
+import config from '../../config.json'; //whatever is the correct path
 
 const AdminLogin = () => {
-
   let passcodeInput = React.createRef();
-  let passcode = "yes"
+  let passcode = config.user.password;
 
   const history = useHistory();
   const [displayIncorrect, setIncorrect] = useState(false);
 
   const checkPasscode = () => {
-    if(passcodeInput.current.value === passcode){
-      return true;
+    if (passcodeInput.current.value === passcode) {
       setIncorrect(false);
+      return true;
     }
     return false;
-  }
+  };
 
   return (
     <div className="main-div">
       <Card className="card-title-div">
         <Card.Title className="card-title">Welcome Admin!</Card.Title>
         <Card className="card-div-body">
-          <Card.Text id ="login-description">
+          <Card.Text id="login-description">
             If you are who you say you are, you would know the secret passcode.
           </Card.Text>
           <InputGroup id="input-group-style">
@@ -39,19 +39,18 @@ const AdminLogin = () => {
             <Button
               id="enter-btn"
               onClick={() => {
-                if(checkPasscode()){
-                  history.push("/create");
-                }
-                else{
+                if (checkPasscode()) {
+                  history.push('/create');
+                } else {
                   setIncorrect(true);
                 }
               }}
-            >enter</Button>
+            >
+              enter
+            </Button>
           </InputGroup>
           {displayIncorrect ? (
-            <Card.Text id="incorrectMessage">
-              Incorrect Password!
-            </Card.Text>
+            <Card.Text id="incorrectMessage">Incorrect Password!</Card.Text>
           ) : (
             <Card.Text></Card.Text>
           )}
