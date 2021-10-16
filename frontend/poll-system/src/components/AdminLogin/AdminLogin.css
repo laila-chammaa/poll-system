@@ -1,5 +1,43 @@
 #login-description {
   font-size: 20px;
-  margin: 25% auto 3% auto;
+  margin: 30% auto 3% auto;
   width: 70%;
+}
+
+#input-group-style{
+  width: 50%;
+  margin: 2% auto;
+}
+
+.main-div #passcode-box[type='text']{
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  outline: none;
+  box-shadow: none;
+  border-radius: 20px;
+  font-size: 20px;
+}
+
+.main-div #passcode-box[type='text']:focus{
+  z-index: 0;
+}
+
+#enter-btn{
+  padding: 10px 16px;
+  border-radius: 90px;
+  position: absolute;
+  right: -30px;
+  bottom: -30px;
+  font-size: 27px;
+  box-shadow: 0px 10px 15px 1px rgba(0, 0, 0, 0.329);
+  letter-spacing: -1px;
+  text-decoration: none;
+  background-color: #0d6efd;
+  color: white;
+}
+
+#incorrectMessage{
+  margin-top: 3%;
+  font-size: 20px;
+  color: red;
 }
