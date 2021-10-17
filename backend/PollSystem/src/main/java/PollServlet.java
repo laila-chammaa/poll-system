@@ -15,10 +15,8 @@ import java.util.Arrays;
 
 @WebServlet(name = "PollServlet", urlPatterns = "/api/poll")
 public class PollServlet extends HttpServlet {
-    //TODO: add updatePoll servlet endpoint
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        //String name, String question, ArrayList<Choice> choices
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
@@ -36,7 +34,7 @@ public class PollServlet extends HttpServlet {
             } catch (PollException.TooFewChoices | PollException.DuplicateChoices tooFewChoices) {
                 tooFewChoices.printStackTrace(); //TODO: better exceptions
             }
-        } else if (status.equals("create") || status.equals("run")) {
+        } else if (status.equals("created") || status.equals("running")) {
             PollManager.updatePoll(name, question, choiceList);
         }
 
@@ -46,18 +44,18 @@ public class PollServlet extends HttpServlet {
         //get the status sent by the client
         String status = request.getParameter("status");
         switch (status) {
-            case "run":
+            case "running":
                 PollManager.runPoll();
                 break;
-            case "release":
+            case "released":
                 PollManager.releasePoll();
                 break;
-            case "unrelease":
+            case "unreleased":
                 PollManager.unreleasePoll();
-            case "clear":
+            case "cleared":
                 PollManager.clearPoll();
                 break;
-            case "close":
+            case "closed":
                 PollManager.closePoll();
                 break;
         }
@@ -78,10 +76,6 @@ public class PollServlet extends HttpServlet {
 
             OutputStream out = response.getOutputStream();
             out.write(json.getBytes(StandardCharsets.UTF_8));
-
-//            PrintWriter out = response.getWriter();
-//            out.print(employeeJsonString);
-
             out.flush();
             out.close();
         } catch (IOException e) {
