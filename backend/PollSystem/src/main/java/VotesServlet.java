@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
-@WebServlet(name = "PollServlet", urlPatterns = "/api/votes")
+@WebServlet(name = "VotesServlet", urlPatterns = "/api/votes")
 public class VotesServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {

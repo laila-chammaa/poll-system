@@ -20,6 +20,7 @@ public class PollManager {
 
         if (currentPoll == null) {
             Poll newPoll = new Poll(name, question, choices, new ArrayList<>());
+            newPoll.setStatus(PollStatus.CREATED);
             currentPoll = newPoll;
             return newPoll;
         } else {
@@ -56,7 +57,6 @@ public class PollManager {
             currentPoll.setName(name);
             currentPoll.setQuestion(question);
             currentPoll.setChoices(choices);
-            //TODO: how do you just update one of these?
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is already released. Cannot update an already released poll", currentPoll.getName()));
