@@ -8,13 +8,25 @@ import { downloadResults } from '../../api';
 const PollResults = () => {
   const [chartType, setChartType] = useState('LineChart');
   const supportedCharts = ['ColumnChart', 'LineChart', 'PieChart'];
+  let poll = {
+    title: 'Favorite Movie',
+    question: 'Let us know what we should watch before we die.',
+    choices: [
+      { text: 'Megamind', description: 'my giant blue head' },
+      {
+        text: 'Treasure Planet',
+        description: 'best boi in the best haircut'
+      },
+      { text: 'The Prestige', description: 'my brain was on the floor' },
+      { text: 'Tinkerbell', description: 'comfort movie' }
+    ]
+  };
+  // poll = fetchPoll();
+
   return (
     <div className="main-div">
       <Card className="card-title-div">
         <Card.Title className="card-title">Poll Results</Card.Title>
-        <Card.Title className="card-description">
-          See what the results are for poll "Favorite Movie"
-        </Card.Title>
         <Card className="card-body">
           <div className="outer">
             {supportedCharts.map((c, i) => (
@@ -44,14 +56,10 @@ const PollResults = () => {
                 ['Philadelphia, PA', 1526000]
               ]}
               options={{
-                title: 'Population of Largest U.S. Cities',
+                title: poll ? poll.title : 'No poll',
                 chartArea: { width: '65%' },
-                hAxis: {
-                  title: 'Total Population',
-                  minValue: 0
-                },
                 vAxis: {
-                  title: 'City'
+                  title: 'Vote'
                 },
                 legend: 'none',
                 colors: ['#1F6FFB', '#A6E5FF', '#DCC8FF', '#B083FF', '#8137FF']

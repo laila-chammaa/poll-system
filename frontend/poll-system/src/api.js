@@ -1,13 +1,8 @@
-//used for making api requests
 import axios from 'axios';
 
-const url = 'http://localhost:8080/api"';
-
 export const updatePollStatus = async (pollStatus) => {
-  let changeableUrl = `${url}/poll`;
-
   try {
-    const { data: status } = await axios.put(changeableUrl, {
+    const { status } = await axios.put('/api/poll', {
       status: pollStatus
     });
     if (status === 200) {
@@ -18,12 +13,14 @@ export const updatePollStatus = async (pollStatus) => {
   }
 };
 
-//TODO: need to update when the backend can create
+//TODO: need to update when the backend can accept choices
 export const createPoll = async (poll) => {
-  let changeableUrl = `${url}/poll`;
   try {
-    const { data: status } = await axios.post(changeableUrl, {
-      poll
+    const { data: status } = await axios.post('/api/poll', null, {
+      params: {
+        name: poll.title,
+        question: poll.question
+      }
     });
     if (status === 200) {
       return true;
@@ -33,36 +30,28 @@ export const createPoll = async (poll) => {
   }
 };
 
-//TODO: need to update when the backend can send current poll
 export const fetchPoll = async () => {
-  let changeableUrl = `${url}/poll`;
-
   try {
-    const { data: currentPoll } = await axios.get(changeableUrl);
-    return { currentPoll };
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-//TODO: need to check that it works
-export const fetchResults = async () => {
-  let changeableUrl = `${url}/votes`;
-
-  try {
-    const { data } = await axios.get(changeableUrl);
+    const { data } = await axios.get('/api/poll');
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
   }
 };
 
-//TODO: need to check that it works
-export const downloadResults = async () => {
-  let changeableUrl = `${url}/votes`;
-
+export const fetchResults = async () => {
   try {
-    const { data } = await axios.get(changeableUrl);
+    const { data } = await axios.get('/api/votes');
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const downloadResults = async () => {
+  try {
+    const { data } = await axios.get('/api/votes');
     return data;
   } catch (error) {
     console.log(error);
@@ -71,8 +60,8 @@ export const downloadResults = async () => {
 
 export const vote = async (choice) => {
   try {
-    const { data: status } = await axios.post(`${url}/poll`, {
-      choice
+    const { status } = await axios.post('api/poll', {
+      choice: choice.text
     });
     if (status === 200) {
       return true;

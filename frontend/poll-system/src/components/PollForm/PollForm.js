@@ -4,11 +4,12 @@ import { Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { useState } from 'react';
 import Choice from './Choice/Choice';
 import { useHistory } from 'react-router-dom';
+import { createPoll } from '../../api';
 
 const PollForm = ({
   currentPoll = {
     title: '',
-    description: '',
+    question: '',
     choices: [
       { text: '', description: '' },
       { text: '', description: '' }
@@ -39,8 +40,8 @@ const PollForm = ({
     let duplicateChoices = set.size !== choiceNames.length;
 
     return (
-      poll.title === '' ||
-      poll.title == null ||
+      !poll.title ||
+      !poll.question ||
       choicesAreEmpty ||
       poll.choices.length < 2 ||
       duplicateChoices
@@ -78,20 +79,20 @@ const PollForm = ({
               controlId="poll-description"
             >
               <Form.Label className="label-style" column="lg" lg={4}>
-                Description
+                Question
               </Form.Label>
               <Col sm={8}>
                 <Form.Control
                   as="textarea"
                   className="text-box"
                   id="text-area-style"
-                  value={poll.description}
+                  value={poll.question}
                   onChange={(e) => {
-                    poll.description = e.target.value;
+                    poll.question = e.target.value;
                     setPoll(JSON.parse(JSON.stringify(poll)));
                   }}
                   rows={5}
-                  placeholder="Description"
+                  placeholder="Question"
                 />
               </Col>
             </Form.Group>
@@ -118,12 +119,14 @@ const PollForm = ({
               Add more +
             </Button>
             <Button
-                type="submit"
-                id="create-btn"
-                disabled={disableCreate()}
-                onClick={
-                  () => history.push('/details')
-                }
+              type="submit"
+              id="create-btn"
+              disabled={disableCreate()}
+              onClick={(e) => {
+                e.preventDefault();
+                createPoll(poll);
+                history.push('/details');
+              }}
             >
               create
             </Button>
