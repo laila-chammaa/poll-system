@@ -66,10 +66,10 @@ public class PollServlet extends HttpServlet {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         //making sure the client does not cache the data
-//        response.setHeader("Cache-Control",
-//                "max-age=0, must-revalidate, no-cache, no-store, private, post-check=0, pre-check=0"); // HTTP 1.1
-//        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
-//        response.setDateHeader("Expires", 0); // prevents caching at the proxy server
+        response.setHeader("Cache-Control",
+                "max-age=0, must-revalidate, no-cache, no-store, private, post-check=0, pre-check=0"); // HTTP 1.1
+        response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+        response.setDateHeader("Expires", 0); // prevents caching at the proxy server
 
         try {
             String json = new Gson().toJson(PollManager.getCurrentPoll());

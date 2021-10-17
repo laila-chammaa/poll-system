@@ -2,8 +2,9 @@ import './PollResults.css';
 import '../../Cards.css';
 import { Card, Button } from 'react-bootstrap';
 import Chart from 'react-google-charts';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { downloadResults, fetchPoll } from '../../api';
+import { downloadResults, fetchPoll, updatePollStatus } from '../../api';
 
 const PollResults = () => {
   const [chartType, setChartType] = useState('LineChart');
@@ -17,6 +18,12 @@ const PollResults = () => {
 
     fetchCurrentPoll();
   }, []);
+
+  let admin = false;
+  const location = useLocation();
+  location.state && location.state.admin ? (admin = true) : (admin = false);
+
+  const history = useHistory();
 
   return (
     <div className="main-div">
@@ -62,13 +69,24 @@ const PollResults = () => {
             />
           </div>
           <Button
-            className="btn-1"
+            className="btn-1 download"
             onClick={() => {
               downloadResults();
             }}
           >
             download
           </Button>
+          {admin ? (
+            <Button
+              className="btn-2"
+              onClick={() => {
+                updatePollStatus('closed');
+                history.push('/create');
+              }}
+            >
+              close
+            </Button>
+          ) : null}
         </Card>
       </Card>
     </div>

@@ -19,7 +19,10 @@ const PollDetails = () => {
 
   const history = useHistory();
   if (poll && poll.status === 'RELEASED') {
-    history.push('/results');
+    history.push({
+      pathname: '/results',
+      state: { admin: true }
+    });
   }
 
   return (
@@ -66,9 +69,7 @@ const PollDetails = () => {
                   release
                 </Button>
               </div>
-            ) : (
-              <h1></h1>
-            )}
+            ) : null}
           </Card>
         </Card>
       ) : (

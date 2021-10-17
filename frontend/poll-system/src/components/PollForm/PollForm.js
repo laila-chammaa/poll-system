@@ -20,13 +20,13 @@ const PollForm = ({
   const location = useLocation();
   useEffect(() => {
     const fetchPoll = async () => {
-      if (location.state.currentPoll != null) {
+      if (location.state && location.state.currentPoll != null) {
         setPoll(location.state.currentPoll);
       }
     };
 
     fetchPoll();
-  }, [location.state.currentPoll]);
+  }, [location.state]);
 
   const addChoice = () => {
     poll.choices.push({ text: '', description: '' });

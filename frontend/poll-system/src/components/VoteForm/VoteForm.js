@@ -21,7 +21,10 @@ const VoteForm = () => {
   const history = useHistory();
 
   if (poll != null && poll.status === 'RELEASED') {
-    history.push('/results');
+    history.push({
+      pathname: '/results',
+      state: { admin: false }
+    });
   }
 
   const pollIsRunning = () => {
