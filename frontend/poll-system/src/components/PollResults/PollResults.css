@@ -13,3 +13,7 @@
 .card-body button:focus {
   box-shadow: none;
 }
+
+.card-body .btn-1.download {
+  right: -58px;
+}

@@ -2,36 +2,40 @@ import './VoteForm.css';
 import '../../Cards.css';
 import { Link, useHistory } from 'react-router-dom';
 import { Card, Form, Button } from 'react-bootstrap';
-import { useState } from 'react';
-import { fetchPoll } from '../../api';
+import { useState, useEffect } from 'react';
+import { fetchPoll, vote } from '../../api';
 
 const VoteForm = () => {
   const [voted, setVoted] = useState(false);
   const [chosenAnswer, setChosenAnswer] = useState(null);
-  // TODO: remove hardcoded
-  // let poll = {
-  //   title: 'Favorite Movie',
-  //   question: 'Let us know what we should watch before we die.',
-  //   choices: [
-  //     { text: 'Megamind', description: 'my giant blue head' },
-  //     {
-  //       text: 'Treasure Planet',
-  //       description: 'best boi in the best haircut'
-  //     },
-  //     { text: 'The Prestige', description: 'my brain was on the floor' },
-  //     { text: 'Tinkerbell', description: 'comfort movie' }
-  //   ]
-  // };
-  let poll = fetchPoll();
-  console.log(poll);
-  console.log(poll.choices);
+  const [poll, setPoll] = useState(null);
+
+  useEffect(() => {
+    const fetchCurrentPoll = async () => {
+      setPoll(await fetchPoll());
+    };
+
+    fetchCurrentPoll();
+  }, []);
+
   const history = useHistory();
+
+  if (poll != null && poll.status === 'RELEASED') {
+    history.push({
+      pathname: '/results',
+      state: { admin: false }
+    });
+  }
+
+  const pollIsRunning = () => {
+    return poll != null && poll.status === 'RUNNING';
+  };
 
   return (
     <div className="main-div">
-      {poll != null ? (
+      {pollIsRunning() ? (
         <Card className="card-title-div">
-          <Card.Title className="card-title">{poll.title}</Card.Title>
+          <Card.Title className="card-title">{poll.name}</Card.Title>
           <Card.Title className="card-description">{poll.question}</Card.Title>
           <Card className="card-body">
             {!voted ? (
@@ -57,6 +61,7 @@ const VoteForm = () => {
                   disabled={chosenAnswer == null}
                   onClick={() => {
                     setVoted(true);
+                    vote(chosenAnswer);
                   }}
                 >
                   vote

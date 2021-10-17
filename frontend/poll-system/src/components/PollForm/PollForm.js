@@ -1,9 +1,9 @@
 import './PollForm.css';
 import '../../Cards.css';
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Choice from './Choice/Choice';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { createPoll } from '../../api';
 
 const PollForm = ({
@@ -17,6 +17,16 @@ const PollForm = ({
   }
 }) => {
   const [poll, setPoll] = useState(JSON.parse(JSON.stringify(currentPoll)));
+  const location = useLocation();
+  useEffect(() => {
+    const fetchPoll = async () => {
+      if (location.state && location.state.currentPoll != null) {
+        setPoll(location.state.currentPoll);
+      }
+    };
+
+    fetchPoll();
+  }, [location.state]);
 
   const addChoice = () => {
     poll.choices.push({ text: '', description: '' });
@@ -40,7 +50,7 @@ const PollForm = ({
     let duplicateChoices = set.size !== choiceNames.length;
 
     return (
-      !poll.title ||
+      !poll.name ||
       !poll.question ||
       choicesAreEmpty ||
       poll.choices.length < 2 ||
@@ -63,11 +73,11 @@ const PollForm = ({
               <Col sm={8}>
                 <Form.Control
                   type="text"
-                  value={poll.title}
+                  value={poll.name}
                   className="text-box"
                   placeholder="Title"
                   onChange={(e) => {
-                    poll.title = e.target.value;
+                    poll.name = e.target.value;
                     setPoll(JSON.parse(JSON.stringify(poll)));
                   }}
                 />
