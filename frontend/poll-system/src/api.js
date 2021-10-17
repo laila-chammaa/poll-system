@@ -43,7 +43,12 @@ export const fetchPoll = async () => {
 
 export const fetchResults = async () => {
   try {
-    const { data } = await axios.get('/api/votes');
+    const { data } = await axios.get('/api/votes', {
+      params: {
+        format: 'text',
+        download: 'false'
+      }
+    });
     return data;
   } catch (error) {
     console.log(error);
@@ -52,7 +57,12 @@ export const fetchResults = async () => {
 
 export const downloadResults = async () => {
   try {
-    const { data } = await axios.get('/api/votes');
+    const { data } = await axios.get('/api/votes', {
+      params: {
+        format: 'text',
+        download: 'true'
+      }
+    });
     return data;
   } catch (error) {
     console.log(error);
