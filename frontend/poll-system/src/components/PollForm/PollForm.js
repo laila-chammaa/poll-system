@@ -3,6 +3,7 @@ import '../../Cards.css';
 import { Button, Card, Col, Form, Row } from 'react-bootstrap';
 import { useState } from 'react';
 import Choice from './Choice/Choice';
+import { useHistory } from 'react-router-dom';
 
 const PollForm = ({
   currentPoll = {
@@ -45,6 +46,8 @@ const PollForm = ({
       duplicateChoices
     );
   };
+
+  const history = useHistory();
 
   return (
     <div className="poll-form main-div">
@@ -114,7 +117,14 @@ const PollForm = ({
             <Button id="add-style" onClick={() => addChoice()}>
               Add more +
             </Button>
-            <Button type="submit" id="create-btn" disabled={disableCreate()}>
+            <Button
+                type="submit"
+                id="create-btn"
+                disabled={disableCreate()}
+                onClick={
+                  () => history.push('/details')
+                }
+            >
               create
             </Button>
           </Form>
