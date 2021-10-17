@@ -21,7 +21,6 @@ const PollResults = () => {
       { text: 'Tinkerbell', description: 'comfort movie' }
     ]
   };
-  // let poll = null;
   // poll = fetchPoll();
 
   return (

@@ -1,16 +1,15 @@
-//used for making api requests
 import axios from 'axios';
 
 export const updatePollStatus = async (pollStatus) => {
   try {
-    const { data: status } = await axios.put('/api/poll', {
+    const { status } = await axios.put('/api/poll', {
       status: pollStatus
     });
     if (status === 200) {
       return true;
     }
   } catch (error) {
-    alert(error);
+    console.log(error);
   }
 };
 
@@ -27,11 +26,10 @@ export const createPoll = async (poll) => {
       return true;
     }
   } catch (error) {
-    return error;
+    console.log(error);
   }
 };
 
-//TODO: need to update when the backend can send current poll
 export const fetchPoll = async () => {
   try {
     const { data } = await axios.get('/api/poll');
@@ -42,7 +40,6 @@ export const fetchPoll = async () => {
   }
 };
 
-//TODO: need to check that it works
 export const fetchResults = async () => {
   try {
     const { data } = await axios.get('/api/votes');
@@ -52,7 +49,6 @@ export const fetchResults = async () => {
   }
 };
 
-//TODO: need to check that it works
 export const downloadResults = async () => {
   try {
     const { data } = await axios.get('/api/votes');
@@ -65,7 +61,7 @@ export const downloadResults = async () => {
 export const vote = async (choice) => {
   try {
     const { status } = await axios.post('api/poll', {
-      choice
+      choice: choice.text
     });
     if (status === 200) {
       return true;
