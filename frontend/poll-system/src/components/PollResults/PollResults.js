@@ -2,26 +2,21 @@ import './PollResults.css';
 import '../../Cards.css';
 import { Card, Button } from 'react-bootstrap';
 import Chart from 'react-google-charts';
-import { useState } from 'react';
-import { downloadResults } from '../../api';
+import { useState, useEffect } from 'react';
+import { downloadResults, fetchPoll } from '../../api';
 
 const PollResults = () => {
   const [chartType, setChartType] = useState('LineChart');
   const supportedCharts = ['ColumnChart', 'LineChart', 'PieChart'];
-  let poll = {
-    title: 'Favorite Movie',
-    question: 'Let us know what we should watch before we die.',
-    choices: [
-      { text: 'Megamind', description: 'my giant blue head' },
-      {
-        text: 'Treasure Planet',
-        description: 'best boi in the best haircut'
-      },
-      { text: 'The Prestige', description: 'my brain was on the floor' },
-      { text: 'Tinkerbell', description: 'comfort movie' }
-    ]
-  };
-  // poll = fetchPoll();
+  const [poll, setPoll] = useState(null);
+
+  useEffect(() => {
+    const fetchCurrentPoll = async () => {
+      setPoll(await fetchPoll());
+    };
+
+    fetchCurrentPoll();
+  }, []);
 
   return (
     <div className="main-div">
@@ -56,7 +51,7 @@ const PollResults = () => {
                 ['Philadelphia, PA', 1526000]
               ]}
               options={{
-                title: poll ? poll.title : 'No poll',
+                title: poll ? poll.name : 'No poll',
                 chartArea: { width: '65%' },
                 vAxis: {
                   title: 'Vote'

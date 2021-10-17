@@ -2,8 +2,10 @@ import axios from 'axios';
 
 export const updatePollStatus = async (pollStatus) => {
   try {
-    const { status } = await axios.put('/api/poll', {
-      status: pollStatus
+    const { status } = await axios.put('/api/poll', null, {
+      params: {
+        status: pollStatus
+      }
     });
     if (status === 200) {
       return true;
@@ -18,7 +20,7 @@ export const createPoll = async (poll) => {
   try {
     const { data: status } = await axios.post('/api/poll', null, {
       params: {
-        name: poll.title,
+        name: poll.name,
         question: poll.question
       }
     });
@@ -33,7 +35,6 @@ export const createPoll = async (poll) => {
 export const fetchPoll = async () => {
   try {
     const { data } = await axios.get('/api/poll');
-    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -60,8 +61,10 @@ export const downloadResults = async () => {
 
 export const vote = async (choice) => {
   try {
-    const { status } = await axios.post('api/poll', {
-      choice: choice.text
+    const { status } = await axios.post('/api/votes', null, {
+      params: {
+        choice: choice.text
+      }
     });
     if (status === 200) {
       return true;

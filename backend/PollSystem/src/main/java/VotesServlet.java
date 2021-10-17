@@ -27,23 +27,23 @@ public class VotesServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
+        String download = request.getParameter("download");
         String format = request.getParameter("format");
-        if (name.equals(PollManager.getCurrentPoll().getName()) && format.equals("text")) {
-            download(name, format, response); //TODO: change to PollManager.downloadPollResults?
+        if (download.equals("true") && format.equals("text")) {
+            download(format, response); //TODO: change to PollManager.downloadPollResults?
         } else {
-            //TODO: the exception text is printed to the server output stream
-            throw new PollException.InvalidParam(String.format("Current poll is not %s, or format is not 'text'", name));
+            PollManager.getPollResults();
         }
     }
 
-    private void download(String name, String format, HttpServletResponse response) throws IOException {
+    private void download(String format, HttpServletResponse response) throws IOException {
         String fileExtension = ".txt";
         String msg;
 
         // You must tell the browser the file type you are going to send
         response.setContentType(format);
         String headerKey = "Content-disposition";
+        String name = PollManager.getCurrentPoll().getName();
         String headerVal = String.format("attachment; filename=%s.%s", name, fileExtension);
         response.setHeader(headerKey, headerVal);
 
