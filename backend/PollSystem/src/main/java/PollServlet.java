@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.sun.tools.javac.util.List;
 import model.Choice;
 
 import javax.servlet.ServletException;
@@ -34,7 +33,7 @@ public class PollServlet extends HttpServlet {
             } catch (PollException.TooFewChoices | PollException.DuplicateChoices tooFewChoices) {
                 tooFewChoices.printStackTrace(); //TODO: better exceptions
             }
-        } else if (status.equals("created") || status.equals("running")) {
+        } else if (status.equals("CREATED") || status.equals("RUNNING")) {
             PollManager.updatePoll(name, question, choiceList);
         }
 

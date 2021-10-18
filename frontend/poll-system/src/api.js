@@ -21,7 +21,8 @@ export const createPoll = async (poll) => {
     const { data: status } = await axios.post('/api/poll', null, {
       params: {
         name: poll.name,
-        question: poll.question
+        question: poll.question,
+        status: poll.status
       }
     });
     if (status === 200) {

@@ -35,11 +35,17 @@ const PollDetails = () => {
           <Card className="card-div-body">
             {poll.status === 'CREATED' ? (
               <div>
-                <Link id="edit-btn" to="/create" props={{ currentPoll: poll }}>
+                <Link
+                  className="btn-1 edit"
+                  to={{
+                    pathname: '/create',
+                    state: { currentPoll: poll }
+                  }}
+                >
                   edit
                 </Link>
                 <Button
-                  id="run-btn"
+                  className="btn-1 run"
                   onClick={() => {
                     updatePollStatus('running');
                     setStatus('running');
@@ -51,7 +57,7 @@ const PollDetails = () => {
             ) : poll.status === 'RUNNING' ? (
               <div>
                 <Link
-                  id="edit-btn"
+                  className="btn-1 edit"
                   to={{
                     pathname: '/create',
                     state: { currentPoll: poll }
@@ -60,13 +66,22 @@ const PollDetails = () => {
                   edit
                 </Link>
                 <Button
-                  id="run-btn"
+                  className="btn-1 run"
                   onClick={() => {
                     updatePollStatus('released');
                     setStatus('released');
                   }}
                 >
                   release
+                </Button>
+                <Button
+                  className="btn-1 clear"
+                  onClick={() => {
+                    updatePollStatus('cleared');
+                    setStatus('cleared');
+                  }}
+                >
+                  clear
                 </Button>
               </div>
             ) : null}
