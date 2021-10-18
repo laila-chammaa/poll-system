@@ -77,15 +77,26 @@ const PollResults = () => {
             download
           </Button>
           {admin ? (
-            <Button
-              className="btn-2"
-              onClick={() => {
-                updatePollStatus('closed');
-                history.push('/create');
-              }}
-            >
-              close
-            </Button>
+            <div>
+              <Button
+                className="btn-2"
+                onClick={() => {
+                  updatePollStatus('closed');
+                  history.push('/create');
+                }}
+              >
+                close
+              </Button>
+              <Button
+                className="btn-1 clear"
+                onClick={() => {
+                  updatePollStatus('cleared');
+                  history.push('/details');
+                }}
+              >
+                clear
+              </Button>
+            </div>
           ) : null}
         </Card>
       </Card>

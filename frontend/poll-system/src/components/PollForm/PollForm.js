@@ -63,7 +63,9 @@ const PollForm = ({
   return (
     <div className="poll-form main-div">
       <Card className="card-title-div">
-        <Card.Title className="card-title">Start creating!</Card.Title>
+        <Card.Title className="card-title">
+          {poll.status ? 'Start editing!' : 'Start creating!'}
+        </Card.Title>
         <Card className="card-div-body">
           <Form className="form-style">
             <Form.Group as={Row} className="group-style" controlId="poll-title">
@@ -138,7 +140,7 @@ const PollForm = ({
                 history.push('/details');
               }}
             >
-              create
+              {poll.status ? 'update' : 'create'}
             </Button>
           </Form>
         </Card>

@@ -1,21 +1,23 @@
 .main-dev .card-div-body {
   height: unset;
 }
-.card-div-body #edit-btn {
+.card-div-body .btn-1 {
   padding: 10px 16px;
   border-radius: 90px;
   position: absolute;
-  right: 65px;
-  bottom: 30px;
   font-size: 27px;
   box-shadow: 0px 10px 15px 1px rgba(0, 0, 0, 0.329);
   letter-spacing: -1px;
+}
+.card-div-body .edit {
+  right: 65px;
+  bottom: 30px;
   background-color: #0d6efd;
   color: white;
   text-decoration: none;
 }
 
-.card-div-body #edit-btn:hover {
+.card-div-body .edit:hover {
   background-color: #0655cc;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -25,13 +27,12 @@
   transition-delay: 0s, 0s, 0s, 0s;
 }
 
-.card-div-body #run-btn {
-  padding: 10px 16px;
-  border-radius: 90px;
-  position: absolute;
+.card-div-body .run {
   right: -50px;
   bottom: 30px;
-  font-size: 27px;
-  box-shadow: 0px 10px 15px 1px rgba(0, 0, 0, 0.329);
-  letter-spacing: -1px;
+}
+
+.card-div-body .clear {
+  right: 140px;
+  bottom: 30px;
 }
