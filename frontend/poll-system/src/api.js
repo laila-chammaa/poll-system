@@ -50,6 +50,9 @@ export const fetchResults = async () => {
         download: 'false'
       }
     });
+    for (var i = 1; i < data.length; i++) {
+      data[i][1] = parseInt(data[i][1]); //changing vote count to int
+    }
     return data;
   } catch (error) {
     console.log(error);

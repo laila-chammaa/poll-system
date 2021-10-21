@@ -4,18 +4,30 @@ import { Card, Button } from 'react-bootstrap';
 import Chart from 'react-google-charts';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { downloadResults, fetchPoll, updatePollStatus } from '../../api';
+import {
+  downloadResults,
+  fetchPoll,
+  updatePollStatus,
+  fetchResults
+} from '../../api';
 
 const PollResults = () => {
-  const [chartType, setChartType] = useState('LineChart');
-  const supportedCharts = ['ColumnChart', 'LineChart', 'PieChart'];
+  const [chartType, setChartType] = useState('PieChart');
+  const supportedCharts = ['ColumnChart', 'PieChart'];
   const [poll, setPoll] = useState(null);
+  const [results, setResults] = useState(null);
+
+  useEffect(() => {
+    const getResults = async () => {
+      setResults(await fetchResults());
+    };
+    getResults();
+  }, []);
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
       setPoll(await fetchPoll());
     };
-
     fetchCurrentPoll();
   }, []);
 
@@ -49,19 +61,12 @@ const PollResults = () => {
               height={400}
               chartType={chartType}
               loader={<div>Loading Chart</div>}
-              data={[
-                ['City', 'Total Population'],
-                ['New York City, NY', 8175000],
-                ['Los Angeles, CA', 3792000],
-                ['Chicago, IL', 2695000],
-                ['Houston, TX', 2099000],
-                ['Philadelphia, PA', 1526000]
-              ]}
+              data={results}
               options={{
                 title: poll ? poll.name : 'No poll',
                 chartArea: { width: '65%' },
                 vAxis: {
-                  title: 'Vote'
+                  title: 'Votes'
                 },
                 legend: 'none',
                 colors: ['#1F6FFB', '#A6E5FF', '#DCC8FF', '#B083FF', '#8137FF']
