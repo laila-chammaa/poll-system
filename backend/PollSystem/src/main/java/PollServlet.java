@@ -1,16 +1,19 @@
 import com.google.gson.Gson;
 import model.Choice;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 
 @WebServlet(name = "PollServlet", urlPatterns = "/api/poll")
 public class PollServlet extends HttpServlet {
@@ -19,14 +22,23 @@ public class PollServlet extends HttpServlet {
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
-        String name = request.getParameter("name");
-        String question = request.getParameter("question");
+        String pollStr = request.getParameter("poll");
+        pollStr = pollStr.replace("$", "[");
+        pollStr = pollStr.replace("&", "]");
+        JSONObject jsonObj = new JSONObject(pollStr);
+        String name = jsonObj.getString("name");
+        String question = jsonObj.getString("question");
         String status = request.getParameter("status");
-        String choiceName = request.getParameter("choices");
-        Choice c1 = new Choice("Red", "best color");
-        Choice c2 = new Choice("Blue", "royal color");
+        JSONArray choicesArray = jsonObj.getJSONArray("choices");
+        ArrayList<Choice> choiceList = new ArrayList<>();
 
-        ArrayList<Choice> choiceList = new ArrayList<>(Arrays.asList(c1, c2));
+        for (int i = 0; i < choicesArray.length(); ++i) {
+            JSONObject choice = choicesArray.getJSONObject(i);
+            String text = choice.getString("text");
+            String description = choice.getString("description");
+            choiceList.add(new Choice(text, description));
+        }
+
         if (status == null) {
             try {
                 PollManager.createPoll(name, question, choiceList);

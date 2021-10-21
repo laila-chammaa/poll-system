@@ -15,13 +15,15 @@ export const updatePollStatus = async (pollStatus) => {
   }
 };
 
-//TODO: need to update when the backend can accept choices
 export const createPoll = async (poll) => {
+  let jsonPoll = JSON.stringify(poll)
+  jsonPoll = jsonPoll.replace("[", "$")
+  jsonPoll = jsonPoll.replace("]", "&")
+
   try {
     const { data: status } = await axios.post('/api/poll', null, {
       params: {
-        name: poll.name,
-        question: poll.question,
+        poll: jsonPoll,
         status: poll.status
       }
     });
