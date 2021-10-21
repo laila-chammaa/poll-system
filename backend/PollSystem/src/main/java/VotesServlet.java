@@ -72,7 +72,7 @@ public class VotesServlet extends HttpServlet {
     }
 
     private void download(String format, HttpServletResponse response) throws IOException {
-        String fileExtension = ".txt";
+        String fileExtension = "txt";
 
         // You must tell the browser the file type you are going to send
         response.setContentType(format);
