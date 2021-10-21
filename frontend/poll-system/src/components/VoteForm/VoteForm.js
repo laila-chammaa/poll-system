@@ -84,7 +84,7 @@ const VoteForm = () => {
                   </div>
                 </Form>
                 <div className="no-results">
-                  Vote is counted. The results are not yet released.
+                  Your vote was counted. The results are not yet released.
                 </div>
                 <Button
                   className="btn-1"
@@ -95,9 +95,6 @@ const VoteForm = () => {
                 >
                   revote
                 </Button>
-                <Link className="btn-2" to="/results">
-                  see results
-                </Link>
               </div>
             )}
           </Card>
