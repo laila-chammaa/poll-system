@@ -52,10 +52,10 @@ public class VotesServlet extends HttpServlet {
         res[0][0] = "Choice";
         res[0][1] = "Vote Count";
         for (int i = 1; i < size; i++) {
-            String firstKey = (String) results.keySet().toArray()[i-1];
-            String firstValue = results.get(firstKey).toString();
-            res[i][0] = firstKey;
-            res[i][1] = firstValue;
+            String key = (String) results.keySet().toArray()[i-1];
+            String value = results.get(key).toString();
+            res[i][0] = key;
+            res[i][1] = value;
         }
 
         OutputStream out;
