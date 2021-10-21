@@ -8,7 +8,7 @@ import { createPoll } from '../../api';
 
 const PollForm = ({
   currentPoll = {
-    title: '',
+    name: '',
     question: '',
     choices: [
       { text: '', description: '' },
