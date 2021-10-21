@@ -133,12 +133,15 @@ public class PollManager {
         }
     }
 
-    public static Hashtable<Choice, Integer> getPollResults() throws PollException.IllegalPollOperation {
+    public static Hashtable<String, Integer> getPollResults() throws PollException.IllegalPollOperation {
         if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            Hashtable<Choice, Integer> results = new Hashtable<>();
+            Hashtable<String, Integer> results = new Hashtable<>();
             currentPoll.getVotes().forEach(v -> {
-                int count = results.get(v.getChoice());
-                results.put(v.getChoice(), count + 1);
+                Integer count = results.get(v.getChoice().getText());
+                if (count == null) {
+                    count = 0;
+                }
+                results.put(v.getChoice().getText(), count + 1);
             });
             return results;
         } else {
@@ -151,7 +154,7 @@ public class PollManager {
             PollException.IllegalPollOperation {
         //TODO: what to do with filename? check that the filename has the current poll's name?
         if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            output = new PrintWriter(filename); //TODO: is this right? add try catch?
+            output = new PrintWriter(filename);
             output.write(currentPoll.toString());
         } else {
             throw new PollException.IllegalPollOperation(String.format(
