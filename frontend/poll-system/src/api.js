@@ -15,7 +15,6 @@ export const updatePollStatus = async (pollStatus) => {
   }
 };
 
-// // TODO: need to update when the backend can accept choices
 export const createPoll = async (poll) => {
   let jsonPoll = JSON.stringify(poll)
   jsonPoll = jsonPoll.replace("[", "$")
