@@ -13,7 +13,6 @@ const PollDetails = () => {
     const fetchCurrentPoll = async () => {
       setPoll(await fetchPoll());
     };
-
     fetchCurrentPoll();
   }, [status]);
 
