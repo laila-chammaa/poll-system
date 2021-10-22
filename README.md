@@ -9,6 +9,10 @@
 
 4. Try accessing the Servlet through http://localhost:8080/api/votes and http://localhost:8080/api/poll and it should hit the doGet of each servlet.
 
+5. Create polllib.jar by building the polllib project separately. Make sure you're generating a jar by going to File -> Project Structure -> Artifacts -> + JAR
+
+5. Include the polllib.jar in your libraries by clicking File -> Project Structure -> Libraries.
+
 ### Frontend:
 
 `npm install`
