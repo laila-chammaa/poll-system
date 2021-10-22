@@ -43,7 +43,7 @@ public class Choice {
 
     @Override
     public String toString() {
-        return "model.Choice {" +
+        return "Choice {" +
                 "\ntext = '" + text + '\'' +
                 ", \ndescription = " + description +
                 '}';

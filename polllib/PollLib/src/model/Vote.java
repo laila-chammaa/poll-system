@@ -5,10 +5,10 @@ import java.util.Objects;
 
 public class Vote {
     private String voterId; //sessionId
-    private model.Choice choice;
+    private Choice choice;
     private LocalDateTime timestamp;
 
-    public Vote(String voterId, model.Choice choice, LocalDateTime timestamp) {
+    public Vote(String voterId, Choice choice, LocalDateTime timestamp) {
         this.voterId = voterId;
         this.choice = choice;
         this.timestamp = timestamp;
@@ -22,11 +22,11 @@ public class Vote {
         this.voterId = voterId;
     }
 
-    public model.Choice getChoice() {
+    public Choice getChoice() {
         return choice;
     }
 
-    public void setChoice(model.Choice choice) {
+    public void setChoice(Choice choice) {
         this.choice = choice;
     }
 
@@ -55,7 +55,7 @@ public class Vote {
 
     @Override
     public String toString() {
-        return "model.Vote {" +
+        return "Vote {" +
                 "\nvoterId = '" + voterId + '\'' +
                 ", \nchoice = " + choice +
                 ", \ntimestamp = " + timestamp +

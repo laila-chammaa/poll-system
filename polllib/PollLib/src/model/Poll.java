@@ -65,7 +65,7 @@ public class Poll {
 
     @Override
     public String toString() {
-        return "model.Poll {" +
+        return "Poll {" +
                 "\nname = '" + name + '\'' +
                 ", \nquestion = " + question +
                 ", \nstatus = " + status +
