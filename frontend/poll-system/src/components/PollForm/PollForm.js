@@ -1,9 +1,10 @@
 import './PollForm.css';
 import '../../Cards.css';
-import { Button, Card, Col, Form, Row } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import homeicon from '../../homeicon.png'
+import { Button, Card, Col, Form, Image, Row } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
 import Choice from './Choice/Choice';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { createPoll } from '../../api';
 
 const PollForm = ({
@@ -65,6 +66,7 @@ const PollForm = ({
       <Card className="card-title-div">
         <Card.Title className="card-title">
           {poll.status ? 'Start editing!' : 'Start creating!'}
+          <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
         </Card.Title>
         <Card className="card-div-body">
           <Form className="form-style">

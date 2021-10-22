@@ -1,9 +1,10 @@
 import './AdminLogin.css';
 import '../../Cards.css';
-import { Button, Card, FormControl, InputGroup } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import homeicon from '../../homeicon.png'
+import { Button, Card, FormControl, Image, InputGroup } from 'react-bootstrap';
+import { Link, useHistory } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
-import config from '../../config.json'; //whatever is the correct path
+import config from '../../config.json';
 import { fetchPoll } from '../../api';
 
 const AdminLogin = () => {
@@ -34,7 +35,10 @@ const AdminLogin = () => {
   return (
     <div className="main-div">
       <Card className="card-title-div">
-        <Card.Title className="card-title">Welcome Admin!</Card.Title>
+        <Card.Title className="card-title">
+          Welcome Admin!
+          <Link to="/"><Image src={homeicon} className="home-btn"/></Link>
+        </Card.Title>
         <Card className="card-div-body">
           <Card.Text id="login-description">
             If you are who you say you are, you would know the secret passcode.
