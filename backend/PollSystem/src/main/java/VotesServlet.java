@@ -2,6 +2,7 @@ import com.google.gson.Gson;
 import model.Choice;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @WebServlet(name = "VotesServlet", urlPatterns = "/api/votes")
@@ -32,7 +35,7 @@ public class VotesServlet extends HttpServlet {
         String download = request.getParameter("download");
         String format = request.getParameter("format");
         if (download.equals("true") && format.equals("text")) {
-            download(format, response); //TODO: change to PollManager.downloadPollResults?
+            download(format, response);
         } else {
             sendResults(PollManager.getPollResults(), response);
         }
@@ -52,7 +55,7 @@ public class VotesServlet extends HttpServlet {
         res[0][0] = "Choice";
         res[0][1] = "Vote Count";
         for (int i = 1; i < size; i++) {
-            String key = (String) results.keySet().toArray()[i-1];
+            String key = (String) results.keySet().toArray()[i - 1];
             String value = results.get(key).toString();
             res[i][0] = key;
             res[i][1] = value;
@@ -78,7 +81,8 @@ public class VotesServlet extends HttpServlet {
         response.setContentType(format);
         String headerKey = "Content-disposition";
         String name = PollManager.getCurrentPoll().getName();
-        String fileName = String.format("%s.%s", name, fileExtension);
+        String date = LocalDateTime.now().toString();
+        String fileName = String.format("%s-%s.%s", name, date, fileExtension);
         String headerVal = String.format("attachment; filename=%s", fileName);
         response.setHeader(headerKey, headerVal);
 

@@ -73,14 +73,12 @@ const PollResults = () => {
               }}
             />
           </div>
-          <Button
+          <a
+            href="http://localhost:8080/api/votes?format=text&download=true"
             className="btn-1 download"
-            onClick={() => {
-              downloadResults();
-            }}
           >
             download
-          </Button>
+          </a>
           {admin ? (
             <div>
               <Button

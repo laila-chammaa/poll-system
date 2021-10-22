@@ -16,6 +16,19 @@
 
 .card-body .btn-1.download {
   right: -58px;
+  background-color: #0d6efd;
+  text-decoration: none;
+  color: white;
+}
+
+.card-body .btn-1.download:hover {
+  background-color: #0655cc;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 0.15s, 0.15s, 0.15s, 0.15s;
+  transition-timing-function: ease-in-out, ease-in-out, ease-in-out, ease-in-out;
+  transition-delay: 0s, 0s, 0s, 0s;
 }
 
 .card-body .btn-1.clear {

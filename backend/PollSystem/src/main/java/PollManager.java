@@ -3,7 +3,7 @@ import model.Poll;
 import model.PollStatus;
 import model.Vote;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -150,11 +150,9 @@ public class PollManager {
         }
     }
 
-    public static void downloadPollDetails(PrintWriter output, String filename) throws FileNotFoundException,
+    public static void downloadPollDetails(PrintWriter output, String filename) throws
             PollException.IllegalPollOperation {
-        //TODO: what to do with filename? check that the filename has the current poll's name?
         if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            output = new PrintWriter(filename);
             output.write(currentPoll.toString());
         } else {
             throw new PollException.IllegalPollOperation(String.format(
