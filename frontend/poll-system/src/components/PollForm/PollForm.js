@@ -120,6 +120,7 @@ const PollForm = ({
               </Form.Label>
               {poll.choices.map((c, i) => (
                 <Choice
+                  key={i}
                   c={c}
                   i={i}
                   deleteChoice={deleteChoice}

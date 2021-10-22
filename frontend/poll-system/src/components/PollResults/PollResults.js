@@ -4,18 +4,15 @@ import { Card, Button } from 'react-bootstrap';
 import Chart from 'react-google-charts';
 import { useLocation, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import {
-  downloadResults,
-  fetchPoll,
-  updatePollStatus,
-  fetchResults
-} from '../../api';
+import { fetchPoll, updatePollStatus, fetchResults } from '../../api';
 
 const PollResults = () => {
   const [chartType, setChartType] = useState('PieChart');
   const supportedCharts = ['ColumnChart', 'PieChart'];
   const [poll, setPoll] = useState(null);
   const [results, setResults] = useState(null);
+  const downloadURL =
+    'http://localhost:8080/api/votes?format=text&download=true';
 
   useEffect(() => {
     const getResults = async () => {
@@ -73,14 +70,9 @@ const PollResults = () => {
               }}
             />
           </div>
-          <Button
-            className="btn-1 download"
-            onClick={() => {
-              downloadResults();
-            }}
-          >
+          <a href={downloadURL} className="btn-1 download">
             download
-          </Button>
+          </a>
           {admin ? (
             <div>
               <Button

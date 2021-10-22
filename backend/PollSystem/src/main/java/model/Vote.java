@@ -55,10 +55,10 @@ public class Vote {
 
     @Override
     public String toString() {
-        return "Vote{" +
-                "voterId='" + voterId + '\'' +
-                ", choice=" + choice +
-                ", timestamp=" + timestamp +
+        return "Vote {" +
+                "\nvoterId = '" + voterId + '\'' +
+                ", \nchoice = " + choice +
+                ", \ntimestamp = " + timestamp +
                 '}';
     }
 }

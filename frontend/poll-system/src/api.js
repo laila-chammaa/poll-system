@@ -16,9 +16,9 @@ export const updatePollStatus = async (pollStatus) => {
 };
 
 export const createPoll = async (poll) => {
-  let jsonPoll = JSON.stringify(poll)
-  jsonPoll = jsonPoll.replace("[", "$")
-  jsonPoll = jsonPoll.replace("]", "&")
+  let jsonPoll = JSON.stringify(poll);
+  jsonPoll = jsonPoll.replaceAll('[', '$');
+  jsonPoll = jsonPoll.replaceAll(']', '&');
 
   try {
     const { data: status } = await axios.post('/api/poll', null, {
@@ -55,20 +55,6 @@ export const fetchResults = async () => {
     for (var i = 1; i < data.length; i++) {
       data[i][1] = parseInt(data[i][1]); //changing vote count to int
     }
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-export const downloadResults = async () => {
-  try {
-    const { data } = await axios.get('/api/votes', {
-      params: {
-        format: 'text',
-        download: 'true'
-      }
-    });
     return data;
   } catch (error) {
     console.log(error);

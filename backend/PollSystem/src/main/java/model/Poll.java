@@ -65,12 +65,12 @@ public class Poll {
 
     @Override
     public String toString() {
-        return "Poll{" +
-                "name='" + name + '\'' +
-                ", question=" + question +
-                ", status=" + status +
-                ", choices=" + choices +
-                ", votes=" + votes +
+        return "Poll {" +
+                "\nname = '" + name + '\'' +
+                ", \nquestion = " + question +
+                ", \nstatus = " + status +
+                ", \nchoices = " + choices +
+                ", \nvotes = " + votes +
                 '}';
     }
 
