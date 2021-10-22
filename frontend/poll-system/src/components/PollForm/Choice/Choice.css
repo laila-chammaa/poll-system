@@ -19,10 +19,10 @@
 }
 
 .main-div .group-style .name {
-  width: 150px;
+  width: 150px !important;
   margin-right: 10px;
 }
 
 .main-div .group-style .description {
-  width: 240px;
+  width: 240px !important;
 }

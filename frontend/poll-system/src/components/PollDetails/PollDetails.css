@@ -36,3 +36,20 @@
   right: 140px;
   bottom: 30px;
 }
+
+.main-div .details-style{
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+.main-div .choice-name {
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.main-div .choice-description {
+  font-size: 20px;
+  margin-left: -5px;
+  padding: 0;
+}
