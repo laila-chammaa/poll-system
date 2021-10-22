@@ -17,8 +17,8 @@ export const updatePollStatus = async (pollStatus) => {
 
 export const createPoll = async (poll) => {
   let jsonPoll = JSON.stringify(poll);
-  jsonPoll = jsonPoll.replace('[', '$');
-  jsonPoll = jsonPoll.replace(']', '&');
+  jsonPoll = jsonPoll.replaceAll('[', '$');
+  jsonPoll = jsonPoll.replaceAll(']', '&');
 
   try {
     const { data: status } = await axios.post('/api/poll', null, {
