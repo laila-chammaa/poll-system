@@ -83,7 +83,7 @@ const PollDetails = () => {
                     </Col>
                     <Col lg={8} className="choice">
                     <Card.Text className="choice-description">
-                      {c.description}
+                      {c.description === "" ? "N/A" : c.description}
                     </Card.Text>
                     </Col>
                   </Form.Group>
