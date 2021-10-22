@@ -1,10 +1,10 @@
 import './PollDetails.css';
 import '../../Cards.css';
-import { Button, Card, Col, Form, Row, Spinner } from 'react-bootstrap';
+import homeicon from '../../homeicon.png'
+import { Button, Card, Col, Form, Image, Row, Spinner } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import { updatePollStatus, fetchPoll } from '../../api';
-import { useState, useEffect } from 'react';
-import Choice from '../PollForm/Choice/Choice';
+import React, { useState, useEffect} from 'react';
 
 const PollDetails = () => {
   const [poll, setPoll] = useState(null);
@@ -31,6 +31,7 @@ const PollDetails = () => {
         <Card className="card-title-div">
           <Card.Title className="card-title">
             Your {poll.status.toLowerCase()} poll
+            <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
           </Card.Title>
           <Card className="card-div-body">
             <Form className="form-style">
@@ -81,9 +82,9 @@ const PollDetails = () => {
                       </Card.Text>
                     </Col>
                     <Col lg={8} className="choice">
-                    <Card.Text className="choice-description">
-                      {c.description === "" ? "N/A" : c.description}
-                    </Card.Text>
+                      <Card.Text className="choice-description">
+                        {c.description === "" ? "N/A" : c.description}
+                      </Card.Text>
                     </Col>
                   </Form.Group>
                 ))}

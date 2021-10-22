@@ -1,8 +1,9 @@
 import './VoteForm.css';
 import '../../Cards.css';
+import homeicon from '../../homeicon.png'
 import { Link, useHistory } from 'react-router-dom';
-import { Card, Form, Button } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { Card, Form, Button, Image } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
 import { fetchPoll, vote } from '../../api';
 
 const VoteForm = () => {
@@ -35,7 +36,10 @@ const VoteForm = () => {
     <div className="main-div">
       {pollIsRunning() ? (
         <Card className="card-title-div">
-          <Card.Title className="card-title">{poll.name}</Card.Title>
+          <Card.Title className="card-title">
+            {poll.name}
+            <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+          </Card.Title>
           <Card.Title className="card-description">{poll.question}</Card.Title>
           <Card className="card-body">
             {!voted ? (
@@ -101,19 +105,14 @@ const VoteForm = () => {
         </Card>
       ) : (
         <Card className="card-title-div">
-          <Card.Title className="card-title">No Open Poll</Card.Title>
+          <Card.Title className="card-title">
+            No Open Poll
+            <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+          </Card.Title>
           <Card className="card-body">
             <div className="no-results">
               There isn't a running poll yet. Come back later!
             </div>
-            <Button
-              className="btn-1"
-              onClick={() => {
-                history.push('/');
-              }}
-            >
-              change role
-            </Button>
           </Card>
         </Card>
       )}

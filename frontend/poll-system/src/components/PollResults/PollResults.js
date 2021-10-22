@@ -1,9 +1,10 @@
 import './PollResults.css';
 import '../../Cards.css';
-import { Card, Button } from 'react-bootstrap';
+import homeicon from '../../homeicon.png'
+import { Card, Button, Image } from 'react-bootstrap';
 import Chart from 'react-google-charts';
-import { useLocation, useHistory } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useLocation, useHistory, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { fetchPoll, updatePollStatus, fetchResults } from '../../api';
 
 const PollResults = () => {
@@ -37,7 +38,10 @@ const PollResults = () => {
   return (
     <div className="main-div">
       <Card className="card-title-div">
-        <Card.Title className="card-title">Poll Results</Card.Title>
+        <Card.Title className="card-title">
+          Poll Results
+          <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+        </Card.Title>
         <Card className="card-body">
           <div className="outer">
             {supportedCharts.map((c, i) => (
@@ -92,6 +96,15 @@ const PollResults = () => {
                 }}
               >
                 clear
+              </Button>
+              <Button
+                className="btn-1 unrelease"
+                onClick={() => {
+                  updatePollStatus('unreleased');
+                  history.push('/details');
+                }}
+              >
+                unrelease
               </Button>
             </div>
           ) : null}
