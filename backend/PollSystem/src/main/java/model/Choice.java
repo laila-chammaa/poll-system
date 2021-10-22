@@ -43,9 +43,9 @@ public class Choice {
 
     @Override
     public String toString() {
-        return "Choice{" +
-                "text='" + text + '\'' +
-                ", description=" + description +
+        return "Choice {" +
+                "\ntext = '" + text + '\'' +
+                ", \ndescription = " + description +
                 '}';
     }
 }
