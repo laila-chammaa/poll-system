@@ -24,7 +24,7 @@ public class PollManager {
             return newPoll;
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is currently in the system. The system allows one poll at a time", currentPoll.getName()));
+                    "model.Poll %s is currently in the system. The system allows one poll at a time", currentPoll.getName()));
         }
     }
 
@@ -58,7 +58,7 @@ public class PollManager {
             currentPoll.setChoices(choices);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is already released. Cannot update an already released poll", currentPoll.getName()));
+                    "model.Poll %s is already released. Cannot update an already released poll", currentPoll.getName()));
         }
     }
 
@@ -70,7 +70,7 @@ public class PollManager {
             currentPoll.setStatus(PollStatus.CREATED);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not running or released. No results to clear", currentPoll.getName()));
+                    "model.Poll %s is not running or released. No results to clear", currentPoll.getName()));
         }
     }
 
@@ -79,7 +79,7 @@ public class PollManager {
             currentPoll = null;
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not released. Cannot close an unreleased poll", currentPoll.getName()));
+                    "model.Poll %s is not released. Cannot close an unreleased poll", currentPoll.getName()));
         }
     }
 
@@ -88,7 +88,7 @@ public class PollManager {
             currentPoll.setStatus(PollStatus.RUNNING);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is already running or released", currentPoll.getName()));
+                    "model.Poll %s is already running or released", currentPoll.getName()));
         }
     }
 
@@ -97,7 +97,7 @@ public class PollManager {
             currentPoll.setStatus(PollStatus.RELEASED);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not running. Poll must be running to be released.", currentPoll.getName()));
+                    "model.Poll %s is not running. model.Poll must be running to be released.", currentPoll.getName()));
         }
     }
 
@@ -106,7 +106,7 @@ public class PollManager {
             currentPoll.setStatus(PollStatus.RUNNING);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not released", currentPoll.getName()));
+                    "model.Poll %s is not released", currentPoll.getName()));
         }
     }
 
@@ -128,7 +128,7 @@ public class PollManager {
             }
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not running. Votes are allowed while the poll is running", currentPoll.getName()));
+                    "model.Poll %s is not running. Votes are allowed while the poll is running", currentPoll.getName()));
         }
     }
 
@@ -145,7 +145,7 @@ public class PollManager {
             return results;
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not released. Not allowed to return poll results.", currentPoll.getName()));
+                    "model.Poll %s is not released. Not allowed to return poll results.", currentPoll.getName()));
         }
     }
 
@@ -155,7 +155,7 @@ public class PollManager {
             output.write(currentPoll.toString());
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not released. Cannot download details of an unreleased poll", currentPoll.getName()));
+                    "model.Poll %s is not released. Cannot download details of an unreleased poll", currentPoll.getName()));
         }
     }
 
