@@ -23,8 +23,8 @@ public class PollServlet extends HttpServlet {
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
         String pollStr = request.getParameter("poll");
-        pollStr = pollStr.replace("$", "[");
-        pollStr = pollStr.replace("&", "]");
+        pollStr = pollStr.replaceAll("\\$", "[");
+        pollStr = pollStr.replaceAll("&", "]");
         JSONObject jsonObj = new JSONObject(pollStr);
         String name = jsonObj.getString("name");
         String question = jsonObj.getString("question");
