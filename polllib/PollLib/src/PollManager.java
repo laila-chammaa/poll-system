@@ -10,22 +10,15 @@ import java.util.stream.Collectors;
 
 public class PollManager {
 
-    private static Poll currentPoll = null;
-
     public static Poll createPoll(String name, String question, ArrayList<Choice> choices)
-            throws PollException.IllegalPollOperation, PollException.TooFewChoices, PollException.DuplicateChoices {
+            throws PollException.TooFewChoices, PollException.DuplicateChoices {
 
         validateChoices(choices);
-
-        if (currentPoll == null) {
-            Poll newPoll = new Poll(name, question, choices, new ArrayList<>());
-            newPoll.setStatus(PollStatus.CREATED);
-            currentPoll = newPoll;
-            return newPoll;
-        } else {
-            throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is currently in the system. The system allows one poll at a time", currentPoll.getName()));
-        }
+        //TODO: validate user?
+        Poll newPoll = new Poll(name, question, choices, new ArrayList<>());
+        newPoll.setStatus(PollStatus.CREATED);
+        //TODO: add to db?
+        return newPoll;
     }
 
     private static void validateChoices(ArrayList<Choice> choices)
@@ -45,97 +38,115 @@ public class PollManager {
         }
     }
 
-    public static void updatePoll(String name, String question, ArrayList<Choice> choices)
+    public static void updatePoll(String pollId, String name, String question, ArrayList<Choice> choices)
             throws PollException.IllegalPollOperation {
+        Poll poll = accessPoll(pollId);
         //clearing poll results
-        if (currentPoll.getStatus() == PollStatus.RUNNING) {
-            clearPoll();
+        if (poll.getStatus() == PollStatus.RUNNING) {
+            clearPoll(pollId);
         }
-        if (currentPoll.getStatus() == PollStatus.CREATED || currentPoll.getStatus() == PollStatus.RUNNING) {
-            currentPoll.setStatus(PollStatus.CREATED);
-            currentPoll.setName(name);
-            currentPoll.setQuestion(question);
-            currentPoll.setChoices(choices);
+        if (poll.getStatus() == PollStatus.CREATED || poll.getStatus() == PollStatus.RUNNING) {
+            poll.setStatus(PollStatus.CREATED);
+            poll.setName(name);
+            poll.setQuestion(question);
+            poll.setChoices(choices);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is already released. Cannot update an already released poll", currentPoll.getName()));
+                    "Poll %s is already released. Cannot update an already released poll", poll.getName()));
         }
     }
 
-    public static void clearPoll() throws PollException.IllegalPollOperation {
-        if (currentPoll.getStatus() == PollStatus.RUNNING) {
-            currentPoll.getVotes().clear();
-        } else if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            currentPoll.getVotes().clear();
-            currentPoll.setStatus(PollStatus.CREATED);
+    public static Poll accessPoll(String pollId) {
+        //TODO: get poll from db
+        //TODO: throw exception if not found
+        return null;
+    }
+
+    public static void clearPoll(String pollId) throws PollException.IllegalPollOperation {
+        Poll poll = accessPoll(pollId);
+        if (poll.getStatus() == PollStatus.RUNNING) {
+            poll.getVotes().clear();
+        } else if (poll.getStatus() == PollStatus.RELEASED) {
+            poll.getVotes().clear();
+            poll.setStatus(PollStatus.CREATED);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not running or released. No results to clear", currentPoll.getName()));
+                    "Poll %s is not running or released. No results to clear", poll.getName()));
         }
     }
 
-    public static void closePoll() throws PollException.IllegalPollOperation {
-        if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            currentPoll = null;
+    public static void closePoll(String pollId) throws PollException.IllegalPollOperation {
+        Poll poll = accessPoll(pollId);
+        if (poll.getStatus() == PollStatus.RELEASED) {
+            poll = null;
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not released. Cannot close an unreleased poll", currentPoll.getName()));
+                    "Poll %s is not released. Cannot close an unreleased poll", poll.getName()));
         }
     }
 
-    public static void runPoll() throws PollException.IllegalPollOperation {
-        if (currentPoll.getStatus() == PollStatus.CREATED) {
-            currentPoll.setStatus(PollStatus.RUNNING);
+    public static void runPoll(String pollId) throws PollException.IllegalPollOperation {
+        Poll poll = accessPoll(pollId);
+        if (poll.getStatus() == PollStatus.CREATED) {
+            poll.setStatus(PollStatus.RUNNING);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is already running or released", currentPoll.getName()));
+                    "Poll %s is already running or released", poll.getName()));
         }
     }
 
-    public static void releasePoll() throws PollException.IllegalPollOperation {
-        if (currentPoll.getStatus() == PollStatus.RUNNING) {
-            currentPoll.setStatus(PollStatus.RELEASED);
+    public static void releasePoll(String pollId) throws PollException.IllegalPollOperation {
+        Poll poll = accessPoll(pollId);
+        if (poll.getStatus() == PollStatus.RUNNING) {
+            poll.setStatus(PollStatus.RELEASED);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not running. Poll must be running to be released.", currentPoll.getName()));
+                    "Poll %s is not running. Poll must be running to be released.", poll.getName()));
         }
     }
 
-    public static void unreleasePoll() throws PollException.IllegalPollOperation {
-        if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            currentPoll.setStatus(PollStatus.RUNNING);
+    public static void unreleasePoll(String pollId) throws PollException.IllegalPollOperation {
+        Poll poll = accessPoll(pollId);
+        if (poll.getStatus() == PollStatus.RELEASED) {
+            poll.setStatus(PollStatus.RUNNING);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not released", currentPoll.getName()));
+                    "Poll %s is not released", poll.getName()));
         }
     }
 
-    public static void vote(String participant, Choice choice)
+    //TODO: change? pin should be checked before this?
+    public static void vote(String pin, String pollId, Choice choice)
             throws PollException.IllegalPollOperation, PollException.ChoiceNotFound {
-        if (!currentPoll.getChoices().contains(choice)) {
+        Poll poll = accessPoll(pollId);
+        if (!poll.getChoices().contains(choice)) {
             throw new PollException.ChoiceNotFound(String.format("'%s' is not a valid choice in the poll '%s'",
-                    choice.getText(), currentPoll.getName()));
+                    choice.getText(), poll.getName()));
         }
-        if (currentPoll.getStatus() == PollStatus.RUNNING) {
-            Optional<Vote> previousVote = currentPoll.getVotes().stream()
-                    .filter(v -> v.getVoterId().equals(participant)).findFirst();
+        if (poll.getStatus() == PollStatus.RUNNING) {
+            String finalPin = pin;
+            Optional<Vote> previousVote = poll.getVotes().stream()
+                    .filter(v -> v.getPin().equals(finalPin)).findFirst();
             if (previousVote.isPresent()) {
                 previousVote.get().setChoice(choice);
                 previousVote.get().setTimestamp(LocalDateTime.now());
             } else {
-                Vote vote = new Vote(participant, choice, LocalDateTime.now());
-                currentPoll.getVotes().add(vote);
+                //TODO: 6-digit randomly generated PIN# returned to the user
+                pin = null;
+                Vote vote = new Vote(pin, choice, LocalDateTime.now());
+                poll.getVotes().add(vote);
             }
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not running. Votes are allowed while the poll is running", currentPoll.getName()));
+                    "Poll %s is not running. Votes are allowed while the poll is running", poll.getName()));
         }
     }
 
-    public static Hashtable<String, Integer> getPollResults() throws PollException.IllegalPollOperation {
-        if (currentPoll.getStatus() == PollStatus.RELEASED) {
+    public static Hashtable<String, Integer> getPollResults(String pollId) throws PollException.IllegalPollOperation {
+        Poll poll = accessPoll(pollId);
+        if (poll.getStatus() == PollStatus.RELEASED) {
             Hashtable<String, Integer> results = new Hashtable<>();
-            currentPoll.getVotes().forEach(v -> {
+            poll.getVotes().forEach(v -> {
                 Integer count = results.get(v.getChoice().getText());
                 if (count == null) {
                     count = 0;
@@ -145,21 +156,18 @@ public class PollManager {
             return results;
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not released. Not allowed to return poll results.", currentPoll.getName()));
+                    "Poll %s is not released. Not allowed to return poll results.", poll.getName()));
         }
     }
 
-    public static void downloadPollDetails(PrintWriter output, String filename) throws
+    public static void downloadPollDetails(String pollId, PrintWriter output, String filename) throws
             PollException.IllegalPollOperation {
-        if (currentPoll.getStatus() == PollStatus.RELEASED) {
-            output.write(currentPoll.toString());
+        Poll poll = accessPoll(pollId);
+        if (poll.getStatus() == PollStatus.RELEASED) {
+            output.write(poll.toString());
         } else {
             throw new PollException.IllegalPollOperation(String.format(
-                    "Poll %s is not released. Cannot download details of an unreleased poll", currentPoll.getName()));
+                    "Poll %s is not released. Cannot download details of an unreleased poll", poll.getName()));
         }
-    }
-
-    public static Poll getCurrentPoll() {
-        return currentPoll;
     }
 }

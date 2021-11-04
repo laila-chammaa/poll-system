@@ -1,25 +1,27 @@
 package model;
 
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
 public class Vote {
-    private String voterId; //sessionId
+    private String pin; //6-digit randomly generated PIN (voterId)
     private Choice choice;
     private LocalDateTime timestamp;
 
-    public Vote(String voterId, Choice choice, LocalDateTime timestamp) {
-        this.voterId = voterId;
+    public Vote(String pin, Choice choice, LocalDateTime timestamp) {
+        this.pin = pin;
         this.choice = choice;
         this.timestamp = timestamp;
     }
 
-    public String getVoterId() {
-        return voterId;
+    public String getPin() {
+        return pin;
     }
 
-    public void setVoterId(String voterId) {
-        this.voterId = voterId;
+    public void setPin(String pin) {
+        this.pin = pin;
     }
 
     public Choice getChoice() {
@@ -43,20 +45,20 @@ public class Vote {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vote vote = (Vote) o;
-        return Objects.equals(voterId, vote.voterId) &&
+        return Objects.equals(pin, vote.pin) &&
                 Objects.equals(choice, vote.choice) &&
                 Objects.equals(timestamp, vote.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(voterId, choice, timestamp);
+        return Objects.hash(pin, choice, timestamp);
     }
 
     @Override
     public String toString() {
         return "Vote {" +
-                "\nvoterId = '" + voterId + '\'' +
+                "\nvoterId = '" + pin + '\'' +
                 ", \nchoice = " + choice +
                 ", \ntimestamp = " + timestamp +
                 '}';
