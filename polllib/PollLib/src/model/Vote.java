@@ -1,11 +1,15 @@
 package model;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
+@Table(name="vote")
 public class Vote {
+    @Id
     private String pin; //6-digit randomly generated PIN (voterId)
     private Choice choice;
     private LocalDateTime timestamp;

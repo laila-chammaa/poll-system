@@ -1,27 +1,36 @@
 package model;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Table(name="poll")
 public class Poll {
+    @Id
     private String id;
-    private String dateCreated;
+    private String timeCreated;
     private String name;
     private String question;
     private PollStatus status;
-    private ArrayList<Choice> choices;
-    private ArrayList<Vote> votes;
+    private String createdBy;
+    @OneToMany
+    private List<Choice> choices;
+    @OneToMany
+    private List<Vote> votes;
 
-    public Poll(String name, String question, ArrayList<Choice> choices, ArrayList<Vote> votes) {
+    public Poll(String name, String question, List<Choice> choices, List<Vote> votes, String createdBy) {
         this.id = null; //TODO: generate ID: non-case-sensitive 10-char long random string, containing A-Z, 0-9
         this.name = name;
         this.question = question;
         this.choices = choices;
         this.votes = votes;
-        this.dateCreated = LocalDateTime.now().toString();
+        this.timeCreated = LocalDateTime.now().toString();
+        this.createdBy = createdBy;
+    }
+
+    public Poll() {
     }
 
     public String getId() {
@@ -32,12 +41,12 @@ public class Poll {
         this.id = id;
     }
 
-    public String getDateCreated() {
-        return dateCreated;
+    public String getTimeCreated() {
+        return timeCreated;
     }
 
-    public void setDateCreated(String dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setTimeCreated(String timeCreated) {
+        this.timeCreated = timeCreated;
     }
 
     public String getName() {
@@ -64,20 +73,28 @@ public class Poll {
         this.status = status;
     }
 
-    public ArrayList<Choice> getChoices() {
+    public List<Choice> getChoices() {
         return choices;
     }
 
-    public void setChoices(ArrayList<Choice> choices) {
+    public void setChoices(List<Choice> choices) {
         this.choices = choices;
     }
 
-    public ArrayList<Vote> getVotes() {
+    public List<Vote> getVotes() {
         return votes;
     }
 
-    public void setVotes(ArrayList<Vote> votes) {
+    public void setVotes(List<Vote> votes) {
         this.votes = votes;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override
@@ -86,27 +103,29 @@ public class Poll {
         if (o == null || getClass() != o.getClass()) return false;
         Poll poll = (Poll) o;
         return Objects.equals(id, poll.id) &&
-                Objects.equals(dateCreated, poll.dateCreated) &&
+                Objects.equals(timeCreated, poll.timeCreated) &&
                 Objects.equals(name, poll.name) &&
                 Objects.equals(question, poll.question) &&
                 status == poll.status &&
+                Objects.equals(createdBy, poll.createdBy) &&
                 Objects.equals(choices, poll.choices) &&
                 Objects.equals(votes, poll.votes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dateCreated, name, question, status, choices, votes);
+        return Objects.hash(id, timeCreated, name, question, status, createdBy, choices, votes);
     }
 
     @Override
     public String toString() {
         return "Poll{" +
                 "id='" + id + '\'' +
-                ", dateCreated='" + dateCreated + '\'' +
+                ", timeCreated='" + timeCreated + '\'' +
                 ", name='" + name + '\'' +
                 ", question='" + question + '\'' +
                 ", status=" + status +
+                ", createdBy='" + createdBy + '\'' +
                 ", choices=" + choices +
                 ", votes=" + votes +
                 '}';

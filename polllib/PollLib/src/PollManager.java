@@ -1,3 +1,4 @@
+import data.PollRepository;
 import model.Choice;
 import model.Poll;
 import model.PollStatus;
@@ -10,18 +11,20 @@ import java.util.stream.Collectors;
 
 public class PollManager {
 
-    public static Poll createPoll(String name, String question, ArrayList<Choice> choices)
+    private PollRepository pollRepository = new PollRepository();
+
+    public Poll createPoll(String name, String question, ArrayList<Choice> choices, String createdBy)
             throws PollException.TooFewChoices, PollException.DuplicateChoices {
 
         validateChoices(choices);
         //TODO: validate user?
-        Poll newPoll = new Poll(name, question, choices, new ArrayList<>());
+        Poll newPoll = new Poll(name, question, choices, new ArrayList<>(), createdBy);
         newPoll.setStatus(PollStatus.CREATED);
-        //TODO: add to db?
+        pollRepository.save(newPoll);
         return newPoll;
     }
 
-    private static void validateChoices(ArrayList<Choice> choices)
+    private void validateChoices(ArrayList<Choice> choices)
             throws PollException.DuplicateChoices, PollException.TooFewChoices {
         if (choices.size() < 2) {
             throw new PollException.TooFewChoices("A poll must have at least 2 choices");
@@ -38,9 +41,10 @@ public class PollManager {
         }
     }
 
-    public static void updatePoll(String pollId, String name, String question, ArrayList<Choice> choices)
-            throws PollException.IllegalPollOperation {
+    public void updatePoll(String pollId, String name, String question, ArrayList<Choice> choices)
+            throws PollException.IllegalPollOperation, PollException.TooFewChoices, PollException.DuplicateChoices {
         Poll poll = accessPoll(pollId);
+        validateChoices(choices);
         //clearing poll results
         if (poll.getStatus() == PollStatus.RUNNING) {
             clearPoll(pollId);
@@ -50,19 +54,27 @@ public class PollManager {
             poll.setName(name);
             poll.setQuestion(question);
             poll.setChoices(choices);
+            pollRepository.update(poll);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is already released. Cannot update an already released poll", poll.getName()));
         }
     }
 
-    public static Poll accessPoll(String pollId) {
-        //TODO: get poll from db
-        //TODO: throw exception if not found
-        return null;
+    public Poll accessPoll(String pollId) {
+        return pollRepository.findById(pollId).orElseThrow(
+                () -> new IllegalStateException(String.format("No poll found for the ID: %d.", pollId)));
     }
 
-    public static void clearPoll(String pollId) throws PollException.IllegalPollOperation {
+    public List<Poll> getAllPolls() {
+        return pollRepository.findAll();
+    }
+
+    public List<Poll> getAllPollsByUser(String creator) {
+        return pollRepository.findByCreator(creator);
+    }
+
+    public void clearPoll(String pollId) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RUNNING) {
             poll.getVotes().clear();
@@ -73,42 +85,57 @@ public class PollManager {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not running or released. No results to clear", poll.getName()));
         }
+        pollRepository.update(poll);
     }
 
-    public static void closePoll(String pollId) throws PollException.IllegalPollOperation {
+    public void closePoll(String pollId) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RELEASED) {
-            poll = null;
+            poll.setStatus(PollStatus.ARCHIVED);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not released. Cannot close an unreleased poll", poll.getName()));
         }
     }
 
-    public static void runPoll(String pollId) throws PollException.IllegalPollOperation {
+    //TODO: only delete by creator, should i pass it here?
+    public void deletePoll(String pollId) throws PollException.IllegalPollOperation {
+        Poll poll = accessPoll(pollId);
+        if (poll.getVotes().isEmpty()) {
+            pollRepository.delete(poll);
+        } else {
+            throw new PollException.IllegalPollOperation(String.format(
+                    "Poll %s has been voted on. Cannot delete a poll with votes", poll.getName()));
+        }
+    }
+
+    public void runPoll(String pollId) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.CREATED) {
             poll.setStatus(PollStatus.RUNNING);
+            pollRepository.update(poll);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is already running or released", poll.getName()));
         }
     }
 
-    public static void releasePoll(String pollId) throws PollException.IllegalPollOperation {
+    public void releasePoll(String pollId) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RUNNING) {
             poll.setStatus(PollStatus.RELEASED);
+            pollRepository.update(poll);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not running. Poll must be running to be released.", poll.getName()));
         }
     }
 
-    public static void unreleasePoll(String pollId) throws PollException.IllegalPollOperation {
+    public void unreleasePoll(String pollId) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RELEASED) {
             poll.setStatus(PollStatus.RUNNING);
+            pollRepository.update(poll);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not released", poll.getName()));
@@ -116,7 +143,7 @@ public class PollManager {
     }
 
     //TODO: change? pin should be checked before this?
-    public static void vote(String pin, String pollId, Choice choice)
+    public void vote(String pin, String pollId, Choice choice)
             throws PollException.IllegalPollOperation, PollException.ChoiceNotFound {
         Poll poll = accessPoll(pollId);
         if (!poll.getChoices().contains(choice)) {
@@ -136,13 +163,14 @@ public class PollManager {
                 Vote vote = new Vote(pin, choice, LocalDateTime.now());
                 poll.getVotes().add(vote);
             }
+            pollRepository.update(poll);
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not running. Votes are allowed while the poll is running", poll.getName()));
         }
     }
 
-    public static Hashtable<String, Integer> getPollResults(String pollId) throws PollException.IllegalPollOperation {
+    public Hashtable<String, Integer> getPollResults(String pollId) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RELEASED) {
             Hashtable<String, Integer> results = new Hashtable<>();
@@ -160,7 +188,7 @@ public class PollManager {
         }
     }
 
-    public static void downloadPollDetails(String pollId, PrintWriter output, String filename) throws
+    public void downloadPollDetails(String pollId, PrintWriter output, String filename) throws
             PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RELEASED) {
