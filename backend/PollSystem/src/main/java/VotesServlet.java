@@ -18,14 +18,18 @@ import java.util.*;
 @WebServlet(name = "VotesServlet", urlPatterns = "/api/votes")
 public class VotesServlet extends HttpServlet {
 
+    PollManager pollManager = new PollManager();
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         //get the vote sent by the user
         String choiceName = request.getParameter("choice");
-        Optional<Choice> choice = PollManager.getCurrentPoll().getChoices()
+        String pollId = request.getParameter("pollId");
+        String pin = request.getParameter("pin");
+        Optional<Choice> choice = pollManager.accessPoll(pollId).getChoices()
                 .stream().filter(c -> c.getText().equals(choiceName)).findFirst();
         if (choice.isPresent()) {
             String sessionId = request.getSession().getId();
-            PollManager.vote(sessionId, choice.get());
+            pollManager.vote(pin, sessionId, choice.get());
         } else {
             throw new PollException.InvalidParam(String.format("Invalid choice, choice %s is not found", choiceName));
         }
@@ -34,10 +38,11 @@ public class VotesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String download = request.getParameter("download");
         String format = request.getParameter("format");
+        String pollId = request.getParameter("pollId");
         if (download.equals("true") && format.equals("text")) {
-            download(format, response);
+            download(pollId, format, response);
         } else {
-            sendResults(PollManager.getPollResults(), response);
+            sendResults(pollManager.getPollResults(pollId), response);
         }
     }
 
@@ -74,13 +79,13 @@ public class VotesServlet extends HttpServlet {
         }
     }
 
-    private void download(String format, HttpServletResponse response) throws IOException {
+    private void download(String pollId, String format, HttpServletResponse response) throws IOException {
         String fileExtension = "txt";
 
         // You must tell the browser the file type you are going to send
         response.setContentType(format);
         String headerKey = "Content-disposition";
-        String name = PollManager.getCurrentPoll().getName();
+        String name = pollManager.accessPoll(pollId).getName();
         String date = LocalDateTime.now().toString();
         String fileName = String.format("%s-%s.%s", name, date, fileExtension);
         String headerVal = String.format("attachment; filename=%s", fileName);
@@ -94,7 +99,7 @@ public class VotesServlet extends HttpServlet {
 
         try {
             PrintWriter out = response.getWriter();
-            PollManager.downloadPollDetails(out, fileName);
+            pollManager.downloadPollDetails(pollId, out, fileName);
             out.flush();
             out.close();
         } catch (IOException | PollException.IllegalPollOperation e) {
