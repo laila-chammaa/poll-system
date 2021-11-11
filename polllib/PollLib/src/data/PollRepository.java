@@ -5,14 +5,33 @@ import model.Poll;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
 public class PollRepository {
+    String DB_USER = "root";
+    String DB_NAME = "polldb";
+
+    Connection connection;
 
     private EntityManager entityManager;
 
     public PollRepository() {
+        {
+            try {
+                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=" + DB_USER);
+                Statement stmt = connection.createStatement();
+                stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS" + DB_NAME);
+            } catch (
+                    SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
         EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("Eclipselink_JPA");
 
         this.entityManager = emFactory.createEntityManager();
