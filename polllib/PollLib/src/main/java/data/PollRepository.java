@@ -21,16 +21,16 @@ public class PollRepository {
     private EntityManager entityManager;
 
     public PollRepository() {
-        {
-            try {
-                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=" + DB_USER);
-                Statement stmt = connection.createStatement();
-                stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS" + DB_NAME);
-            } catch (
-                    SQLException e) {
-                e.printStackTrace();
-            }
-        }
+//        {
+//            try {
+//                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=" + DB_USER);
+//                Statement stmt = connection.createStatement();
+//                stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS" + DB_NAME);
+//            } catch (
+//                    SQLException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("Eclipselink_JPA");
 

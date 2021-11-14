@@ -17,11 +17,24 @@ public class PollManager {
             throws PollException.TooFewChoices, PollException.DuplicateChoices {
 
         validateChoices(choices);
-        //TODO: validate user?
-        Poll newPoll = new Poll(name, question, choices, new ArrayList<>(), createdBy);
+        String id = generateID();
+        Poll newPoll = new Poll(id, name, question, choices, new ArrayList<>(), createdBy);
         newPoll.setStatus(PollStatus.CREATED);
         pollRepository.save(newPoll);
         return newPoll;
+    }
+
+    private String generateID() {
+        //uppercase 10-char long random string, containing A-Z excluding [ILOU]) and digits 0-9
+        String SALTCHARS = "ABCDEFGHJKMNPQRSTVWXYZ";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 10) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
     }
 
     private void validateChoices(ArrayList<Choice> choices)
@@ -62,8 +75,9 @@ public class PollManager {
     }
 
     public Poll accessPoll(String pollId) {
+        String upperCasePollId = pollId.toUpperCase(); //not case sensitive
         return pollRepository.findById(pollId).orElseThrow(
-                () -> new IllegalStateException(String.format("No poll found for the ID: %d.", pollId)));
+                () -> new IllegalStateException(String.format("No poll found for the ID: %d.", upperCasePollId)));
     }
 
     public List<Poll> getAllPolls() {
@@ -72,6 +86,11 @@ public class PollManager {
 
     public List<Poll> getAllPollsByUser(String creator) {
         return pollRepository.findByCreator(creator);
+    }
+
+    public List<Poll> getAllArchivedPollsByUser(String creator) {
+        return pollRepository.findByCreator(creator).stream()
+                .filter(p -> p.getStatus() == PollStatus.ARCHIVED).collect(Collectors.toList());
     }
 
     public void clearPoll(String pollId) throws PollException.IllegalPollOperation {
@@ -143,7 +162,7 @@ public class PollManager {
     }
 
     //TODO: change? pin should be checked before this?
-    public void vote(String pin, String pollId, Choice choice)
+    public String vote(String pin, String pollId, Choice choice)
             throws PollException.IllegalPollOperation, PollException.ChoiceNotFound {
         Poll poll = accessPoll(pollId);
         if (!poll.getChoices().contains(choice)) {
@@ -158,8 +177,8 @@ public class PollManager {
                 previousVote.get().setChoice(choice);
                 previousVote.get().setTimestamp(LocalDateTime.now());
             } else {
-                //TODO: 6-digit randomly generated PIN# returned to the user
-                pin = null;
+                // pin not found in the system or null, generating new pin and voting
+                pin = generatePIN();
                 Vote vote = new Vote(pin, choice, LocalDateTime.now());
                 poll.getVotes().add(vote);
             }
@@ -168,6 +187,16 @@ public class PollManager {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not running. Votes are allowed while the poll is running", poll.getName()));
         }
+        return pin;
+    }
+
+    private String generatePIN() {
+        // this will generate 6 digit random Number from 0 to 999999
+        Random rnd = new Random();
+        int number = rnd.nextInt(999999);
+
+        // this will convert it into a string
+        return String.format("%06d", number);
     }
 
     public Hashtable<String, Integer> getPollResults(String pollId) throws PollException.IllegalPollOperation {

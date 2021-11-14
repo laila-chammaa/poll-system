@@ -20,8 +20,8 @@ public class Poll {
     @OneToMany
     private List<Vote> votes;
 
-    public Poll(String name, String question, List<Choice> choices, List<Vote> votes, String createdBy) {
-        this.id = null; //TODO: generate ID: non-case-sensitive 10-char long random string, containing A-Z, 0-9
+    public Poll(String id, String name, String question, List<Choice> choices, List<Vote> votes, String createdBy) {
+        this.id = id;
         this.name = name;
         this.question = question;
         this.choices = choices;

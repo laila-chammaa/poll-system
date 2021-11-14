@@ -1,8 +1,6 @@
 package model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -11,13 +9,20 @@ import java.util.Objects;
 public class Vote {
     @Id
     private String pin; //6-digit randomly generated PIN (voterId)
+
+    @OneToOne
+    @JoinColumn(name = "choice", nullable = false)
     private Choice choice;
+
     private LocalDateTime timestamp;
 
     public Vote(String pin, Choice choice, LocalDateTime timestamp) {
         this.pin = pin;
         this.choice = choice;
         this.timestamp = timestamp;
+    }
+
+    public Vote() {
     }
 
     public String getPin() {
