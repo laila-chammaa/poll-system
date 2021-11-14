@@ -18,6 +18,8 @@ import java.util.ArrayList;
 @WebServlet(name = "PollServlet", urlPatterns = "/api/poll")
 public class PollServlet extends HttpServlet {
 
+    PollManager pollManager = new PollManager();
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -26,9 +28,12 @@ public class PollServlet extends HttpServlet {
         pollStr = pollStr.replaceAll("\\$", "[");
         pollStr = pollStr.replaceAll("&", "]");
         JSONObject jsonObj = new JSONObject(pollStr);
+        String pollId = jsonObj.getString("pollId");
         String name = jsonObj.getString("name");
         String question = jsonObj.getString("question");
         String status = request.getParameter("status");
+        //TODO: update the frontend, do we want User class? get username/pass? validate?
+        String creator = request.getParameter("user");
         JSONArray choicesArray = jsonObj.getJSONArray("choices");
         ArrayList<Choice> choiceList = new ArrayList<>();
 
@@ -39,14 +44,14 @@ public class PollServlet extends HttpServlet {
             choiceList.add(new Choice(text, description));
         }
 
-        if (status == null) {
-            try {
-                PollManager.createPoll(name, question, choiceList);
-            } catch (PollException.TooFewChoices | PollException.DuplicateChoices tooFewChoices) {
-                tooFewChoices.printStackTrace(); //TODO: better exceptions
+        try {
+            if (status == null) {
+                pollManager.createPoll(name, question, choiceList, creator);
+            } else if (status.equals("CREATED") || status.equals("RUNNING")) {
+                pollManager.updatePoll(pollId, name, question, choiceList);
             }
-        } else if (status.equals("CREATED") || status.equals("RUNNING")) {
-            PollManager.updatePoll(name, question, choiceList);
+        } catch (PollException.TooFewChoices | PollException.DuplicateChoices tooFewChoices) {
+            tooFewChoices.printStackTrace(); //TODO: better exceptions
         }
 
     }
@@ -54,25 +59,27 @@ public class PollServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         //get the status sent by the client
         String status = request.getParameter("status");
+        String pollId = request.getParameter("pollId");
         switch (status) {
             case "running":
-                PollManager.runPoll();
+                pollManager.runPoll(pollId);
                 break;
             case "released":
-                PollManager.releasePoll();
+                pollManager.releasePoll(pollId);
                 break;
             case "unreleased":
-                PollManager.unreleasePoll();
+                pollManager.unreleasePoll(pollId);
             case "cleared":
-                PollManager.clearPoll();
+                pollManager.clearPoll(pollId);
                 break;
             case "closed":
-                PollManager.closePoll();
+                pollManager.closePoll(pollId);
                 break;
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pollId = request.getParameter("pollId");
         // You must tell the browser the file type you are going to send
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -83,7 +90,7 @@ public class PollServlet extends HttpServlet {
         response.setDateHeader("Expires", 0); // prevents caching at the proxy server
 
         try {
-            String json = new Gson().toJson(PollManager.getCurrentPoll());
+            String json = new Gson().toJson(pollManager.accessPoll(pollId));
 
             OutputStream out = response.getOutputStream();
             out.write(json.getBytes(StandardCharsets.UTF_8));

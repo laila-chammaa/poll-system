@@ -1,14 +1,22 @@
 package model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Objects;
 
+@Entity
 public class Choice {
+    @Id
+    private String id;
     private String text;
     private String description;
 
     public Choice(String text, String description) {
         this.text = text;
         this.description = description;
+    }
+
+    public Choice() {
     }
 
     public String getText() {
@@ -47,5 +55,13 @@ public class Choice {
                 "\ntext = '" + text + '\'' +
                 ", \ndescription = " + description +
                 '}';
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 }
