@@ -75,3 +75,19 @@ export const vote = async (choice) => {
     console.log(error);
   }
 };
+
+export const login = async (email, password) => {
+  try {
+    const { status } = await axios.post('/api/login', null, {
+      params: {
+        email: email,
+        password: password
+      }
+    });
+    if (status === 200) {
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
