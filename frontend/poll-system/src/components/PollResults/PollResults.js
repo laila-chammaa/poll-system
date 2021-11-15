@@ -1,6 +1,6 @@
 import './PollResults.css';
 import '../../Cards.css';
-import homeicon from '../../homeicon.png'
+import homeicon from '../../homeicon.png';
 import { Card, Button, Image } from 'react-bootstrap';
 import Chart from 'react-google-charts';
 import { useLocation, useHistory, Link } from 'react-router-dom';
@@ -24,7 +24,7 @@ const PollResults = () => {
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll());
+      setPoll(await fetchPoll('123'));
     };
     fetchCurrentPoll();
   }, []);
@@ -40,7 +40,9 @@ const PollResults = () => {
       <Card className="card-title-div">
         <Card.Title className="card-title">
           Poll Results
-          <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+          <Link to="/">
+            <Image src={homeicon} className="home-btn" />
+          </Link>
         </Card.Title>
         <Card className="card-body">
           <div className="outer">

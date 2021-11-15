@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-export const updatePollStatus = async (pollStatus) => {
+export const updatePollStatus = async (pollId, pollStatus) => {
   try {
     const { status } = await axios.put('/api/poll', null, {
       params: {
+        pollId: pollId,
         status: pollStatus
       }
     });
@@ -21,35 +22,38 @@ export const createPoll = async (poll) => {
   jsonPoll = jsonPoll.replaceAll(']', '&');
 
   try {
-    const { data: status } = await axios.post('/api/poll', null, {
+    const { data } = await axios.post('/api/poll', null, {
       params: {
         poll: jsonPoll,
         status: poll.status
       }
     });
-    if (status === 200) {
-      return true;
+    if (data.status === 200) {
+      return data.data.pollId;
     }
   } catch (error) {
     console.log(error);
   }
 };
 
-export const fetchPoll = async () => {
+export const fetchPoll = async (pollId) => {
   try {
-    const { data } = await axios.get('/api/poll');
+    const { data } = await axios.get('/api/poll', {
+      params: { pollId }
+    });
     return data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const fetchResults = async () => {
+export const fetchResults = async (pollId) => {
   try {
     const { data } = await axios.get('/api/votes', {
       params: {
         format: 'text',
-        download: 'false'
+        download: 'false',
+        pollId
       }
     });
     for (var i = 1; i < data.length; i++) {
@@ -61,11 +65,12 @@ export const fetchResults = async () => {
   }
 };
 
-export const vote = async (choice) => {
+export const vote = async (pollId, choice) => {
   try {
     const { status } = await axios.post('/api/votes', null, {
       params: {
-        choice: choice.text
+        choice: choice.text,
+        pollId
       }
     });
     if (status === 200) {

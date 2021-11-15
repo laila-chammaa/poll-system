@@ -1,10 +1,10 @@
 import './PollDetails.css';
 import '../../Cards.css';
-import homeicon from '../../homeicon.png'
+import homeicon from '../../homeicon.png';
 import { Button, Card, Col, Form, Image, Row, Spinner } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import { updatePollStatus, fetchPoll } from '../../api';
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 const PollDetails = () => {
   const [poll, setPoll] = useState(null);
@@ -12,7 +12,7 @@ const PollDetails = () => {
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll());
+      setPoll(await fetchPoll('123'));
     };
     fetchCurrentPoll();
   }, [status]);
@@ -31,18 +31,22 @@ const PollDetails = () => {
         <Card className="card-title-div">
           <Card.Title className="card-title">
             Your {poll.status.toLowerCase()} poll
-            <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+            <Link to="/">
+              <Image src={homeicon} className="home-btn" />
+            </Link>
           </Card.Title>
           <Card className="card-div-body">
             <Form className="form-style">
-              <Form.Group as={Row} className="group-style" controlId="poll-title">
-                <Form.Label className="label-style" column="lg" lg={4} >
+              <Form.Group
+                as={Row}
+                className="group-style"
+                controlId="poll-title"
+              >
+                <Form.Label className="label-style" column="lg" lg={4}>
                   Title
                 </Form.Label>
                 <Col sm={8}>
-                  <Card.Text className="details-style">
-                    {poll.name}
-                  </Card.Text>
+                  <Card.Text className="details-style">{poll.name}</Card.Text>
                 </Col>
               </Form.Group>
               <Form.Group
@@ -77,13 +81,11 @@ const PollDetails = () => {
                     key={i}
                   >
                     <Col lg={4} className="choice">
-                      <Card.Text className="choice-name">
-                        {c.text}
-                      </Card.Text>
+                      <Card.Text className="choice-name">{c.text}</Card.Text>
                     </Col>
                     <Col lg={8} className="choice">
                       <Card.Text className="choice-description">
-                        {c.description === "" ? "N/A" : c.description}
+                        {c.description === '' ? 'N/A' : c.description}
                       </Card.Text>
                     </Col>
                   </Form.Group>

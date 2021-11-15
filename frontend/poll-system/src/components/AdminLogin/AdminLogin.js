@@ -1,6 +1,6 @@
 import './AdminLogin.css';
 import '../../Cards.css';
-import homeicon from '../../homeicon.png'
+import homeicon from '../../homeicon.png';
 import { Button, Card, FormControl, Image, InputGroup } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
@@ -26,7 +26,7 @@ const AdminLogin = () => {
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll());
+      setPoll(await fetchPoll('123'));
     };
 
     fetchCurrentPoll();
@@ -37,7 +37,9 @@ const AdminLogin = () => {
       <Card className="card-title-div">
         <Card.Title className="card-title">
           Welcome Admin!
-          <Link to="/"><Image src={homeicon} className="home-btn"/></Link>
+          <Link to="/">
+            <Image src={homeicon} className="home-btn" />
+          </Link>
         </Card.Title>
         <Card className="card-div-body">
           <Card.Text id="login-description">

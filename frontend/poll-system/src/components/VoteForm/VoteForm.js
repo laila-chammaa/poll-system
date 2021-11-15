@@ -1,6 +1,6 @@
 import './VoteForm.css';
 import '../../Cards.css';
-import homeicon from '../../homeicon.png'
+import homeicon from '../../homeicon.png';
 import { Link, useHistory } from 'react-router-dom';
 import { Card, Form, Button, Image } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
@@ -13,7 +13,7 @@ const VoteForm = () => {
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll());
+      setPoll(await fetchPoll('123'));
     };
 
     fetchCurrentPoll();
@@ -38,7 +38,9 @@ const VoteForm = () => {
         <Card className="card-title-div">
           <Card.Title className="card-title">
             {poll.name}
-            <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+            <Link to="/">
+              <Image src={homeicon} className="home-btn" />
+            </Link>
           </Card.Title>
           <Card.Title className="card-description">{poll.question}</Card.Title>
           <Card className="card-body">
@@ -107,7 +109,9 @@ const VoteForm = () => {
         <Card className="card-title-div">
           <Card.Title className="card-title">
             No Open Poll
-            <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+            <Link to="/">
+              <Image src={homeicon} className="home-btn" />
+            </Link>
           </Card.Title>
           <Card className="card-body">
             <div className="no-results">

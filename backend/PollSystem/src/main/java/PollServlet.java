@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 import model.Choice;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.servlet.ServletException;
@@ -8,7 +9,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -28,7 +28,12 @@ public class PollServlet extends HttpServlet {
         pollStr = pollStr.replaceAll("\\$", "[");
         pollStr = pollStr.replaceAll("&", "]");
         JSONObject jsonObj = new JSONObject(pollStr);
-        String pollId = jsonObj.getString("pollId");
+        String pollId = null;
+        try {
+            pollId = jsonObj.getString("pollId");
+        } catch (JSONException e) {
+
+        }
         String name = jsonObj.getString("name");
         String question = jsonObj.getString("question");
         String status = request.getParameter("status");
@@ -45,7 +50,7 @@ public class PollServlet extends HttpServlet {
         }
 
         try {
-            if (status == null) {
+            if (status == null || pollId == null) {
                 pollManager.createPoll(name, question, choiceList, creator);
             } else if (status.equals("CREATED") || status.equals("RUNNING")) {
                 pollManager.updatePoll(pollId, name, question, choiceList);

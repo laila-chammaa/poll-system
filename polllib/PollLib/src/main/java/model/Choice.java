@@ -1,13 +1,14 @@
 package model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@Table(name="choice")
 public class Choice {
     @Id
-    private String id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
     private String text;
     private String description;
 
@@ -57,11 +58,11 @@ public class Choice {
                 '}';
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 }
