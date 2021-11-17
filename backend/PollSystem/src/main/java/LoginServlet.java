@@ -4,6 +4,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -17,22 +18,18 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
+        HttpSession session = request.getSession();
         OutputStream out = response.getOutputStream();
         String result;
 
         if (userManager.userAuthentication(email, password)) {
-            String encryptedPass = userManager.encryptPassword(password);
-            request.getSession().setAttribute("email", email);
-            request.getSession().setAttribute("password", encryptedPass);
-            response.setHeader("email", email);
-            response.setHeader("password", encryptedPass);
-
+            session.setAttribute("email", email);
+            session.setAttribute("token", "1234");
             result = new Gson().toJson(true);
-
         } else {
+            session.invalidate();
             result = new Gson().toJson(false);
         }
-
         out.write(result.getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();
