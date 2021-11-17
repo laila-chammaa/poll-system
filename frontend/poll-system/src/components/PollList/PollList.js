@@ -26,12 +26,21 @@ const PollList = () => {
       {user != null && user !== 'null' ? (
         <Card className="card-title-div">
           <Card.Title className="card-title">
+            Welcome Admin!
             <Link to="/">
               <Image src={homeicon} className="home-btn" />
             </Link>
           </Card.Title>
           <Card className="card-div-body">
-            hi user!
+            <Button
+              id=""
+              onClick={async () => {
+                history.push('/create');
+              }}
+            >
+              create poll
+            </Button>
+
             {polls.map((p, i) => (
               <PollView poll={p} />
             ))}

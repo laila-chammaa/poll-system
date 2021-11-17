@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const updatePollStatus = async (pollId, pollStatus) => {
+export const updatePollStatus = async (pollStatus, pollId) => {
   try {
     const { status } = await axios.put('/api/poll', null, {
       params: {
@@ -22,14 +22,14 @@ export const createPoll = async (poll) => {
   jsonPoll = jsonPoll.replaceAll(']', '&');
 
   try {
-    const { data } = await axios.post('/api/poll', null, {
+    const data = await axios.post('/api/poll', null, {
       params: {
         poll: jsonPoll,
         status: poll.status
       }
     });
     if (data.status === 200) {
-      return data.data.pollId;
+      return data.data;
     }
   } catch (error) {
     console.log(error);

@@ -77,7 +77,7 @@ public class PollManager {
     public Poll accessPoll(String pollId) {
         String upperCasePollId = pollId.toUpperCase(); //not case sensitive
         return pollRepository.findById(pollId).orElseThrow(
-                () -> new IllegalStateException(String.format("No poll found for the ID: %d.", upperCasePollId)));
+                () -> new IllegalStateException(String.format("No poll found for the ID: %s.", upperCasePollId)));
     }
 
     public List<Poll> getAllPolls() {

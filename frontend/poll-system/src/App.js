@@ -22,16 +22,16 @@ function App() {
           <Route path="/login">
             <AdminLogin />
           </Route>
-          <Route path="/vote/:pollid">
+          <Route path="/vote/:pollId">
             <VoteForm />
           </Route>
-          <Route path="/results/:pollid">
+          <Route path="/results/:pollId">
             <PollResults />
           </Route>
           <Route path="/create">
             <PollForm />
           </Route>
-          <Route path="/details/:pollid">
+          <Route path="/details/:pollId">
             <PollDetails />
           </Route>
           <Route path="/userPolls">

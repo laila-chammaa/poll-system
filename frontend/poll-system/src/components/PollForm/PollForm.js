@@ -19,6 +19,7 @@ const PollForm = ({
 }) => {
   const [poll, setPoll] = useState(JSON.parse(JSON.stringify(currentPoll)));
   const location = useLocation();
+
   useEffect(() => {
     const fetchPoll = async () => {
       if (location.state && location.state.currentPoll != null) {
@@ -139,10 +140,10 @@ const PollForm = ({
               type="submit"
               id="create-btn"
               disabled={disableCreate()}
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-                createPoll(poll);
-                history.push('/details');
+                let pollId = await createPoll(poll);
+                history.push(`/details/${pollId}`);
               }}
             >
               {poll.status ? 'update' : 'create'}

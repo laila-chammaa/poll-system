@@ -2,17 +2,18 @@ import './PollDetails.css';
 import '../../Cards.css';
 import homeicon from '../../homeicon.png';
 import { Button, Card, Col, Form, Image, Row, Spinner } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { updatePollStatus, fetchPoll } from '../../api';
 import React, { useState, useEffect } from 'react';
 
 const PollDetails = () => {
   const [poll, setPoll] = useState(null);
   const [status, setStatus] = useState(null);
+  const { pollId } = useParams();
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll('123'));
+      setPoll(await fetchPoll(pollId));
     };
     fetchCurrentPoll();
   }, [status]);
@@ -20,7 +21,7 @@ const PollDetails = () => {
   const history = useHistory();
   if (poll && poll.status === 'RELEASED') {
     history.push({
-      pathname: '/results',
+      pathname: `/results/${pollId}`,
       state: { admin: true }
     });
   }
@@ -37,6 +38,14 @@ const PollDetails = () => {
           </Card.Title>
           <Card className="card-div-body">
             <Form className="form-style">
+              <Form.Group as={Row} className="group-style" controlId="poll-id">
+                <Form.Label className="label-style" column="lg" lg={4}>
+                  Poll ID
+                </Form.Label>
+                <Col sm={8}>
+                  <Card.Text className="details-style">{poll.id}</Card.Text>
+                </Col>
+              </Form.Group>
               <Form.Group
                 as={Row}
                 className="group-style"
@@ -106,7 +115,7 @@ const PollDetails = () => {
                 <Button
                   className="btn-1 run"
                   onClick={() => {
-                    updatePollStatus('running');
+                    updatePollStatus('running', pollId);
                     setStatus('running');
                   }}
                 >
@@ -127,7 +136,7 @@ const PollDetails = () => {
                 <Button
                   className="btn-1 run"
                   onClick={() => {
-                    updatePollStatus('released');
+                    updatePollStatus('released', pollId);
                     setStatus('released');
                   }}
                 >
@@ -136,7 +145,7 @@ const PollDetails = () => {
                 <Button
                   className="btn-1 clear"
                   onClick={() => {
-                    updatePollStatus('cleared');
+                    updatePollStatus('cleared', pollId);
                     setStatus('cleared');
                   }}
                 >
