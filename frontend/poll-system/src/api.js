@@ -47,6 +47,17 @@ export const fetchPoll = async (pollId) => {
   }
 };
 
+export const fetchPollsByCreator = async (creator) => {
+  try {
+    const { data } = await axios.get('/api/poll', {
+      params: { creator }
+    });
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const fetchResults = async (pollId) => {
   try {
     const { data } = await axios.get('/api/votes', {

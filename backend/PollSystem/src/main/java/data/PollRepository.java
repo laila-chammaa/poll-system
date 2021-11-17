@@ -26,7 +26,7 @@ public class PollRepository {
 //                String DB_PASS = (String) props.get("javax.persistence.jdbc.password");
 //                String DB_NAME = (String) props.get("javax.persistence.jdbc.db");
                 String DB_USER = "root";
-                String DB_PASS = "";
+                String DB_PASS = "Autodesk2020";
                 String DB_NAME = "polldb";
 
                 Class.forName("com.mysql.jdbc.Driver");

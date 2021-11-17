@@ -10,8 +10,8 @@ import {
   Popover
 } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
-import React, { useState, useEffect } from 'react';
-import { fetchPoll, login } from '../../api';
+import React, { useState } from 'react';
+import { fetchPoll, login, fetchPollsByCreator } from '../../api';
 
 const AdminLogin = () => {
   let passcodeInput = React.createRef();
@@ -20,25 +20,18 @@ const AdminLogin = () => {
   const history = useHistory();
   const [displayIncorrect, setIncorrect] = useState(false);
 
-  const checkPasscode = () => {
-    if (
-      login(emailInput.current.value, passcodeInput.current.value) === 'true'
-    ) {
+  const checkPasscode = async () => {
+    let email = emailInput.current.value;
+    let password = passcodeInput.current.value;
+    let result = await login(email, password);
+    if (result) {
+      localStorage.setItem('email', email);
       setIncorrect(false);
       return true;
     }
+    localStorage.setItem('email', null);
     return false;
   };
-
-  const [poll, setPoll] = useState(null);
-
-  useEffect(() => {
-    const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll('123'));
-    };
-
-    fetchCurrentPoll();
-  }, []);
 
   const popover = (
     <Popover id="popover-basic">
@@ -86,14 +79,9 @@ const AdminLogin = () => {
             </Form.Group>
             <Button
               id="enter-btn"
-              onClick={() => {
-                if (checkPasscode()) {
-                  console.log('password correct');
-                  // if (poll == null) {
-                  //   history.push('/create');
-                  // } else {
-                  //   history.push('/details');
-                  // }
+              onClick={async () => {
+                if (await checkPasscode()) {
+                  history.push('/userPolls');
                 } else {
                   setIncorrect(true);
                 }
