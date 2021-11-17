@@ -18,10 +18,6 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class PollRepository {
-//    String DB_USER = "root";
-//    String DB_NAME = "polldb";
-//    String DB_PASS = "Autodesk2020";
-
     Connection connection;
 
     private EntityManager entityManager;
