@@ -21,6 +21,7 @@ public class PollServlet extends HttpServlet {
     PollManager pollManager = new PollManager();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        String email = (String) request.getSession().getAttribute("email");
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
@@ -84,6 +85,7 @@ public class PollServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String email = (String) request.getSession().getAttribute("email");
         String pollId = request.getParameter("pollId");
         // You must tell the browser the file type you are going to send
         response.setContentType("application/json");

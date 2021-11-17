@@ -80,3 +80,18 @@ export const vote = async (pollId, choice) => {
     console.log(error);
   }
 };
+
+export const login = async (email, password) => {
+  try {
+    const data = await axios.post('/api/login', null, {
+      params: {
+        email: email,
+        password: password
+      }
+    });
+    console.log(data);
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -5,17 +5,22 @@ import model.Poll;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 public class PollRepository {
-    String DB_USER = "root";
-    String DB_NAME = "polldb";
-    String DB_PASS = "Autodesk2020";
+//    String DB_USER = "root";
+//    String DB_NAME = "polldb";
+//    String DB_PASS = "Autodesk2020";
 
     Connection connection;
 
@@ -24,12 +29,19 @@ public class PollRepository {
     public PollRepository() {
         {
             try {
+                Properties props = new Properties();
+                props.loadFromXML(this.getClass().getResourceAsStream("/META-INF/persistence.xml"));
+                String DB_USER = (String) props.get("javax.persistence.jdbc.user");
+                String DB_PASS = (String) props.get("javax.persistence.jdbc.password");
+                String DB_NAME = (String) props.get("javax.persistence.jdbc.db");
+                String wow = "null";
                 Class.forName("com.mysql.jdbc.Driver");
                 connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", DB_USER, DB_PASS);
                 Statement stmt = connection.createStatement();
                 stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + DB_NAME);
+                System.out.println(DB_NAME + DB_USER + DB_PASS);
             } catch (
-                    SQLException | ClassNotFoundException e) {
+                    SQLException | ClassNotFoundException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -50,7 +62,7 @@ public class PollRepository {
     }
 
     public void update(Poll poll) {
-        if(!entityManager.getTransaction().isActive())
+        if (!entityManager.getTransaction().isActive())
             entityManager.getTransaction().begin();
         Poll pollToUpdate = findById(poll.getId()).orElseThrow(
                 () -> new IllegalStateException(String.format("No poll found for the ID: %d.", poll.getId())));
@@ -64,7 +76,7 @@ public class PollRepository {
 
     public boolean save(Poll poll) {
         try {
-            if(!entityManager.getTransaction().isActive())
+            if (!entityManager.getTransaction().isActive())
                 entityManager.getTransaction().begin();
             entityManager.persist(poll);
             entityManager.getTransaction().commit();
@@ -82,7 +94,7 @@ public class PollRepository {
 
     public boolean delete(Poll poll) {
         try {
-            if(!entityManager.getTransaction().isActive())
+            if (!entityManager.getTransaction().isActive())
                 entityManager.getTransaction().begin();
             entityManager.detach(poll);
             entityManager.getTransaction().commit();
