@@ -36,7 +36,7 @@ public class PollServlet extends HttpServlet {
         try {
             pollId = jsonObj.getString("id");
         } catch (JSONException e) {
-
+            // if it's a create, a pollId is not necessary
         }
         String name = jsonObj.getString("name");
         String question = jsonObj.getString("question");
@@ -139,6 +139,18 @@ public class PollServlet extends HttpServlet {
             out.close();
         } catch (IOException e) {
             throw new IOException("Failed to send poll as JSON", e);
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
+        String email = (String) request.getSession().getAttribute("email");
+        String pollId = request.getParameter("pollId");
+        Poll poll = pollManager.accessPoll(pollId);
+        if (email.equals(poll.getCreatedBy())) {
+            pollManager.deletePoll(pollId);
+        } else {
+            throw new PollException.UnauthorizedOperation("Unauthorized Operation. You are not the creator of this poll");
         }
     }
 }

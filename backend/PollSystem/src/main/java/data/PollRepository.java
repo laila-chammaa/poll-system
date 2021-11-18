@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class PollRepository {
+    //TODO: figure out connection per session
     Connection connection;
 
     private EntityManager entityManager;
@@ -20,13 +21,14 @@ public class PollRepository {
     public PollRepository() {
         {
             try {
+                //TODO: fix configuration
 //                Properties props = new Properties();
 //                props.loadFromXML(this.getClass().getResourceAsStream("/META-INF/persistence.xml"));
 //                String DB_USER = (String) props.get("javax.persistence.jdbc.user");
 //                String DB_PASS = (String) props.get("javax.persistence.jdbc.password");
 //                String DB_NAME = (String) props.get("javax.persistence.jdbc.db");
                 String DB_USER = "root";
-                String DB_PASS = "Autodesk2020";
+                String DB_PASS = "";
                 String DB_NAME = "polldb";
 
                 Class.forName("com.mysql.jdbc.Driver");

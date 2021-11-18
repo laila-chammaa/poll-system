@@ -100,7 +100,6 @@ export const login = async (email, password) => {
         password: password
       }
     });
-    console.log(data);
     return data.data;
   } catch (error) {
     console.log(error);

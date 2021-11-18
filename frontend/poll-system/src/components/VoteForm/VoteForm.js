@@ -1,7 +1,7 @@
 import './VoteForm.css';
 import '../../Cards.css';
 import homeicon from '../../homeicon.png';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { Card, Form, Button, Image } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import { fetchPoll, vote } from '../../api';
@@ -10,10 +10,11 @@ const VoteForm = () => {
   const [voted, setVoted] = useState(false);
   const [chosenAnswer, setChosenAnswer] = useState(null);
   const [poll, setPoll] = useState(null);
+  const { pollId } = useParams();
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll('123'));
+      setPoll(await fetchPoll(pollId));
     };
 
     fetchCurrentPoll();
@@ -67,7 +68,7 @@ const VoteForm = () => {
                   disabled={chosenAnswer == null}
                   onClick={() => {
                     setVoted(true);
-                    vote(chosenAnswer);
+                    vote(pollId, chosenAnswer);
                   }}
                 >
                   vote

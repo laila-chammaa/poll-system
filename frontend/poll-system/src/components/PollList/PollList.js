@@ -6,6 +6,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { updatePollStatus, fetchPoll, fetchPollsByCreator } from '../../api';
 import React, { useState, useEffect } from 'react';
 import PollView from './Poll/PollView';
+import UnauthorizedView from '../UnautherizedView/UnauthorizedView';
 
 const PollList = () => {
   const [polls, setPolls] = useState([]);
@@ -47,9 +48,7 @@ const PollList = () => {
           </Card>
         </Card>
       ) : (
-        <Card className="card-title-div">
-          <Card.Title className="card-title">Not logged in</Card.Title>
-        </Card>
+        <UnauthorizedView />
       )}
     </div>
   );
