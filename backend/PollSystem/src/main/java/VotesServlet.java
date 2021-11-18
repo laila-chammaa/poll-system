@@ -2,7 +2,6 @@ import com.google.gson.Gson;
 import model.Choice;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +10,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Optional;
 
 @WebServlet(name = "VotesServlet", urlPatterns = "/api/votes")
 public class VotesServlet extends HttpServlet {

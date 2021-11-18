@@ -25,7 +25,7 @@ public class PollManager {
     }
 
     private String generateID() {
-        //uppercase 10-char long random string, containing A-Z excluding [ILOU]) and digits 0-9
+        //uppercase 10-char long random string, containing A-Z (excluding [ILOU]) and digits 0-9
         String SALTCHARS = "ABCDEFGHJKMNPQRSTVWXYZ0123456789";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
