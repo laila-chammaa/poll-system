@@ -44,10 +44,12 @@ public class VotesServlet extends HttpServlet {
         String download = request.getParameter("download");
         String format = request.getParameter("format");
         String pollId = request.getParameter("pollId");
+        String email = (String) request.getSession().getAttribute("email");
+
         if (download.equals("true") && format.equals("text")) {
-            download(pollId, format, response);
+            download(pollId, format, email, response);
         } else {
-            sendResults(pollManager.getPollResults(pollId), response);
+            sendResults(pollManager.getPollResults(pollId, email), response);
         }
     }
 
@@ -84,7 +86,7 @@ public class VotesServlet extends HttpServlet {
         }
     }
 
-    private void download(String pollId, String format, HttpServletResponse response) throws IOException {
+    private void download(String pollId, String format, String creator, HttpServletResponse response) throws IOException {
         String fileExtension = "txt";
 
         // You must tell the browser the file type you are going to send
@@ -104,7 +106,7 @@ public class VotesServlet extends HttpServlet {
 
         try {
             PrintWriter out = response.getWriter();
-            pollManager.downloadPollDetails(pollId, out, fileName);
+            pollManager.downloadPollDetails(pollId, out, creator);
             out.flush();
             out.close();
         } catch (IOException | PollException.IllegalPollOperation e) {
