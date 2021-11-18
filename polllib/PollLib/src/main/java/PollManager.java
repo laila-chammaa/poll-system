@@ -117,7 +117,6 @@ public class PollManager {
         }
     }
 
-    //TODO: only delete by creator, should i pass it here?
     public void deletePoll(String pollId) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getVotes().isEmpty()) {
@@ -200,10 +199,10 @@ public class PollManager {
         return String.format("%06d", number);
     }
 
-    //TODO: if poll is archived but it's the creator, return poll results
-    public Hashtable<String, Integer> getPollResults(String pollId) throws PollException.IllegalPollOperation {
+    public Hashtable<String, Integer> getPollResults(String pollId, String creator) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
-        if (poll.getStatus() == PollStatus.RELEASED) {
+        if (poll.getStatus() == PollStatus.RELEASED ||
+                (poll.getStatus() == PollStatus.ARCHIVED && creator.equals(poll.getCreatedBy()))) {
             Hashtable<String, Integer> results = new Hashtable<>();
             poll.getVotes().forEach(v -> {
                 Integer count = results.get(v.getChoice().getText());
@@ -219,11 +218,11 @@ public class PollManager {
         }
     }
 
-    //TODO: if poll is archived but it's the creator, download poll results
-    public void downloadPollDetails(String pollId, PrintWriter output, String filename) throws
+    public void downloadPollDetails(String pollId, PrintWriter output, String creator) throws
             PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
-        if (poll.getStatus() == PollStatus.RELEASED) {
+        if (poll.getStatus() == PollStatus.RELEASED ||
+                (poll.getStatus() == PollStatus.ARCHIVED && creator.equals(poll.getCreatedBy()))) {
             output.write(poll.toString());
         } else {
             throw new PollException.IllegalPollOperation(String.format(
