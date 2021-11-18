@@ -24,7 +24,6 @@ public class LoginServlet extends HttpServlet {
 
         if (userManager.userAuthentication(email, password)) {
             session.setAttribute("email", email);
-            session.setAttribute("token", "1234");
             result = new Gson().toJson(true);
         } else {
             session.invalidate();
