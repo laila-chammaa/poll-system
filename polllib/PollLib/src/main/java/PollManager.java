@@ -26,7 +26,7 @@ public class PollManager {
 
     private String generateID() {
         //uppercase 10-char long random string, containing A-Z excluding [ILOU]) and digits 0-9
-        String SALTCHARS = "ABCDEFGHJKMNPQRSTVWXYZ";
+        String SALTCHARS = "ABCDEFGHJKMNPQRSTVWXYZ0123456789";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
         while (salt.length() < 10) { // length of the random string.
@@ -77,7 +77,7 @@ public class PollManager {
     public Poll accessPoll(String pollId) {
         String upperCasePollId = pollId.toUpperCase(); //not case sensitive
         return pollRepository.findById(pollId).orElseThrow(
-                () -> new IllegalStateException(String.format("No poll found for the ID: %d.", upperCasePollId)));
+                () -> new IllegalStateException(String.format("No poll found for the ID: %s.", upperCasePollId)));
     }
 
     public List<Poll> getAllPolls() {
@@ -161,7 +161,8 @@ public class PollManager {
         }
     }
 
-    //TODO: change? pin should be checked before this?
+    //TODO: change? pin should be checked before this? pin not found error?
+    //TODO: persist votes in db, VoteRepository?
     public String vote(String pin, String pollId, Choice choice)
             throws PollException.IllegalPollOperation, PollException.ChoiceNotFound {
         Poll poll = accessPoll(pollId);
@@ -199,6 +200,7 @@ public class PollManager {
         return String.format("%06d", number);
     }
 
+    //TODO: if poll is archived but it's the creator, return poll results
     public Hashtable<String, Integer> getPollResults(String pollId) throws PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RELEASED) {
@@ -217,6 +219,7 @@ public class PollManager {
         }
     }
 
+    //TODO: if poll is archived but it's the creator, download poll results
     public void downloadPollDetails(String pollId, PrintWriter output, String filename) throws
             PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);

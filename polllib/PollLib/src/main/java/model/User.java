@@ -9,31 +9,47 @@ public class User {
     private String email;
     private String password;
 
-    public User(){
+    public User() {
     }
 
-    public User(String userID, String name, String email, String password){
+    public User(String userID, String name, String email, String password) {
         this.userID = userID;
         this.name = name;
         this.email = email;
         this.password = password;
     }
 
-    public String getUserID(){ return userID; }
+    public String getUserID() {
+        return userID;
+    }
 
-    public String getName(){ return name; }
+    public String getName() {
+        return name;
+    }
 
-    public String getEmail(){ return email; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getPassword(){ return password; }
+    public String getPassword() {
+        return password;
+    }
 
-    public void setUserID(String userID){ this.userID = userID; }
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
 
-    public void setName(String name){ this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    public void setEmail(String email){ this.email = email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public void setPassword(String password){ this.password = password; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public boolean equals(Object o) {

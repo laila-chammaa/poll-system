@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -13,20 +14,20 @@ import java.util.ArrayList;
 public class UserManager {
     private ArrayList<User> listOfUsers;
 
-    public UserManager(){
+    public UserManager() {
         listOfUsers = new ArrayList<>();
         loadListOfUsers();
     }
 
-    public void loadListOfUsers(){
+    public void loadListOfUsers() {
 
-        String filePath = "/authentication/users.json";
+        String filePath = "authentication/users.json";
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
 
-        try (InputStream is = this.getClass().getResourceAsStream(filePath) ) {
-            Object obj = jsonParser.parse(String.valueOf(is));
-            jsonObject = (JSONObject)obj;
+        try (InputStream is = this.getClass().getResourceAsStream(filePath)) {
+            Object obj = jsonParser.parse(new InputStreamReader(is, "UTF-8"));
+            jsonObject = (JSONObject) obj;
             JSONArray list = (JSONArray) jsonObject.get("listOfUsers");
 
             for (Object o : list) {
@@ -42,7 +43,7 @@ public class UserManager {
         }
     }
 
-    public boolean userAuthentication(String email, String password){
+    public boolean userAuthentication(String email, String password) {
         String encryptedPw = encryptPassword(password);
 
         for (User user : listOfUsers) {
@@ -53,7 +54,7 @@ public class UserManager {
         return false;
     }
 
-    public String encryptPassword(String password){
+    public String encryptPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(password.getBytes());
@@ -63,8 +64,7 @@ public class UserManager {
                 hashtext = "0" + hashtext;
             }
             return hashtext;
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
