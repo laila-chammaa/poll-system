@@ -11,7 +11,7 @@ import {
 } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import React, { useState } from 'react';
-import { fetchPoll, login, fetchPollsByCreator } from '../../api';
+import { login } from '../../api';
 
 const AdminLogin = () => {
   let passcodeInput = React.createRef();
@@ -35,11 +35,7 @@ const AdminLogin = () => {
 
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Popover right</Popover.Header>
-      <Popover.Body>
-        And here's some <strong>amazing</strong> content. It's very engaging.
-        right?
-      </Popover.Body>
+      <Popover.Header as="h3">Not yet implemented</Popover.Header>
     </Popover>
   );
 
@@ -53,9 +49,6 @@ const AdminLogin = () => {
           </Link>
         </Card.Title>
         <Card className="card-div-body">
-          {/*<Card.Text id="login-description">*/}
-          {/*  Please authenticate*/}
-          {/*</Card.Text>*/}
           <Form id="form-group-style">
             <Form.Group>
               <Form.Label className="login-label">Email</Form.Label>
@@ -67,7 +60,7 @@ const AdminLogin = () => {
                 ref={emailInput}
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="password-group">
               <Form.Label className="login-label">Password</Form.Label>
               <Form.Control
                 type="password"
@@ -76,19 +69,19 @@ const AdminLogin = () => {
                 placeholder="password"
                 ref={passcodeInput}
               />
+              <Button
+                id="enter-btn"
+                onClick={async () => {
+                  if (await checkPasscode()) {
+                    history.push('/userPolls');
+                  } else {
+                    setIncorrect(true);
+                  }
+                }}
+              >
+                enter
+              </Button>
             </Form.Group>
-            <Button
-              id="enter-btn"
-              onClick={async () => {
-                if (await checkPasscode()) {
-                  history.push('/userPolls');
-                } else {
-                  setIncorrect(true);
-                }
-              }}
-            >
-              enter
-            </Button>
           </Form>
           {displayIncorrect ? (
             <Card.Text id="incorrectMessage">Incorrect Password!</Card.Text>

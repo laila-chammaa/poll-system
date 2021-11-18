@@ -1,5 +1,11 @@
-.main-dev .card-div-body {
-  height: unset;
+.main-div.poll-list {
+  /* height: unset; */
+}
+
+.main-div .card-div-body {
+  /* height: unset; */
+  min-height: 300px;
+  position: relative;
 }
 .card-div-body .btn-1 {
   padding: 10px 16px;
@@ -37,7 +43,7 @@
   bottom: 30px;
 }
 
-.main-div .details-style{
+.main-div .details-style {
   font-size: 20px;
   margin-top: 5px;
 }
@@ -52,4 +58,22 @@
   font-size: 20px;
   margin-left: -5px;
   padding: 0;
+}
+
+.poll-main-div {
+  margin: 40px 0px 0px 25px;
+  min-width: 40%;
+}
+.main-div .card-div-body .polls-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.card-div-body .create-button {
+  position: absolute;
+  border-radius: 30px;
+  max-width: 150px;
+  right: 20px;
+  top: -10px;
 }

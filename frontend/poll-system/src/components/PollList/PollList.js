@@ -1,29 +1,31 @@
 import './PollList.css';
 import '../../Cards.css';
 import homeicon from '../../homeicon.png';
-import { Button, Card, Col, Form, Image, Row, Spinner } from 'react-bootstrap';
-import { Link, useHistory, useLocation } from 'react-router-dom';
-import { updatePollStatus, fetchPoll, fetchPollsByCreator } from '../../api';
+import { Button, Card, Image } from 'react-bootstrap';
+import { Link, useHistory } from 'react-router-dom';
+import { fetchPollsByCreator, deletePoll } from '../../api';
 import React, { useState, useEffect } from 'react';
 import PollView from './Poll/PollView';
 import UnauthorizedView from '../UnautherizedView/UnauthorizedView';
 
 const PollList = () => {
   const [polls, setPolls] = useState([]);
-
+  const history = useHistory();
   let user = localStorage.getItem('email');
 
   useEffect(() => {
     const fetchPolls = async () => {
-      setPolls(await fetchPollsByCreator(user));
+      let listOfPolls = await fetchPollsByCreator(user);
+
+      if (listOfPolls !== undefined) {
+        setPolls(listOfPolls);
+      }
     };
     fetchPolls();
-  }, []);
-
-  const history = useHistory();
+  }, [polls]);
 
   return (
-    <div className="main-div">
+    <div className="main-div poll-list">
       {user != null && user !== 'null' ? (
         <Card className="card-title-div">
           <Card.Title className="card-title">
@@ -35,16 +37,29 @@ const PollList = () => {
           <Card className="card-div-body">
             <Button
               id=""
-              onClick={async () => {
+              className="create-button"
+              onClick={() => {
                 history.push('/create');
               }}
             >
               create poll
             </Button>
-
-            {polls.map((p, i) => (
-              <PollView poll={p} />
-            ))}
+            <div className="polls-list">
+              {polls.map((p, i) => (
+                <PollView
+                  key={i}
+                  className="poll"
+                  poll={p}
+                  deletePoll={() => {
+                    deletePoll(p.id);
+                    setPolls(polls.filter((poll) => poll.id !== p.id));
+                  }}
+                  onClick={() => {
+                    history.push(`/details/${p.id}`);
+                  }}
+                />
+              ))}
+            </div>
           </Card>
         </Card>
       ) : (
