@@ -1,9 +1,9 @@
 import './PollResults.css';
 import '../../Cards.css';
-import homeicon from '../../homeicon.png'
+import homeicon from '../../homeicon.png';
 import { Card, Button, Image } from 'react-bootstrap';
 import Chart from 'react-google-charts';
-import { useLocation, useHistory, Link } from 'react-router-dom';
+import { useLocation, useHistory, Link, useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { fetchPoll, updatePollStatus, fetchResults } from '../../api';
 
@@ -15,6 +15,8 @@ const PollResults = () => {
   const downloadURL =
     'http://localhost:8080/api/votes?format=text&download=true';
 
+  const { pollId } = useParams();
+
   useEffect(() => {
     const getResults = async () => {
       setResults(await fetchResults());
@@ -24,7 +26,7 @@ const PollResults = () => {
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll());
+      setPoll(await fetchPoll(pollId));
     };
     fetchCurrentPoll();
   }, []);
@@ -40,7 +42,9 @@ const PollResults = () => {
       <Card className="card-title-div">
         <Card.Title className="card-title">
           Poll Results
-          <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+          <Link to="/">
+            <Image src={homeicon} className="home-btn" />
+          </Link>
         </Card.Title>
         <Card className="card-body">
           <div className="outer">
@@ -82,7 +86,7 @@ const PollResults = () => {
               <Button
                 className="btn-2"
                 onClick={() => {
-                  updatePollStatus('closed');
+                  updatePollStatus('closed', pollId);
                   history.push('/create');
                 }}
               >
@@ -91,8 +95,8 @@ const PollResults = () => {
               <Button
                 className="btn-1 clear"
                 onClick={() => {
-                  updatePollStatus('cleared');
-                  history.push('/details');
+                  updatePollStatus('cleared', pollId);
+                  history.push(`/details/${pollId}`);
                 }}
               >
                 clear
@@ -100,8 +104,8 @@ const PollResults = () => {
               <Button
                 className="btn-1 unrelease"
                 onClick={() => {
-                  updatePollStatus('unreleased');
-                  history.push('/details');
+                  updatePollStatus('unreleased', pollId);
+                  history.push(`/details/${pollId}`);
                 }}
               >
                 unrelease

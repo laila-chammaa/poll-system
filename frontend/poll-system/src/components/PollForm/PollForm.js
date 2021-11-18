@@ -1,6 +1,6 @@
 import './PollForm.css';
 import '../../Cards.css';
-import homeicon from '../../homeicon.png'
+import homeicon from '../../homeicon.png';
 import { Button, Card, Col, Form, Image, Row } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import Choice from './Choice/Choice';
@@ -19,6 +19,7 @@ const PollForm = ({
 }) => {
   const [poll, setPoll] = useState(JSON.parse(JSON.stringify(currentPoll)));
   const location = useLocation();
+
   useEffect(() => {
     const fetchPoll = async () => {
       if (location.state && location.state.currentPoll != null) {
@@ -66,7 +67,9 @@ const PollForm = ({
       <Card className="card-title-div">
         <Card.Title className="card-title">
           {poll.status ? 'Start editing!' : 'Start creating!'}
-          <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+          <Link to="/">
+            <Image src={homeicon} className="home-btn" />
+          </Link>
         </Card.Title>
         <Card className="card-div-body">
           <Form className="form-style">
@@ -137,10 +140,10 @@ const PollForm = ({
               type="submit"
               id="create-btn"
               disabled={disableCreate()}
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-                createPoll(poll);
-                history.push('/details');
+                let pollId = await createPoll(poll);
+                history.push(`/details/${pollId}`);
               }}
             >
               {poll.status ? 'update' : 'create'}

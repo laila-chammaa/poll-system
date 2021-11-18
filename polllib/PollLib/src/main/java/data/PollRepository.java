@@ -13,24 +13,33 @@ import java.util.List;
 import java.util.Optional;
 
 public class PollRepository {
-    String DB_USER = "root";
-    String DB_NAME = "polldb";
-
+    //TODO: figure out connection per session
     Connection connection;
 
     private EntityManager entityManager;
 
     public PollRepository() {
-//        {
-//            try {
-//                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=" + DB_USER);
-//                Statement stmt = connection.createStatement();
-//                stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS" + DB_NAME);
-//            } catch (
-//                    SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        {
+            try {
+                //TODO: fix configuration
+//                Properties props = new Properties();
+//                props.loadFromXML(this.getClass().getResourceAsStream("/META-INF/persistence.xml"));
+//                String DB_USER = (String) props.get("javax.persistence.jdbc.user");
+//                String DB_PASS = (String) props.get("javax.persistence.jdbc.password");
+//                String DB_NAME = (String) props.get("javax.persistence.jdbc.db");
+                String DB_USER = "root";
+                String DB_PASS = "";
+                String DB_NAME = "polldb";
+
+                Class.forName("com.mysql.jdbc.Driver");
+                connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/", DB_USER, DB_PASS);
+                Statement stmt = connection.createStatement();
+                stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + DB_NAME);
+            } catch (
+                    SQLException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
 
         EntityManagerFactory emFactory = Persistence.createEntityManagerFactory("Eclipselink_JPA");
 
@@ -48,7 +57,8 @@ public class PollRepository {
     }
 
     public void update(Poll poll) {
-        entityManager.getTransaction().begin();
+        if (!entityManager.getTransaction().isActive())
+            entityManager.getTransaction().begin();
         Poll pollToUpdate = findById(poll.getId()).orElseThrow(
                 () -> new IllegalStateException(String.format("No poll found for the ID: %d.", poll.getId())));
         pollToUpdate.setStatus(poll.getStatus());
@@ -61,7 +71,8 @@ public class PollRepository {
 
     public boolean save(Poll poll) {
         try {
-            entityManager.getTransaction().begin();
+            if (!entityManager.getTransaction().isActive())
+                entityManager.getTransaction().begin();
             entityManager.persist(poll);
             entityManager.getTransaction().commit();
             return true;
@@ -78,7 +89,8 @@ public class PollRepository {
 
     public boolean delete(Poll poll) {
         try {
-            entityManager.getTransaction().begin();
+            if (!entityManager.getTransaction().isActive())
+                entityManager.getTransaction().begin();
             entityManager.detach(poll);
             entityManager.getTransaction().commit();
             return true;

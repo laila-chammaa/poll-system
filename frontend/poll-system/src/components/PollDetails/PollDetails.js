@@ -1,18 +1,19 @@
 import './PollDetails.css';
 import '../../Cards.css';
-import homeicon from '../../homeicon.png'
+import homeicon from '../../homeicon.png';
 import { Button, Card, Col, Form, Image, Row, Spinner } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { updatePollStatus, fetchPoll } from '../../api';
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 const PollDetails = () => {
   const [poll, setPoll] = useState(null);
   const [status, setStatus] = useState(null);
+  const { pollId } = useParams();
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
-      setPoll(await fetchPoll());
+      setPoll(await fetchPoll(pollId));
     };
     fetchCurrentPoll();
   }, [status]);
@@ -20,7 +21,7 @@ const PollDetails = () => {
   const history = useHistory();
   if (poll && poll.status === 'RELEASED') {
     history.push({
-      pathname: '/results',
+      pathname: `/results/${pollId}`,
       state: { admin: true }
     });
   }
@@ -31,18 +32,30 @@ const PollDetails = () => {
         <Card className="card-title-div">
           <Card.Title className="card-title">
             Your {poll.status.toLowerCase()} poll
-            <Link to="/"><Image src={homeicon} className="home-btn" /></Link>
+            <Link to="/">
+              <Image src={homeicon} className="home-btn" />
+            </Link>
           </Card.Title>
           <Card className="card-div-body">
             <Form className="form-style">
-              <Form.Group as={Row} className="group-style" controlId="poll-title">
-                <Form.Label className="label-style" column="lg" lg={4} >
+              <Form.Group as={Row} className="group-style" controlId="poll-id">
+                <Form.Label className="label-style" column="lg" lg={4}>
+                  Poll ID
+                </Form.Label>
+                <Col sm={8}>
+                  <Card.Text className="details-style">{poll.id}</Card.Text>
+                </Col>
+              </Form.Group>
+              <Form.Group
+                as={Row}
+                className="group-style"
+                controlId="poll-title"
+              >
+                <Form.Label className="label-style" column="lg" lg={4}>
                   Title
                 </Form.Label>
                 <Col sm={8}>
-                  <Card.Text className="details-style">
-                    {poll.name}
-                  </Card.Text>
+                  <Card.Text className="details-style">{poll.name}</Card.Text>
                 </Col>
               </Form.Group>
               <Form.Group
@@ -77,13 +90,11 @@ const PollDetails = () => {
                     key={i}
                   >
                     <Col lg={4} className="choice">
-                      <Card.Text className="choice-name">
-                        {c.text}
-                      </Card.Text>
+                      <Card.Text className="choice-name">{c.text}</Card.Text>
                     </Col>
                     <Col lg={8} className="choice">
                       <Card.Text className="choice-description">
-                        {c.description === "" ? "N/A" : c.description}
+                        {c.description === '' ? 'N/A' : c.description}
                       </Card.Text>
                     </Col>
                   </Form.Group>
@@ -104,7 +115,7 @@ const PollDetails = () => {
                 <Button
                   className="btn-1 run"
                   onClick={() => {
-                    updatePollStatus('running');
+                    updatePollStatus('running', pollId);
                     setStatus('running');
                   }}
                 >
@@ -125,7 +136,7 @@ const PollDetails = () => {
                 <Button
                   className="btn-1 run"
                   onClick={() => {
-                    updatePollStatus('released');
+                    updatePollStatus('released', pollId);
                     setStatus('released');
                   }}
                 >
@@ -134,7 +145,7 @@ const PollDetails = () => {
                 <Button
                   className="btn-1 clear"
                   onClick={() => {
-                    updatePollStatus('cleared');
+                    updatePollStatus('cleared', pollId);
                     setStatus('cleared');
                   }}
                 >

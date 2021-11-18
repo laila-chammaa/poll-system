@@ -15,9 +15,9 @@ public class Poll {
     private String question;
     private PollStatus status;
     private String createdBy;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<Choice> choices;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<Vote> votes;
 
     public Poll(String id, String name, String question, List<Choice> choices, List<Vote> votes, String createdBy) {

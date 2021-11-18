@@ -39,4 +39,11 @@ public class PollException extends Exception {
             super(msg);
         }
     }
+
+    public static class UnauthorizedOperation extends ServletException
+    {
+        public UnauthorizedOperation(String msg) {
+            super(msg);
+        }
+    }
 }

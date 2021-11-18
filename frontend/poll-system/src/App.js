@@ -7,35 +7,39 @@ import {
   VoteForm,
   PollResults,
   PollForm,
-  PollDetails
+  PollDetails,
+  PollList
 } from './components';
 
 function App() {
   return (
-      <Router>
-        <div className="App">
-          <Switch>
-            <Route exact path="/">
-              <Roles />
-            </Route>
-            <Route path="/login">
-              <AdminLogin />
-            </Route>
-            <Route path="/vote">
-              <VoteForm />
-            </Route>
-            <Route path="/results">
-              <PollResults />
-            </Route>
-            <Route path="/create">
-              <PollForm />
-            </Route>
-            <Route path="/details">
-              <PollDetails />
-            </Route>
-          </Switch>
-        </div>
-      </Router>
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route exact path="/">
+            <Roles />
+          </Route>
+          <Route path="/login">
+            <AdminLogin />
+          </Route>
+          <Route path="/vote/:pollId">
+            <VoteForm />
+          </Route>
+          <Route path="/results/:pollId">
+            <PollResults />
+          </Route>
+          <Route path="/create">
+            <PollForm />
+          </Route>
+          <Route path="/details/:pollId">
+            <PollDetails />
+          </Route>
+          <Route path="/userPolls">
+            <PollList />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
