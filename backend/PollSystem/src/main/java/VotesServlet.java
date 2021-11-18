@@ -20,7 +20,7 @@ public class VotesServlet extends HttpServlet {
 
     PollManager pollManager = new PollManager();
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //get the vote sent by the user
         String choiceName = request.getParameter("choice");
         String pollId = request.getParameter("pollId");
@@ -29,7 +29,13 @@ public class VotesServlet extends HttpServlet {
                 .stream().filter(c -> c.getText().equals(choiceName)).findFirst();
         if (choice.isPresent()) {
             String sessionId = request.getSession().getId();
-            pollManager.vote(pin, sessionId, choice.get());
+            // returns pin since it might be generated
+            pin = pollManager.vote(pin, sessionId, choice.get());
+            String json = new Gson().toJson(pin);
+            OutputStream out = response.getOutputStream();
+            out.write(json.getBytes(StandardCharsets.UTF_8));
+            out.flush();
+            out.close();
         } else {
             throw new PollException.InvalidParam(String.format("Invalid choice, choice %s is not found", choiceName));
         }

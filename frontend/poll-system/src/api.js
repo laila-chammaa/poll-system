@@ -76,16 +76,18 @@ export const fetchResults = async (pollId) => {
   }
 };
 
-export const vote = async (pollId, choice) => {
+// pin is optional, TODO: update the frontend to pass the pin to this method
+export const vote = async (pollId, choice, pin = null) => {
   try {
-    const { status } = await axios.post('/api/votes', null, {
+    const data = await axios.post('/api/votes', null, {
       params: {
         choice: choice.text,
-        pollId
+        pollId,
+        pin
       }
     });
-    if (status === 200) {
-      return true;
+    if (data.status === 200) {
+      return data.data; //same pin or newly generated one
     }
   } catch (error) {
     console.log(error);
