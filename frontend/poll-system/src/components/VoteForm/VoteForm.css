@@ -56,12 +56,37 @@
 .card-body .no-results {
   font-size: 22px;
   display: flex;
-  margin-top: 60px;
+  margin-top: 20%;
   text-align: center;
+  justify-content: center;
   color: rgb(92, 92, 92);
   padding: 0px 30px;
 }
 
 .choice-list .disabled {
   color: rgb(143, 143, 143);
+}
+
+.main-div .poll-id {
+  font-size: 16px;
+  float: right;
+  margin-right: 5%;
+  color: gray;
+}
+
+.card-body .change-poll {
+  right: 85px;
+  background-color: #0d6efd;
+  color: white;
+  text-decoration: none;
+}
+
+.card-body .change-poll:hover {
+  background-color: #0655cc;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition-property: color, background-color, border-color, box-shadow;
+  transition-duration: 0.15s, 0.15s, 0.15s, 0.15s;
+  transition-timing-function: ease-in-out, ease-in-out, ease-in-out, ease-in-out;
+  transition-delay: 0s, 0s, 0s, 0s;
 }

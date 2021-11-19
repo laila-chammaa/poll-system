@@ -1,16 +1,26 @@
 package data;
 
 import model.Poll;
+import model.User;
+import model.Vote;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 public class PollRepository {
     //TODO: figure out connection per session
@@ -22,7 +32,7 @@ public class PollRepository {
         {
             try {
                 //TODO: fix configuration
-//                Properties props = new Properties();
+                Properties props = new Properties();
 //                props.loadFromXML(this.getClass().getResourceAsStream("/META-INF/persistence.xml"));
 //                String DB_USER = (String) props.get("javax.persistence.jdbc.user");
 //                String DB_PASS = (String) props.get("javax.persistence.jdbc.password");
@@ -98,5 +108,33 @@ public class PollRepository {
             e.printStackTrace(); //TODO: better handling
         }
         return false;
+    }
+
+    public boolean save(Vote vote) {
+        try {
+            if (!entityManager.getTransaction().isActive())
+                entityManager.getTransaction().begin();
+            entityManager.persist(vote);
+            entityManager.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace(); //TODO: better handling
+        }
+        return false;
+    }
+
+    public Optional<Vote> findByPIN(String pin) {
+        Vote vote = entityManager.find(Vote.class, pin);
+        return vote != null ? Optional.of(vote) : Optional.empty();
+    }
+
+    public void update(Vote vote) {
+        if (!entityManager.getTransaction().isActive())
+            entityManager.getTransaction().begin();
+        Vote voteToUpdate = findByPIN(vote.getPin()).orElseThrow(
+                () -> new IllegalStateException(String.format("No vote found for the PIN: %s.", vote.getPin())));
+        voteToUpdate.setChoice(vote.getChoice());
+        entityManager.merge(voteToUpdate);
+        entityManager.getTransaction().commit();
     }
 }
