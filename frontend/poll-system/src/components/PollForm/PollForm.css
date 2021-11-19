@@ -3,9 +3,7 @@
 }
 
 .main-div.poll-form {
-  max-height: 120%;
-  height: fit-content;
-  min-height: 100%;
+  height: unset;
 }
 
 .main-div .group-style {

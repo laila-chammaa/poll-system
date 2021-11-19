@@ -13,7 +13,7 @@ const Roles = () => {
             Who do you think you are?
           </Card.Text>
           <div>
-            <Link className="role-btn" to="/vote">
+            <Link className="role-btn" to="/requestPoll">
               voter
             </Link>
             <Link className="role-btn" to="/login">

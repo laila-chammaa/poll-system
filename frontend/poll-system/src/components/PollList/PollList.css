@@ -4,7 +4,6 @@
 
 .main-div .card-div-body {
   /* height: unset; */
-  min-height: 300px;
   position: relative;
 }
 .card-div-body .btn-1 {
