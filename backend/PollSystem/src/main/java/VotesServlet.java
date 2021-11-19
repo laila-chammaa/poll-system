@@ -27,9 +27,8 @@ public class VotesServlet extends HttpServlet {
         Optional<Choice> choice = pollManager.accessPoll(pollId).getChoices()
                 .stream().filter(c -> c.getText().equals(choiceName)).findFirst();
         if (choice.isPresent()) {
-            String sessionId = request.getSession().getId();
             // returns pin since it might be generated
-            pin = pollManager.vote(pin, sessionId, choice.get());
+            pin = pollManager.vote(pin, pollId, choice.get());
             String json = new Gson().toJson(pin);
             OutputStream out = response.getOutputStream();
             out.write(json.getBytes(StandardCharsets.UTF_8));

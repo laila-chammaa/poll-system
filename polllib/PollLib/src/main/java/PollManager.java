@@ -175,11 +175,11 @@ public class PollManager {
                     .filter(v -> v.getPin().equals(finalPin)).findFirst();
             if (previousVote.isPresent()) {
                 previousVote.get().setChoice(choice);
-                previousVote.get().setTimestamp(LocalDateTime.now());
+                previousVote.get().setTimestamp(LocalDateTime.now().toString());
             } else {
                 // pin not found in the system or null, generating new pin and voting
                 pin = generatePIN();
-                Vote vote = new Vote(pin, choice, LocalDateTime.now());
+                Vote vote = new Vote(pin, choice, LocalDateTime.now().toString());
                 poll.getVotes().add(vote);
             }
             pollRepository.update(poll);

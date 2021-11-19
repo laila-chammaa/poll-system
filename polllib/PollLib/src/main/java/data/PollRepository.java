@@ -1,6 +1,7 @@
 package data;
 
 import model.Poll;
+import model.Vote;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -98,5 +99,33 @@ public class PollRepository {
             e.printStackTrace(); //TODO: better handling
         }
         return false;
+    }
+
+    public boolean save(Vote vote) {
+        try {
+            if (!entityManager.getTransaction().isActive())
+                entityManager.getTransaction().begin();
+            entityManager.persist(vote);
+            entityManager.getTransaction().commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace(); //TODO: better handling
+        }
+        return false;
+    }
+
+    public Optional<Vote> findByPIN(String pin) {
+        Vote vote = entityManager.find(Vote.class, pin);
+        return vote != null ? Optional.of(vote) : Optional.empty();
+    }
+
+    public void update(Vote vote) {
+        if (!entityManager.getTransaction().isActive())
+            entityManager.getTransaction().begin();
+        Vote voteToUpdate = findByPIN(vote.getPin()).orElseThrow(
+                () -> new IllegalStateException(String.format("No vote found for the PIN: %s.", vote.getPin())));
+        voteToUpdate.setChoice(vote.getChoice());
+        entityManager.merge(voteToUpdate);
+        entityManager.getTransaction().commit();
     }
 }

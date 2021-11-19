@@ -14,9 +14,9 @@ public class Vote {
     @JoinColumn(name = "choice", nullable = false)
     private Choice choice;
 
-    private LocalDateTime timestamp;
+    private String timestamp;
 
-    public Vote(String pin, Choice choice, LocalDateTime timestamp) {
+    public Vote(String pin, Choice choice, String timestamp) {
         this.pin = pin;
         this.choice = choice;
         this.timestamp = timestamp;
@@ -41,11 +41,11 @@ public class Vote {
         this.choice = choice;
     }
 
-    public LocalDateTime getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
