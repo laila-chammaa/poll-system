@@ -11,7 +11,6 @@ const VoteForm = () => {
   const [chosenAnswer, setChosenAnswer] = useState(null);
   const [poll, setPoll] = useState(null);
   const [pin, setPin] = useState(null);
-  const [displayPinMessage, setDisplayPinMessage] = useState(false);
   const { pollId, pinNum } = useParams();
 
   useEffect(() => {
@@ -36,10 +35,7 @@ const VoteForm = () => {
   };
 
   const checkPin = (pin, pinNum) => {
-    if (pin === pinNum) {
-      return true;
-    }
-    return false;
+    return pin === pinNum;
   }
 
   return (
@@ -110,11 +106,11 @@ const VoteForm = () => {
                 </Form>
                 {checkPin() ? (
                   <div className="no-results">
-                    Your pin # to vote for this poll is: <br/> {pin}
+                    Your pin # to revote for this poll is: <br/> {pin}
                   </div>
                 ) : (
                   <div className="no-results">
-                    Pin not found. Your new generated pin # to vote for this poll is: <br/> {pin}
+                    Pin not found. Your new generated pin # to revote for this poll is: <br/> {pin}
                   </div>
                 )}
                 <Button

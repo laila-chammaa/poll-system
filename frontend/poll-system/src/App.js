@@ -8,9 +8,9 @@ import {
   PollResults,
   PollForm,
   PollDetails,
-  PollList
+  PollList,
+  RequestPoll
 } from './components';
-import RequestPoll from './components/RequestPoll/RequestPoll';
 
 function App() {
   return (
