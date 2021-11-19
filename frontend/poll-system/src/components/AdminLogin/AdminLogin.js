@@ -11,7 +11,7 @@ import {
 } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import React, { useState } from 'react';
-import { fetchPoll, login, fetchPollsByCreator } from '../../api';
+import { login } from '../../api';
 
 const AdminLogin = () => {
   let passcodeInput = React.createRef();
@@ -35,10 +35,8 @@ const AdminLogin = () => {
 
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Popover right</Popover.Header>
-      <Popover.Body>
-        And here's some <strong>amazing</strong> content. It's very engaging.
-        right?
+      <Popover.Body id="pop-body">
+        Sign up will be available in the future! Thank you for your patience!
       </Popover.Body>
     </Popover>
   );
@@ -53,9 +51,6 @@ const AdminLogin = () => {
           </Link>
         </Card.Title>
         <Card className="card-div-body">
-          {/*<Card.Text id="login-description">*/}
-          {/*  Please authenticate*/}
-          {/*</Card.Text>*/}
           <Form id="form-group-style">
             <Form.Group>
               <Form.Label className="login-label">Email</Form.Label>

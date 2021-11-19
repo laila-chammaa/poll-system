@@ -10,7 +10,8 @@ const VoteForm = () => {
   const [voted, setVoted] = useState(false);
   const [chosenAnswer, setChosenAnswer] = useState(null);
   const [poll, setPoll] = useState(null);
-  const { pollId } = useParams();
+  const [pin, setPin] = useState(null);
+  const { pollId, pinNum } = useParams();
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
@@ -33,6 +34,10 @@ const VoteForm = () => {
     return poll != null && poll.status === 'RUNNING';
   };
 
+  const checkPin = (pin, pinNum) => {
+    return pin === pinNum;
+  }
+
   return (
     <div className="main-div">
       {pollIsRunning() ? (
@@ -42,8 +47,14 @@ const VoteForm = () => {
             <Link to="/">
               <Image src={homeicon} className="home-btn" />
             </Link>
+
           </Card.Title>
-          <Card.Title className="card-description">{poll.question}</Card.Title>
+          <Card.Title className="card-description">
+            {poll.question}
+            <Card.Text className="poll-id">
+              ID: {pollId}
+            </Card.Text>
+          </Card.Title>
           <Card className="card-body">
             {!voted ? (
               <div>
@@ -68,7 +79,10 @@ const VoteForm = () => {
                   disabled={chosenAnswer == null}
                   onClick={() => {
                     setVoted(true);
-                    vote(pollId, chosenAnswer);
+                    vote(pollId, chosenAnswer, pinNum)
+                      .then((responseData) => {
+                        setPin(responseData)
+                      });
                   }}
                 >
                   vote
@@ -90,9 +104,15 @@ const VoteForm = () => {
                     </div>
                   </div>
                 </Form>
-                <div className="no-results">
-                  Your vote was counted. The results are not yet released.
-                </div>
+                {checkPin() ? (
+                  <div className="no-results">
+                    Your pin # to revote for this poll is: <br/> {pin}
+                  </div>
+                ) : (
+                  <div className="no-results">
+                    Pin not found. Your new generated pin # to revote for this poll is: <br/> {pin}
+                  </div>
+                )}
                 <Button
                   className="btn-1"
                   onClick={() => {
@@ -102,6 +122,12 @@ const VoteForm = () => {
                 >
                   revote
                 </Button>
+                <Link
+                  className="btn-1 change-poll"
+                  to="/requestPoll"
+                >
+                  change poll
+                </Link>
               </div>
             )}
           </Card>
