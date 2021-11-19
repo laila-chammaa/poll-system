@@ -16,10 +16,13 @@
 
 .poll-main-div .delete-button {
   position: absolute;
-  font-size: 24px;
+  font-size: 29px;
   border-radius: 30px;
-  width: 40px;
+  width: 35px;
   height: 20px;
-  right: 0;
+  right: 2px;
   top: -10px;
+  width: 40px;
+  line-height: 0em;
+  padding-bottom: 12px;
 }
