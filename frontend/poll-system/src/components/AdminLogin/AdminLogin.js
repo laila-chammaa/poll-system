@@ -35,7 +35,9 @@ const AdminLogin = () => {
 
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Header as="h3">Not yet implemented</Popover.Header>
+      <Popover.Body id="pop-body">
+        Sign up will be available in the future! Thank you for your patience!
+      </Popover.Body>
     </Popover>
   );
 

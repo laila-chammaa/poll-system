@@ -8,7 +8,8 @@ import {
   PollResults,
   PollForm,
   PollDetails,
-  PollList
+  PollList,
+  RequestPoll
 } from './components';
 
 function App() {
@@ -22,7 +23,7 @@ function App() {
           <Route path="/login">
             <AdminLogin />
           </Route>
-          <Route path="/vote/:pollId">
+          <Route path="/vote/:pollId/:pinNum?">
             <VoteForm />
           </Route>
           <Route path="/results/:pollId">
@@ -36,6 +37,9 @@ function App() {
           </Route>
           <Route path="/userPolls">
             <PollList />
+          </Route>
+          <Route path="/requestPoll">
+            <RequestPoll />
           </Route>
         </Switch>
       </div>

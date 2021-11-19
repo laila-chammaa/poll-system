@@ -76,8 +76,11 @@ public class PollManager {
 
     public Poll accessPoll(String pollId) {
         String upperCasePollId = pollId.toUpperCase(); //not case sensitive
-        return pollRepository.findById(pollId).orElseThrow(
+        Poll newPoll = pollRepository.findById(pollId).orElseThrow(
                 () -> new IllegalStateException(String.format("No poll found for the ID: %s.", upperCasePollId)));
+        newPoll.setChoices(new ArrayList<>(newPoll.getChoices()));
+        newPoll.setVotes(new ArrayList<>(newPoll.getVotes()));
+        return newPoll;
     }
 
     public List<Poll> getAllPolls() {
@@ -160,8 +163,6 @@ public class PollManager {
         }
     }
 
-    //TODO: change? pin should be checked before this? pin not found error?
-    //TODO: persist votes in db, VoteRepository?
     public String vote(String pin, String pollId, Choice choice)
             throws PollException.IllegalPollOperation, PollException.ChoiceNotFound {
         Poll poll = accessPoll(pollId);
@@ -176,11 +177,13 @@ public class PollManager {
             if (previousVote.isPresent()) {
                 previousVote.get().setChoice(choice);
                 previousVote.get().setTimestamp(LocalDateTime.now().toString());
+                pollRepository.update(previousVote.get());
             } else {
                 // pin not found in the system or null, generating new pin and voting
                 pin = generatePIN();
                 Vote vote = new Vote(pin, choice, LocalDateTime.now().toString());
                 poll.getVotes().add(vote);
+                pollRepository.save(vote);
             }
             pollRepository.update(poll);
         } else {

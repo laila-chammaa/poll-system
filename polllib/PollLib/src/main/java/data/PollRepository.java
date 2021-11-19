@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 public class PollRepository {
     //TODO: figure out connection per session
@@ -23,7 +24,7 @@ public class PollRepository {
         {
             try {
                 //TODO: fix configuration
-//                Properties props = new Properties();
+                Properties props = new Properties();
 //                props.loadFromXML(this.getClass().getResourceAsStream("/META-INF/persistence.xml"));
 //                String DB_USER = (String) props.get("javax.persistence.jdbc.user");
 //                String DB_PASS = (String) props.get("javax.persistence.jdbc.password");

@@ -1,5 +1,6 @@
 import com.google.gson.Gson;
 import model.Choice;
+import model.Poll;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +12,9 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Optional;
 
 @WebServlet(name = "VotesServlet", urlPatterns = "/api/votes")
@@ -24,6 +27,7 @@ public class VotesServlet extends HttpServlet {
         String choiceName = request.getParameter("choice");
         String pollId = request.getParameter("pollId");
         String pin = request.getParameter("pin");
+
         Optional<Choice> choice = pollManager.accessPoll(pollId).getChoices()
                 .stream().filter(c -> c.getText().equals(choiceName)).findFirst();
         if (choice.isPresent()) {

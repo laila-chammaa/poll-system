@@ -64,3 +64,15 @@
   font-size: 20px;
   color: red;
 }
+
+#popover-basic {
+  background-color: #edf7fb;
+  border-style: none;
+}
+
+#pop-body{
+  font-family: "Playfair Display";
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
