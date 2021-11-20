@@ -5,7 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +52,7 @@ public class PollServlet extends HttpServlet {
         if (email == null) {
             Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation. Cannot create a poll.");
             ServletUtil.handleError(e.getMessage(), response);
+            return;
         }
 
         try {
@@ -66,6 +66,7 @@ public class PollServlet extends HttpServlet {
                 } else {
                     Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation. Cannot edit a poll you did not create.");
                     ServletUtil.handleError(e.getMessage(), response);
+                    return;
                 }
 
             }
