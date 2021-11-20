@@ -5,7 +5,7 @@ import React from 'react';
 
 const UnauthorizedView = () => {
   return (
-    <Card className="card-title-div">
+    <Card className="card-title-div unauthorized">
       <Card.Title className="card-title">Not logged in</Card.Title>
     </Card>
   );

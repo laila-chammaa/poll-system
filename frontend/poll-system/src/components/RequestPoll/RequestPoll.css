@@ -1,6 +1,7 @@
 #request-form {
   width: 50%;
-  margin: 25% auto 3% auto;
+  margin: 20% auto 3% auto;
+  font-size: 25px;
 }
 
 .main-div .request-description {
@@ -9,7 +10,7 @@
   color: black;
 }
 
-.main-div .request-box[type="text"] {
+.main-div .request-box[type='text'] {
   background-color: #edf7fb;
   border-color: #edf7fb;
   outline: none;
@@ -36,4 +37,3 @@
   box-shadow: 0px 10px 15px 1px rgba(0, 0, 0, 0.329);
   letter-spacing: -1px;
 }
-
