@@ -49,12 +49,7 @@ const VoteForm = () => {
   };
 
   const checkPin = (pin, initialPin) => {
-    if (pin === initialPin) {
-      incorrectPin = false;
-      return false;
-    }
-    incorrectPin = true;
-    return true
+    incorrectPin = !pin === initialPin;
   }
 
   return (

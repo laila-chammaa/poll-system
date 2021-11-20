@@ -14,11 +14,11 @@ const PollResults = () => {
   const [results, setResults] = useState(null);
   const { pollId } = useParams();
   const downloadURL =
-    `http://localhost:8080/api/votes?pollId=${pollId}format=text&download=true`;
+    `http://localhost:8080/api/votes?pollId=${pollId}&format=text&download=true`;
 
   useEffect(() => {
     const getResults = async () => {
-      setResults(await fetchResults());
+      setResults(await fetchResults(pollId));
     };
     getResults();
   }, []);

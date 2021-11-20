@@ -34,7 +34,7 @@ public class PollServlet extends HttpServlet {
         JSONObject jsonObj = new JSONObject(pollStr);
         String pollId = null;
         try {
-            pollId = jsonObj.getString("pollId");
+            pollId = jsonObj.getString("id");
         } catch (JSONException e) {
             // if it's a create, a pollId is not necessary
         }
