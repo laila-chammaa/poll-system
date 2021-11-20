@@ -11,7 +11,21 @@ const VoteForm = () => {
   const [chosenAnswer, setChosenAnswer] = useState(null);
   const [poll, setPoll] = useState(null);
   const [pin, setPin] = useState(null);
-  const { pollId, pinNum } = useParams();
+  const { pollId } = useParams();
+  let { pinNum } = useParams();
+  let initialPin = null;
+  let incorrectPin = null;
+
+  // if user did enter a pinNum, assign it to initialPin for further comparing
+  if(pinNum !== undefined && pinNum !== pin) {
+    initialPin = pinNum;
+  }
+
+  // if pinNum was empty initially and then a new pin was generated, assign it to the pinNum to be properly passed when user chooses to revote
+  // or update the pin if initial pin was incorrect
+  if((pinNum === undefined && pin != null) || incorrectPin) {
+    pinNum = pin;
+  }
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
@@ -34,8 +48,13 @@ const VoteForm = () => {
     return poll != null && poll.status === 'RUNNING';
   };
 
-  const checkPin = (pin, pinNum) => {
-    return pin === pinNum;
+  const checkPin = (pin, initialPin) => {
+    if (pin === initialPin) {
+      incorrectPin = false;
+      return false;
+    }
+    incorrectPin = true;
+    return true
   }
 
   return (
@@ -83,6 +102,7 @@ const VoteForm = () => {
                       .then((responseData) => {
                         setPin(responseData)
                       });
+                    checkPin(pin, initialPin)
                   }}
                 >
                   vote
@@ -104,7 +124,7 @@ const VoteForm = () => {
                     </div>
                   </div>
                 </Form>
-                {checkPin() ? (
+                {incorrectPin ? (
                   <div className="no-results">
                     Your pin # to revote for this poll is: <br/> {pin}
                   </div>

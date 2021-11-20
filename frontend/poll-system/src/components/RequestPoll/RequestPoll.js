@@ -6,12 +6,10 @@ import {
   Card,
   Form,
   Image,
-  OverlayTrigger,
-  Popover
 } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import React, { useState } from 'react';
-import { checkPoll, fetchPoll, login, updatePollStatus } from '../../api';
+import { fetchPoll } from '../../api';
 
 const RequestPoll = () => {
   let pollIDInput = React.createRef();

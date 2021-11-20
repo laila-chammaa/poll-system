@@ -34,7 +34,7 @@ public class PollServlet extends HttpServlet {
         JSONObject jsonObj = new JSONObject(pollStr);
         String pollId = null;
         try {
-            pollId = jsonObj.getString("id");
+            pollId = jsonObj.getString("pollId");
         } catch (JSONException e) {
             // if it's a create, a pollId is not necessary
         }
@@ -62,7 +62,6 @@ public class PollServlet extends HttpServlet {
                 } else {
                     throw new PollException.UnauthorizedOperation("Unauthorized Operation. Cannot edit a poll you did not create.");
                 }
-
             }
             //returning poll ID
             OutputStream out = response.getOutputStream();
