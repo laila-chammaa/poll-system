@@ -13,7 +13,6 @@ public class Poll {
     private String timeCreated;
     private String name;
     private String question;
-    @Enumerated(EnumType.STRING)
     private PollStatus status;
     private String createdBy;
     @OneToMany(cascade = CascadeType.PERSIST)
