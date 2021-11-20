@@ -19,7 +19,7 @@ public class VotesServlet extends HttpServlet {
 
     PollManager pollManager = new PollManager();
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //get the vote sent by the user
         String choiceName = request.getParameter("choice");
         String pollId = request.getParameter("pollId");
@@ -27,20 +27,26 @@ public class VotesServlet extends HttpServlet {
 
         Optional<Choice> choice = pollManager.accessPoll(pollId).getChoices()
                 .stream().filter(c -> c.getText().equals(choiceName)).findFirst();
-        if (choice.isPresent()) {
-            // returns pin since it might be generated
-            pin = pollManager.vote(pin, pollId, choice.get());
-            String json = new Gson().toJson(pin);
-            OutputStream out = response.getOutputStream();
-            out.write(json.getBytes(StandardCharsets.UTF_8));
-            out.flush();
-            out.close();
-        } else {
-            throw new PollException.InvalidParam(String.format("Invalid choice, choice %s is not found", choiceName));
+        try {
+            if (choice.isPresent()) {
+                // returns pin since it might be generated
+
+                pin = pollManager.vote(pin, pollId, choice.get());
+
+                String json = new Gson().toJson(pin);
+                OutputStream out = response.getOutputStream();
+                out.write(json.getBytes(StandardCharsets.UTF_8));
+                out.flush();
+                out.close();
+            } else {
+                throw new PollException.InvalidParam(String.format("Invalid choice, choice %s is not found", choiceName));
+            }
+        } catch (PollException.IllegalPollOperation | PollException.ChoiceNotFound | PollException.InvalidParam e) {
+            ServletUtil.handleError(e.getMessage(), response);
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String download = request.getParameter("download");
         String format = request.getParameter("format");
         String pollId = request.getParameter("pollId");
@@ -49,7 +55,11 @@ public class VotesServlet extends HttpServlet {
         if (download.equals("true") && format.equals("text")) {
             download(pollId, format, email, response);
         } else {
-            sendResults(pollManager.getPollResults(pollId, email), response);
+            try {
+                sendResults(pollManager.getPollResults(pollId, email), response);
+            } catch (PollException.IllegalPollOperation e) {
+                ServletUtil.handleError(e.getMessage(), response);
+            }
         }
     }
 

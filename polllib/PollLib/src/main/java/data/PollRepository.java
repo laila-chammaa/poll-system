@@ -6,6 +6,7 @@ import model.Vote;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ public class PollRepository {
     //TODO: figure out connection per session
     Connection connection;
 
+    @PersistenceContext
     private EntityManager entityManager;
 
     public PollRepository() {
@@ -93,7 +95,8 @@ public class PollRepository {
         try {
             if (!entityManager.getTransaction().isActive())
                 entityManager.getTransaction().begin();
-            entityManager.detach(poll);
+            Poll pollToDelete = entityManager.find(Poll.class, poll.getId());
+            entityManager.remove(pollToDelete);
             entityManager.getTransaction().commit();
             return true;
         } catch (Exception e) {
