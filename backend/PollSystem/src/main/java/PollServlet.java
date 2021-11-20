@@ -23,7 +23,7 @@ public class PollServlet extends HttpServlet {
     PollManager pollManager = new PollManager();
 
     // handles create/update poll
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
@@ -50,6 +50,10 @@ public class PollServlet extends HttpServlet {
             String description = choice.getString("description");
             choiceList.add(new Choice(text, description));
         }
+        if (email == null) {
+            Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation. Cannot create a poll.");
+            ServletUtil.handleError(e.getMessage(), response);
+        }
 
         try {
             if (status == null || pollId == null) {
@@ -57,10 +61,11 @@ public class PollServlet extends HttpServlet {
                 pollId = newPoll.getId();
             } else if (status.equals("CREATED") || status.equals("RUNNING")) {
                 Poll poll = pollManager.accessPoll(pollId);
-                if (email.equals(poll.getCreatedBy())) {
+                if (poll.getCreatedBy().equals(email)) {
                     pollManager.updatePoll(pollId, name, question, choiceList);
                 } else {
-                    throw new PollException.UnauthorizedOperation("Unauthorized Operation. Cannot edit a poll you did not create.");
+                    Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation. Cannot edit a poll you did not create.");
+                    ServletUtil.handleError(e.getMessage(), response);
                 }
 
             }
@@ -71,44 +76,43 @@ public class PollServlet extends HttpServlet {
             out.flush();
             out.close();
 
-        } catch (PollException.TooFewChoices | PollException.DuplicateChoices | IOException tooFewChoices) {
-            tooFewChoices.printStackTrace(); //TODO: better exceptions
+        } catch (PollException.TooFewChoices | PollException.DuplicateChoices | IOException | PollException.IllegalPollOperation e) {
+            ServletUtil.handleError(e.getMessage(), response);
         }
 
     }
 
     // handles update poll status
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //get the status sent by the client
         String email = (String) request.getSession().getAttribute("email");
         String pollId = request.getParameter("pollId");
         String status = request.getParameter("status");
         Poll poll = pollManager.accessPoll(pollId);
-        if (email.equals(poll.getCreatedBy())) {
-            switch (status) {
-                case "running":
-                    pollManager.runPoll(pollId);
-                    break;
-                case "released":
-                    pollManager.releasePoll(pollId);
-                    break;
-                case "unreleased":
-                    pollManager.unreleasePoll(pollId);
-                case "cleared":
-                    pollManager.clearPoll(pollId);
-                    break;
-                case "closed":
-                    pollManager.closePoll(pollId);
-                    break;
+        try {
+            if (poll.getCreatedBy().equals(email)) {
+                switch (status) {
+                    case "running":
+                        pollManager.runPoll(pollId);
+                        break;
+                    case "released":
+                        pollManager.releasePoll(pollId);
+                        break;
+                    case "unreleased":
+                        pollManager.unreleasePoll(pollId);
+                    case "cleared":
+                        pollManager.clearPoll(pollId);
+                        break;
+                    case "closed":
+                        pollManager.closePoll(pollId);
+                        break;
+                }
+            } else {
+                Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation. You are not the creator of this poll");
+                ServletUtil.handleError(e.getMessage(), response);
             }
-        } else {
-            //TODO: how to return errors to frontend?
-            OutputStream out = response.getOutputStream();
-            String json = new Gson().toJson("Unauthorized Operation. You are not the creator of this poll");
-            out.write(json.getBytes(StandardCharsets.UTF_8));
-            out.flush();
-            out.close();
-            throw new PollException.UnauthorizedOperation("Unauthorized Operation. You are not the creator of this poll");
+        } catch (PollException.IllegalPollOperation e) {
+            ServletUtil.handleError(e.getMessage(), response);
         }
     }
 
@@ -146,14 +150,19 @@ public class PollServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse resp) throws IOException {
         String email = (String) request.getSession().getAttribute("email");
         String pollId = request.getParameter("pollId");
         Poll poll = pollManager.accessPoll(pollId);
-        if (email.equals(poll.getCreatedBy())) {
-            pollManager.deletePoll(pollId);
+        if (poll.getCreatedBy().equals(email)) {
+            try {
+                pollManager.deletePoll(pollId);
+            } catch (PollException.IllegalPollOperation e) {
+                ServletUtil.handleError(e.getMessage(), resp);
+            }
         } else {
-            throw new PollException.UnauthorizedOperation("Unauthorized Operation. You are not the creator of this poll");
+            Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation. You are not the creator of this poll");
+            ServletUtil.handleError(e.getMessage(), resp);
         }
     }
 }

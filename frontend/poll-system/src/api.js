@@ -12,6 +12,7 @@ export const updatePollStatus = async (pollStatus, pollId) => {
       return true;
     }
   } catch (error) {
+    alert(error.request.response);
     console.log(error);
   }
 };
@@ -32,6 +33,7 @@ export const createPoll = async (poll) => {
       return data.data;
     }
   } catch (error) {
+    alert(error.request.response);
     console.log(error);
   }
 };
@@ -45,6 +47,7 @@ export const deletePoll = async (pollId) => {
     });
     return data.status === 200;
   } catch (error) {
+    alert(error.request.response);
     console.log(error);
   }
 };
@@ -56,6 +59,7 @@ export const fetchPoll = async (pollId) => {
     });
     return data;
   } catch (error) {
+    alert(error.request.response);
     console.log(error);
   }
 };
@@ -67,6 +71,7 @@ export const fetchPollsByCreator = async (creator) => {
     });
     return data;
   } catch (error) {
+    alert(error.request.response);
     console.log(error);
   }
 };
@@ -85,6 +90,7 @@ export const fetchResults = async (pollId) => {
     }
     return data;
   } catch (error) {
+    alert(error.request.response);
     console.log(error);
   }
 };
@@ -103,6 +109,7 @@ export const vote = async (pollId, choice, pin = null) => {
       return data.data; //same pin or newly generated one
     }
   } catch (error) {
+    alert(error.request.response);
     console.log(error);
   }
 };
@@ -117,6 +124,7 @@ export const login = async (email, password) => {
     });
     return data.data;
   } catch (error) {
+    alert(error.request.response);
     console.log(error);
   }
 };
