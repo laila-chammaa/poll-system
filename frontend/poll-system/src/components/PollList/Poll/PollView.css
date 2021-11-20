@@ -1,0 +1,28 @@
+.poll-main-div {
+  font-size: 20px;
+  border-radius: 30px;
+  background-color: #edf7fb;
+  padding: 20px;
+  text-align: left;
+  border: 3px #1f70fb00 solid;
+  position: relative;
+}
+
+.poll-main-div:hover {
+  box-sizing: border-box;
+  border: 3px #1f6ffb solid;
+  cursor: pointer;
+}
+
+.poll-main-div .delete-button {
+  position: absolute;
+  font-size: 29px;
+  border-radius: 30px;
+  width: 35px;
+  height: 20px;
+  right: 2px;
+  top: -10px;
+  width: 40px;
+  line-height: 0em;
+  padding-bottom: 12px;
+}

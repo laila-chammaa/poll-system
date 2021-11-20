@@ -1,23 +1,15 @@
 package data;
 
 import model.Poll;
-import model.User;
 import model.Vote;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;

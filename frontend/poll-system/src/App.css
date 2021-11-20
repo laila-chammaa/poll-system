@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
-
 div.App {
-    height: 100vh;
-    width: 100vw;
-    font-family: 'Playfair Display';
+  height: 100vh;
+  width: 100vw;
+  font-family: 'Playfair Display';
+  letter-spacing: -1px;
+  text-transform: lowercase;
 }

@@ -36,6 +36,19 @@ export const createPoll = async (poll) => {
   }
 };
 
+export const deletePoll = async (pollId) => {
+  try {
+    const data = await axios.delete('/api/poll', {
+      params: {
+        pollId
+      }
+    });
+    return data.status === 200;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const fetchPoll = async (pollId) => {
   try {
     const { data } = await axios.get('/api/poll', {

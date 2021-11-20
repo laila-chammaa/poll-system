@@ -62,7 +62,7 @@ const AdminLogin = () => {
                 ref={emailInput}
               />
             </Form.Group>
-            <Form.Group>
+            <Form.Group className="password-group">
               <Form.Label className="login-label">Password</Form.Label>
               <Form.Control
                 type="password"
@@ -71,19 +71,19 @@ const AdminLogin = () => {
                 placeholder="password"
                 ref={passcodeInput}
               />
+              <Button
+                id="enter-btn"
+                onClick={async () => {
+                  if (await checkPasscode()) {
+                    history.push('/userPolls');
+                  } else {
+                    setIncorrect(true);
+                  }
+                }}
+              >
+                enter
+              </Button>
             </Form.Group>
-            <Button
-              id="enter-btn"
-              onClick={async () => {
-                if (await checkPasscode()) {
-                  history.push('/userPolls');
-                } else {
-                  setIncorrect(true);
-                }
-              }}
-            >
-              enter
-            </Button>
           </Form>
           {displayIncorrect ? (
             <Card.Text id="incorrectMessage">Incorrect Password!</Card.Text>

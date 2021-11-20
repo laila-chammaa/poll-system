@@ -54,12 +54,7 @@ public class PollServlet extends HttpServlet {
         try {
             if (status == null || pollId == null) {
                 Poll newPoll = pollManager.createPoll(name, question, choiceList, email);
-                //returning poll ID
-                OutputStream out = response.getOutputStream();
-                String json = new Gson().toJson(newPoll.getId());
-                out.write(json.getBytes(StandardCharsets.UTF_8));
-                out.flush();
-                out.close();
+                pollId = newPoll.getId();
             } else if (status.equals("CREATED") || status.equals("RUNNING")) {
                 Poll poll = pollManager.accessPoll(pollId);
                 if (email.equals(poll.getCreatedBy())) {
@@ -69,9 +64,17 @@ public class PollServlet extends HttpServlet {
                 }
 
             }
+            //returning poll ID
+            OutputStream out = response.getOutputStream();
+            String json = new Gson().toJson(pollId);
+            out.write(json.getBytes(StandardCharsets.UTF_8));
+            out.flush();
+            out.close();
+
         } catch (PollException.TooFewChoices | PollException.DuplicateChoices | IOException tooFewChoices) {
             tooFewChoices.printStackTrace(); //TODO: better exceptions
         }
+
     }
 
     // handles update poll status
