@@ -40,7 +40,6 @@ const VoteForm = () => {
   };
 
   const isPinIncorrect = (generatedPin, inputtedPin) => {
-    console.log(generatedPin + '  ' + inputtedPin);
     return generatedPin !== inputtedPin;
   };
 
