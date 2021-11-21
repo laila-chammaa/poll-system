@@ -1,27 +1,27 @@
-.card-body .inner button {
+.card-div-body .inner button {
   font-size: 14px;
   display: inline-block;
   margin-right: 10px;
 }
 
-.card-body .outer {
+.card-div-body .outer {
   display: flex;
   justify-content: center;
   box-sizing: border-box;
 }
 
-.card-body button:focus {
+.card-div-body button:focus {
   box-shadow: none;
 }
 
-.card-body .btn-1.download {
+.card-div-body .btn-1.download {
   right: -58px;
   background-color: #0d6efd;
   text-decoration: none;
   color: white;
 }
 
-.card-body .btn-1.download:hover {
+.card-div-body .btn-1.download:hover {
   background-color: #0655cc;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -31,10 +31,10 @@
   transition-delay: 0s, 0s, 0s, 0s;
 }
 
-.card-body .btn-1.clear {
+.card-div-body .btn-1.clear {
   right: 188px;
 }
 
-.card-body .btn-1.unrelease {
+.card-div-body .btn-1.unrelease {
   right: 285px;
 }

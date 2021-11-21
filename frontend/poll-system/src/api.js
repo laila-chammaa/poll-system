@@ -59,7 +59,6 @@ export const fetchPoll = async (pollId) => {
     });
     return data;
   } catch (error) {
-    alert(error.request.response);
     console.log(error);
   }
 };

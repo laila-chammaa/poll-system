@@ -6,9 +6,9 @@ import model.Vote;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.persistence.PersistenceContext;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class PollRepository {
-    //TODO: figure out connection per session
     Connection connection;
 
     @PersistenceContext

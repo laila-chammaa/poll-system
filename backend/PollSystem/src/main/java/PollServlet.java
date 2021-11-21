@@ -46,7 +46,12 @@ public class PollServlet extends HttpServlet {
         for (int i = 0; i < choicesArray.length(); ++i) {
             JSONObject choice = choicesArray.getJSONObject(i);
             String text = choice.getString("text");
-            String description = choice.getString("description");
+            String description = null;
+            try {
+                description = choice.getString("description");
+            } catch (JSONException e) {
+
+            }
             choiceList.add(new Choice(text, description));
         }
         if (email == null) {
@@ -128,17 +133,20 @@ public class PollServlet extends HttpServlet {
                 "max-age=0, must-revalidate, no-cache, no-store, private, post-check=0, pre-check=0"); // HTTP 1.1
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0
         response.setDateHeader("Expires", 0); // prevents caching at the proxy server
+        String email = (String) request.getSession().getAttribute("email");
 
         try {
             String json;
-            if (creator != null) {
+            if (email != null && email.equals(creator)) {
                 List<Poll> pollList = pollManager.getAllPollsByUser(creator);
                 json = new Gson().toJson(pollList);
-
-            } else {
+            } else if (pollId != null) {
                 Poll poll = pollManager.accessPoll(pollId);
                 json = new Gson().toJson(poll);
-
+            } else {
+                Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation.");
+                ServletUtil.handleError(e.getMessage(), response);
+                return;
             }
             OutputStream out = response.getOutputStream();
             out.write(json.getBytes(StandardCharsets.UTF_8));

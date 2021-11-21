@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import Choice from './Choice/Choice';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { createPoll } from '../../api';
+import UnauthorizedView from '../UnautherizedView/UnauthorizedView';
 
 const PollForm = ({
   currentPoll = {
@@ -59,98 +60,108 @@ const PollForm = ({
       duplicateChoices
     );
   };
-
+  let user = localStorage.getItem('email');
   const history = useHistory();
 
   return (
     <div className="poll-form main-div">
-      <Card className="card-title-div">
-        <Card.Title className="card-title">
-          {poll.status ? 'Start editing!' : 'Start creating!'}
-          <Link to="/">
-            <Image src={homeicon} className="home-btn" />
-          </Link>
-        </Card.Title>
-        <Card className="card-div-body">
-          <Form className="form-style">
-            <Form.Group as={Row} className="group-style" controlId="poll-title">
-              <Form.Label className="label-style" column="lg" lg={4}>
-                Title
-              </Form.Label>
-              <Col sm={8}>
-                <Form.Control
-                  type="text"
-                  value={poll.name}
-                  className="text-box"
-                  placeholder="Title"
-                  onChange={(e) => {
-                    poll.name = e.target.value;
-                    setPoll(JSON.parse(JSON.stringify(poll)));
-                  }}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group
-              as={Row}
-              className="group-style"
-              controlId="poll-description"
-            >
-              <Form.Label className="label-style" column="lg" lg={4}>
-                Question
-              </Form.Label>
-              <Col sm={8}>
-                <Form.Control
-                  as="textarea"
-                  className="text-box"
-                  id="text-area-style"
-                  value={poll.question}
-                  onChange={(e) => {
-                    poll.question = e.target.value;
-                    setPoll(JSON.parse(JSON.stringify(poll)));
-                  }}
-                  rows={5}
-                  placeholder="Question"
-                />
-              </Col>
-            </Form.Group>
-            <fieldset>
-              <Form.Label className="label-style" column="lg" lg={12}>
-                Choices
-              </Form.Label>
-              <Form.Label className="label-style" column="lg" lg={4}>
-                Name
-              </Form.Label>
-              <Form.Label className="label-style" column="lg" lg={8}>
-                Description
-              </Form.Label>
-              {poll.choices.map((c, i) => (
-                <Choice
-                  key={i}
-                  c={c}
-                  i={i}
-                  deleteChoice={deleteChoice}
-                  updatePoll={updatePoll}
-                />
-              ))}
-            </fieldset>
-            <Button id="add-style" onClick={() => addChoice()}>
-              Add more +
-            </Button>
-            <Button
-              type="submit"
-              id="create-btn"
-              disabled={disableCreate()}
-              onClick={async (e) => {
-                e.preventDefault();
-                let pollId = await createPoll(poll);
-                history.push(`/details/${pollId}`);
-              }}
-            >
-              {poll.status ? 'update' : 'create'}
-            </Button>
-          </Form>
+      {user != null && user !== 'null' ? (
+        <Card className="card-title-div">
+          <Card.Title className="card-title">
+            {poll.status ? 'Start editing!' : 'Start creating!'}
+            <Link to="/">
+              <Image src={homeicon} className="home-btn" />
+            </Link>
+          </Card.Title>
+          <Card className="card-div-body">
+            <Form className="form-style">
+              <Form.Group
+                as={Row}
+                className="group-style"
+                controlId="poll-title"
+              >
+                <Form.Label className="label-style" column="lg" lg={4}>
+                  Title
+                </Form.Label>
+                <Col sm={8}>
+                  <Form.Control
+                    type="text"
+                    value={poll.name}
+                    className="text-box"
+                    placeholder="Title"
+                    onChange={(e) => {
+                      poll.name = e.target.value;
+                      setPoll(JSON.parse(JSON.stringify(poll)));
+                    }}
+                  />
+                </Col>
+              </Form.Group>
+              <Form.Group
+                as={Row}
+                className="group-style"
+                controlId="poll-description"
+              >
+                <Form.Label className="label-style" column="lg" lg={4}>
+                  Question
+                </Form.Label>
+                <Col sm={8}>
+                  <Form.Control
+                    as="textarea"
+                    className="text-box"
+                    id="text-area-style"
+                    value={poll.question}
+                    onChange={(e) => {
+                      poll.question = e.target.value;
+                      setPoll(JSON.parse(JSON.stringify(poll)));
+                    }}
+                    rows={5}
+                    placeholder="Question"
+                  />
+                </Col>
+              </Form.Group>
+              <fieldset>
+                <Form.Label className="label-style" column="lg" lg={12}>
+                  Choices
+                </Form.Label>
+                <Form.Label className="label-style" column="lg" lg={4}>
+                  Name
+                </Form.Label>
+                <Form.Label className="label-style" column="lg" lg={8}>
+                  Description
+                </Form.Label>
+                {poll.choices.map((c, i) => (
+                  <Choice
+                    key={i}
+                    c={c}
+                    i={i}
+                    deleteChoice={deleteChoice}
+                    updatePoll={updatePoll}
+                  />
+                ))}
+              </fieldset>
+              <Button id="add-style" onClick={() => addChoice()}>
+                Add more +
+              </Button>
+              <Button
+                type="submit"
+                id="create-btn"
+                disabled={disableCreate()}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  let pollId = await createPoll(poll);
+                  if (pollId) {
+                    history.push(`/details/${pollId}`);
+                  }
+                }}
+              >
+                {poll.status ? 'update' : 'create'}
+              </Button>
+            </Form>
+          </Card>
         </Card>
-      </Card>
+      ) : (
+        <UnauthorizedView />
+      )}
     </div>
   );
 };
