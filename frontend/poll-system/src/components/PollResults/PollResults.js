@@ -12,14 +12,13 @@ const PollResults = () => {
   const supportedCharts = ['ColumnChart', 'PieChart'];
   const [poll, setPoll] = useState(null);
   const [results, setResults] = useState(null);
-  const downloadURL =
-    'http://localhost:8080/api/votes?format=text&download=true';
-
   const { pollId } = useParams();
+  const downloadURL =
+    `http://localhost:8080/api/votes?pollId=${pollId}&format=text&download=true`;
 
   useEffect(() => {
     const getResults = async () => {
-      setResults(await fetchResults());
+      setResults(await fetchResults(pollId));
     };
     getResults();
   }, []);

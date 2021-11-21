@@ -10,8 +10,9 @@ const VoteForm = () => {
   const [voted, setVoted] = useState(false);
   const [chosenAnswer, setChosenAnswer] = useState(null);
   const [poll, setPoll] = useState(null);
-  const [pin, setPin] = useState(null);
-  const { pollId, pinNum } = useParams();
+  const [generatedPin, setGeneratedPin] = useState(null);
+  const { pollId } = useParams();
+  let { inputtedPin } = useParams();
 
   useEffect(() => {
     const fetchCurrentPoll = async () => {
@@ -34,8 +35,12 @@ const VoteForm = () => {
     return poll != null && poll.status === 'RUNNING';
   };
 
-  const checkPin = (pin, pinNum) => {
-    return pin === pinNum;
+  const pollIsClosed = () => {
+    return poll != null && poll.status === 'ARCHIVED';
+  }
+
+  const isPinIncorrect = (generatedPin, inputtedPin) => {
+    return generatedPin !== inputtedPin;
   }
 
   return (
@@ -47,13 +52,10 @@ const VoteForm = () => {
             <Link to="/">
               <Image src={homeicon} className="home-btn" />
             </Link>
-
           </Card.Title>
           <Card.Title className="card-description">
             {poll.question}
-            <Card.Text className="poll-id">
-              ID: {pollId}
-            </Card.Text>
+            <Card.Text className="poll-id">ID: {pollId}</Card.Text>
           </Card.Title>
           <Card className="card-body">
             {!voted ? (
@@ -79,10 +81,9 @@ const VoteForm = () => {
                   disabled={chosenAnswer == null}
                   onClick={() => {
                     setVoted(true);
-                    vote(pollId, chosenAnswer, pinNum)
-                      .then((responseData) => {
-                        setPin(responseData)
-                      });
+                    vote(pollId, chosenAnswer, inputtedPin).then((responseData) => {
+                      setGeneratedPin(responseData);
+                    });
                   }}
                 >
                   vote
@@ -104,13 +105,14 @@ const VoteForm = () => {
                     </div>
                   </div>
                 </Form>
-                {checkPin() ? (
+                {isPinIncorrect(generatedPin, inputtedPin) ? (
                   <div className="no-results">
-                    Your pin # to revote for this poll is: <br/> {pin}
+                    Pin not found. Your new generated pin # to revote for this
+                    poll is: <br /> {generatedPin}
                   </div>
                 ) : (
                   <div className="no-results">
-                    Pin not found. Your new generated pin # to revote for this poll is: <br/> {pin}
+                    Your pin # to revote for this poll is: <br /> {generatedPin}
                   </div>
                 )}
                 <Button
@@ -118,34 +120,47 @@ const VoteForm = () => {
                   onClick={() => {
                     setVoted(false);
                     setChosenAnswer(null);
+                    history.push(`/vote/${pollId}/${generatedPin}`);
                   }}
                 >
                   revote
                 </Button>
-                <Link
-                  className="btn-1 change-poll"
-                  to="/requestPoll"
-                >
+                <Link className="btn-1 change-poll" to="/requestPoll">
                   change poll
                 </Link>
               </div>
             )}
           </Card>
         </Card>
-      ) : (
+      ) : (!pollIsClosed() ? (
         <Card className="card-title-div">
           <Card.Title className="card-title">
-            No Open Poll
+            Poll is not open
             <Link to="/">
               <Image src={homeicon} className="home-btn" />
             </Link>
           </Card.Title>
           <Card className="card-body">
             <div className="no-results">
-              There isn't a running poll yet. Come back later!
+              The poll with the ID: {pollId} is not open yet. Please come back later!
             </div>
           </Card>
         </Card>
+      ) : (
+        <Card className="card-title-div">
+          <Card.Title className="card-title">
+            Poll is closed
+            <Link to="/">
+              <Image src={homeicon} className="home-btn" />
+            </Link>
+          </Card.Title>
+          <Card className="card-body">
+            <div className="no-results">
+              The poll with the ID: {pollId} is closed. Please vote for another poll!
+            </div>
+          </Card>
+        </Card>
+        )
       )}
     </div>
   );
