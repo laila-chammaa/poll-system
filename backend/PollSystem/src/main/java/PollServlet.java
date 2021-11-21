@@ -121,6 +121,7 @@ public class PollServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pollId = request.getParameter("pollId");
         String creator = request.getParameter("creator");
+        String email = (String) request.getSession().getAttribute("email");
         // You must tell the browser the file type you are going to send
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -132,14 +133,17 @@ public class PollServlet extends HttpServlet {
 
         try {
             String json;
-            if (creator != null) {
+            if (email != null && email.equals(creator)) {
                 List<Poll> pollList = pollManager.getAllPollsByUser(creator);
                 json = new Gson().toJson(pollList);
-
-            } else {
+            } else if (pollId != null) {
                 Poll poll = pollManager.accessPoll(pollId);
                 json = new Gson().toJson(poll);
 
+            } else {
+                Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation.");
+                ServletUtil.handleError(e.getMessage(), response);
+                return;
             }
             OutputStream out = response.getOutputStream();
             out.write(json.getBytes(StandardCharsets.UTF_8));

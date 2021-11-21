@@ -149,7 +149,9 @@ const PollForm = ({
                 onClick={async (e) => {
                   e.preventDefault();
                   let pollId = await createPoll(poll);
-                  history.push(`/details/${pollId}`);
+                  if (pollId) {
+                    history.push(`/details/${pollId}`);
+                  }
                 }}
               >
                 {poll.status ? 'update' : 'create'}
