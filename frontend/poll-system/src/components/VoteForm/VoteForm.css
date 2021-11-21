@@ -3,7 +3,7 @@
   padding: 20px 30px;
 }
 
-.card-title-div .card-body {
+.card-title-div .card-div-body {
   background-color: #fffeff;
   border-radius: 25px 25px 0px 0px;
   box-shadow: 0px -1px 15px 1px rgba(0, 0, 0, 0.18);
@@ -11,6 +11,8 @@
 
 .choice-list .choice {
   padding-bottom: 20px;
+  text-align: start;
+  padding-left: 10px;
 }
 
 .choice-list .choice-description {
@@ -18,7 +20,7 @@
   color: rgb(82, 82, 82);
 }
 
-.card-body .btn-1 {
+.card-div-body .btn-1 {
   padding: 10px 16px;
   border-radius: 90px;
   position: absolute;
@@ -29,7 +31,7 @@
   letter-spacing: -1px;
 }
 
-.card-body .btn-2 {
+.card-div-body .btn-2 {
   padding: 10px 16px;
   border-radius: 90px;
   position: absolute;
@@ -43,7 +45,7 @@
   text-decoration: none;
 }
 
-.card-title-div .card-body .btn-2:hover {
+.card-title-div .card-div-body .btn-2:hover {
   background-color: #0655cc;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -53,7 +55,7 @@
   transition-delay: 0s, 0s, 0s, 0s;
 }
 
-.card-body .no-results {
+.card-div-body .no-results {
   font-size: 22px;
   display: flex;
   margin-top: 20%;
@@ -74,17 +76,17 @@
   color: gray;
 }
 
-.card-body .change-poll {
+.card-div-body .change-poll {
   right: 85px;
   background-color: #0d6efd;
   color: white;
   text-decoration: none;
 }
 
-.card-body .change-poll:hover {
+.card-div-body .change-poll:hover {
   background-color: #0655cc;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   transition-property: color, background-color, border-color, box-shadow;
   transition-duration: 0.15s, 0.15s, 0.15s, 0.15s;
   transition-timing-function: ease-in-out, ease-in-out, ease-in-out, ease-in-out;

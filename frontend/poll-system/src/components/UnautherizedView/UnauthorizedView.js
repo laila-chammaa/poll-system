@@ -1,4 +1,3 @@
-import './UnauthorizedView.css';
 import '../../Cards.css';
 import { Card } from 'react-bootstrap';
 import React from 'react';

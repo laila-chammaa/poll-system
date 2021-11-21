@@ -26,7 +26,7 @@ const VoteForm = () => {
 
   if (poll != null && poll.status === 'RELEASED') {
     history.push({
-      pathname: '/results',
+      pathname: `/results/${pollId}`,
       state: { admin: false }
     });
   }
@@ -37,11 +37,12 @@ const VoteForm = () => {
 
   const pollIsClosed = () => {
     return poll != null && poll.status === 'ARCHIVED';
-  }
+  };
 
   const isPinIncorrect = (generatedPin, inputtedPin) => {
+    console.log(generatedPin + '  ' + inputtedPin);
     return generatedPin !== inputtedPin;
-  }
+  };
 
   return (
     <div className="main-div">
@@ -57,7 +58,7 @@ const VoteForm = () => {
             {poll.question}
             <Card.Text className="poll-id">ID: {pollId}</Card.Text>
           </Card.Title>
-          <Card className="card-body">
+          <Card className="card-div-body">
             {!voted ? (
               <div>
                 <Form className="choice-list">
@@ -81,9 +82,11 @@ const VoteForm = () => {
                   disabled={chosenAnswer == null}
                   onClick={() => {
                     setVoted(true);
-                    vote(pollId, chosenAnswer, inputtedPin).then((responseData) => {
-                      setGeneratedPin(responseData);
-                    });
+                    vote(pollId, chosenAnswer, inputtedPin).then(
+                      (responseData) => {
+                        setGeneratedPin(responseData);
+                      }
+                    );
                   }}
                 >
                   vote
@@ -132,7 +135,7 @@ const VoteForm = () => {
             )}
           </Card>
         </Card>
-      ) : (!pollIsClosed() ? (
+      ) : !pollIsClosed() ? (
         <Card className="card-title-div">
           <Card.Title className="card-title">
             Poll is not open
@@ -140,9 +143,10 @@ const VoteForm = () => {
               <Image src={homeicon} className="home-btn" />
             </Link>
           </Card.Title>
-          <Card className="card-body">
+          <Card className="card-div-body">
             <div className="no-results">
-              The poll with the ID: {pollId} is not open yet. Please come back later!
+              The poll with the ID: {pollId} is not open yet. Please come back
+              later!
             </div>
           </Card>
         </Card>
@@ -154,13 +158,13 @@ const VoteForm = () => {
               <Image src={homeicon} className="home-btn" />
             </Link>
           </Card.Title>
-          <Card className="card-body">
+          <Card className="card-div-body">
             <div className="no-results">
-              The poll with the ID: {pollId} is closed. Please vote for another poll!
+              The poll with the ID: {pollId} is closed. Please vote for another
+              poll!
             </div>
           </Card>
         </Card>
-        )
       )}
     </div>
   );
