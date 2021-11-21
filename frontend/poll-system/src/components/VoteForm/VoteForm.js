@@ -39,7 +39,7 @@ const VoteForm = () => {
     return poll != null && poll.status === 'ARCHIVED';
   }
 
-  const checkPin = (generatedPin, inputtedPin) => {
+  const isPinIncorrect = (generatedPin, inputtedPin) => {
     return generatedPin !== inputtedPin;
   }
 
@@ -105,7 +105,7 @@ const VoteForm = () => {
                     </div>
                   </div>
                 </Form>
-                {checkPin(generatedPin, inputtedPin) ? (
+                {isPinIncorrect(generatedPin, inputtedPin) ? (
                   <div className="no-results">
                     Pin not found. Your new generated pin # to revote for this
                     poll is: <br /> {generatedPin}
