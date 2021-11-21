@@ -68,7 +68,6 @@ public class PollServlet extends HttpServlet {
                     ServletUtil.handleError(e.getMessage(), response);
                     return;
                 }
-
             }
             //returning poll ID
             OutputStream out = response.getOutputStream();
