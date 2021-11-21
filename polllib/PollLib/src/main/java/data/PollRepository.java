@@ -6,8 +6,6 @@ import model.Vote;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.io.IOException;
-import java.io.InputStream;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.io.InputStream;
