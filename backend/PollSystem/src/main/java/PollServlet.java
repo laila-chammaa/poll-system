@@ -68,7 +68,6 @@ public class PollServlet extends HttpServlet {
                     ServletUtil.handleError(e.getMessage(), response);
                     return;
                 }
-
             }
             //returning poll ID
             OutputStream out = response.getOutputStream();
@@ -121,7 +120,6 @@ public class PollServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String pollId = request.getParameter("pollId");
         String creator = request.getParameter("creator");
-        String email = (String) request.getSession().getAttribute("email");
         // You must tell the browser the file type you are going to send
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -130,6 +128,7 @@ public class PollServlet extends HttpServlet {
                 "max-age=0, must-revalidate, no-cache, no-store, private, post-check=0, pre-check=0"); // HTTP 1.1
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0
         response.setDateHeader("Expires", 0); // prevents caching at the proxy server
+        String email = (String) request.getSession().getAttribute("email");
 
         try {
             String json;
@@ -139,7 +138,6 @@ public class PollServlet extends HttpServlet {
             } else if (pollId != null) {
                 Poll poll = pollManager.accessPoll(pollId);
                 json = new Gson().toJson(poll);
-
             } else {
                 Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation.");
                 ServletUtil.handleError(e.getMessage(), response);
