@@ -46,7 +46,12 @@ public class PollServlet extends HttpServlet {
         for (int i = 0; i < choicesArray.length(); ++i) {
             JSONObject choice = choicesArray.getJSONObject(i);
             String text = choice.getString("text");
-            String description = choice.getString("description");
+            String description = null;
+            try {
+                description = choice.getString("description");
+            } catch (JSONException e) {
+
+            }
             choiceList.add(new Choice(text, description));
         }
         if (email == null) {
