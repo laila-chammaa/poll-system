@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Properties;
 
 public class PollRepository {
-    //TODO: figure out connection per session
     Connection connection;
 
     @PersistenceContext

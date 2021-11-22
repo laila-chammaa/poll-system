@@ -1,10 +1,26 @@
+import com.google.gson.Gson;
 import data.PollRepository;
 import model.Choice;
 import model.Poll;
 import model.PollStatus;
 import model.Vote;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.bind.JAXB;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -229,13 +245,19 @@ public class PollManager {
             if (format.equals("text")) {
                 output.write(poll.toString());
             } else if (format.equals("json")) {
-                output.write(poll.toStringJSON());
+                output.write(new Gson().toJson(poll));
             } else  if (format.equals("xml")) {
-                output.write(poll.toStringXML());
+                output.write(toStringXML(poll));
             }
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not released. Cannot download details of an unreleased poll", poll.getName()));
         }
+    }
+
+    private String toStringXML(Poll poll) {
+        StringWriter sw = new StringWriter();
+        JAXB.marshal(poll, sw);
+        return sw.toString();
     }
 }

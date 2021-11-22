@@ -15,17 +15,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -155,88 +144,5 @@ public class Poll {
                 ", choices=" + choices +
                 ", votes=" + votes +
                 '}';
-    }
-
-    public String toStringJSON() {
-        //Initializing the JSON package
-        JSONObject obj = new JSONObject();
-        JSONArray choiceList = new JSONArray();
-        JSONArray votesList = new JSONArray();
-        //Adding the choice in a JSON array
-        choiceList.add(choices);
-        votesList.add(votes);
-
-        //Adding to a JSONobject
-        obj.put("Poll", id);
-        obj.put("Time created", timeCreated);
-        obj.put("Name", name);
-        obj.put("Question ", question);
-        obj.put("Created by", createdBy);
-        obj.put("Choices", choiceList);
-        obj.put("Votes", votesList);
-
-        return obj.toString();
-    }
-
-    public String toStringXML() {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        String output = "";
-        try {
-            DocumentBuilder builder = dbf.newDocumentBuilder();
-            Document doc = builder.newDocument();
-            //Create root node
-            Element root = doc.createElement("Poll");
-            doc.appendChild(root);
-            //Create poll
-            Element poll = doc.createElement("Poll");
-            root.appendChild(poll);
-            //Create pollID
-            Element pollID = doc.createElement("PollID");
-            pollID.appendChild(doc.createTextNode(id));
-            poll.appendChild(pollID);
-            //Create time creation
-            Element timeCreation = doc.createElement("TimeCreated");
-            timeCreation.appendChild(doc.createTextNode(timeCreated));
-            poll.appendChild(timeCreation);
-            //Create name
-            Element namePoll = doc.createElement("Name");
-            namePoll.appendChild(doc.createTextNode(name));
-            poll.appendChild(namePoll);
-            //Create name
-            Element questionPoll = doc.createElement("Question");
-            questionPoll.appendChild(doc.createTextNode(question));
-            poll.appendChild(questionPoll);
-            //Create name
-            Element statusPoll = doc.createElement("Status");
-            statusPoll.appendChild(doc.createTextNode(status.toString()));
-            poll.appendChild(statusPoll);
-            //Create userCreation
-            Element userCreation = doc.createElement("CreatedBy");
-            userCreation.appendChild(doc.createTextNode(createdBy));
-            poll.appendChild(userCreation);
-            //Create choices
-            Element choicePoll = doc.createElement("Choices");
-            choicePoll.appendChild(doc.createTextNode(choices.toString()));
-            poll.appendChild(choicePoll);
-            //Create votes
-            Element votesPoll = doc.createElement("Votes");
-            votesPoll.appendChild(doc.createTextNode(votes.toString()));
-            poll.appendChild(votesPoll);
-
-            //Write temp to file
-            DOMSource source = new DOMSource(doc);
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            StringWriter writer = new StringWriter();
-            transformer.transform(source, new StreamResult(writer));
-            output = writer.getBuffer().toString();
-
-        } catch (ParserConfigurationException | TransformerException ex) {
-            ex.printStackTrace();
-        }
-
-        return output;
     }
 }
