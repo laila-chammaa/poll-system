@@ -1,12 +1,7 @@
 import './RequestPoll.css';
 import '../../Cards.css';
 import homeicon from '../../homeicon.png';
-import {
-  Button,
-  Card,
-  Form,
-  Image,
-} from 'react-bootstrap';
+import { Button, Card, Form, Image } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import React, { useState } from 'react';
 import { fetchPoll } from '../../api';
@@ -19,19 +14,17 @@ const RequestPoll = () => {
   const [displayIncorrectPollID, setIncorrectPollID] = useState(false);
 
   const checkPoll = async () => {
-    let pollId = pollIDInput.current.value
-    let pollResult = await fetchPoll(pollId)
-    if(pollResult) {
+    let pollId = pollIDInput.current.value;
+    let pollResult = await fetchPoll(pollId);
+    if (pollResult) {
       setIncorrectPollID(false);
-      if(pinNumInput.current != null) {
-        let pinNum = pinNumInput.current.value
-        history.push(`/vote/${pollId}/${pinNum}`)
+      if (pinNumInput.current != null) {
+        let inputtedPin = pinNumInput.current.value;
+        history.push(`/vote/${pollId}/${inputtedPin}`);
+      } else {
+        history.push(`/vote/${pollId}`);
       }
-      else {
-        history.push(`/vote/${pollId}`)
-      }
-    }
-    else{
+    } else {
       setIncorrectPollID(true);
     }
   };
@@ -76,7 +69,7 @@ const RequestPoll = () => {
               id="request-btn"
               onClick={async () => {
                 if (pollIDInput.current != null) {
-                  checkPoll()
+                  checkPoll();
                 } else {
                   setIncorrectPollID(true);
                 }
@@ -86,7 +79,9 @@ const RequestPoll = () => {
             </Button>
           </Form>
           {displayIncorrectPollID ? (
-            <Card.Text id="incorrectMessage">No such poll exists with that ID!</Card.Text>
+            <Card.Text id="incorrectMessage">
+              No such poll exists with that ID!
+            </Card.Text>
           ) : (
             <Card.Text></Card.Text>
           )}

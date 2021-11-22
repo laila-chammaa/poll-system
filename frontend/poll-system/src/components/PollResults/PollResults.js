@@ -13,8 +13,7 @@ const PollResults = () => {
   const [poll, setPoll] = useState(null);
   const [results, setResults] = useState(null);
   const { pollId } = useParams();
-  const downloadURL =
-    `http://localhost:8080/api/votes?pollId=${pollId}&format=text&download=true`;
+  const downloadURL = `http://localhost:8080/api/votes?pollId=${pollId}&format=text&download=true`;
 
   useEffect(() => {
     const getResults = async () => {
@@ -45,7 +44,7 @@ const PollResults = () => {
             <Image src={homeicon} className="home-btn" />
           </Link>
         </Card.Title>
-        <Card className="card-body">
+        <Card className="card-div-body">
           <div className="outer">
             {supportedCharts.map((c, i) => (
               <div key={i} className="inner">

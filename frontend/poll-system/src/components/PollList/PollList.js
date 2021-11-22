@@ -21,7 +21,9 @@ const PollList = () => {
         setPolls(listOfPolls);
       }
     };
-    fetchPolls();
+    if (user != null && user !== 'null') {
+      fetchPolls();
+    }
   }, [polls]);
 
   return (

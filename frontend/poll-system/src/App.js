@@ -23,7 +23,7 @@ function App() {
           <Route path="/login">
             <AdminLogin />
           </Route>
-          <Route path="/vote/:pollId/:pinNum?">
+          <Route path="/vote/:pollId/:inputtedPin?">
             <VoteForm />
           </Route>
           <Route path="/results/:pollId">
