@@ -6,7 +6,6 @@ import model.Vote;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -20,7 +19,6 @@ import java.util.Properties;
 public class PollRepository {
     Connection connection;
 
-    @PersistenceContext
     private EntityManager entityManager;
 
     public PollRepository() {

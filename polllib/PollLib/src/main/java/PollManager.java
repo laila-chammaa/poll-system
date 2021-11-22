@@ -1,10 +1,13 @@
+import com.google.gson.Gson;
 import data.PollRepository;
 import model.Choice;
 import model.Poll;
 import model.PollStatus;
 import model.Vote;
 
+import javax.xml.bind.JAXB;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -221,15 +224,27 @@ public class PollManager {
         }
     }
 
-    public void downloadPollDetails(String pollId, PrintWriter output, String creator) throws
+    public void downloadPollDetails(String pollId, PrintWriter output, String creator, String format) throws
             PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RELEASED ||
                 (poll.getStatus() == PollStatus.ARCHIVED && creator.equals(poll.getCreatedBy()))) {
-            output.write(poll.toString());
+            if (format.equals("text")) {
+                output.write(poll.toString());
+            } else if (format.equals("json")) {
+                output.write(new Gson().toJson(poll));
+            } else  if (format.equals("xml")) {
+                output.write(toStringXML(poll));
+            }
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not released. Cannot download details of an unreleased poll", poll.getName()));
         }
+    }
+
+    private String toStringXML(Poll poll) {
+        StringWriter sw = new StringWriter();
+        JAXB.marshal(poll, sw);
+        return sw.toString();
     }
 }

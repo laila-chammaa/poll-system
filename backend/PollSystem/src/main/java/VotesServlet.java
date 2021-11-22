@@ -52,7 +52,7 @@ public class VotesServlet extends HttpServlet {
         String pollId = request.getParameter("pollId");
         String email = (String) request.getSession().getAttribute("email");
 
-        if (download.equals("true") && format.equals("text")) {
+        if (download.equals("true") && (format.equals("text") || format.equals("json") || format.equals("xml"))) {
             download(pollId, format, email, response);
         } else {
             try {
@@ -97,7 +97,19 @@ public class VotesServlet extends HttpServlet {
     }
 
     private void download(String pollId, String format, String creator, HttpServletResponse response) throws IOException {
-        String fileExtension = "txt";
+        String fileExtension = "";
+
+        switch (format) {
+            case "text":
+                fileExtension = "txt";
+                break;
+            case "json":
+                fileExtension = "json";
+                break;
+            case "xml":
+                fileExtension = "xml";
+                break;
+        }
 
         // You must tell the browser the file type you are going to send
         response.setContentType(format);
@@ -116,7 +128,7 @@ public class VotesServlet extends HttpServlet {
 
         try {
             PrintWriter out = response.getWriter();
-            pollManager.downloadPollDetails(pollId, out, creator);
+            pollManager.downloadPollDetails(pollId, out, creator, format);
             out.flush();
             out.close();
         } catch (IOException | PollException.IllegalPollOperation e) {

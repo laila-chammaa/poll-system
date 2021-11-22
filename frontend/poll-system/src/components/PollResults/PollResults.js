@@ -1,7 +1,7 @@
 import './PollResults.css';
 import '../../Cards.css';
 import homeicon from '../../homeicon.png';
-import { Card, Button, Image } from 'react-bootstrap';
+import { Card, Button, Image, Modal } from 'react-bootstrap';
 import Chart from 'react-google-charts';
 import { useLocation, useHistory, Link, useParams } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
@@ -12,8 +12,9 @@ const PollResults = () => {
   const supportedCharts = ['ColumnChart', 'PieChart'];
   const [poll, setPoll] = useState(null);
   const [results, setResults] = useState(null);
+  const [downloadShow, setDownloadShow] = useState(false);
   const { pollId } = useParams();
-  const downloadURL = `http://localhost:8080/api/votes?pollId=${pollId}&format=text&download=true`;
+  const baseDownloadURL = `http://localhost:8080/api/votes?pollId=${pollId}&download=true`;
 
   useEffect(() => {
     const getResults = async () => {
@@ -76,9 +77,44 @@ const PollResults = () => {
               }}
             />
           </div>
-          <a href={downloadURL} className="btn-1 download">
+          <Button
+            onClick={() => setDownloadShow(true)}
+            className="btn-1 download"
+          >
             download
-          </a>
+          </Button>
+          <Modal
+            animation={false}
+            size="sm"
+            show={downloadShow}
+            onHide={() => setDownloadShow(false)}
+            aria-labelledby="example-modal-sizes-title-sm"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Download Format</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Please choose the format for your file.</Modal.Body>
+            <Modal.Footer>
+              <a
+                href={baseDownloadURL + '&format=text'}
+                className="download-btn"
+              >
+                Text
+              </a>
+              <a
+                href={baseDownloadURL + '&format=json'}
+                className="download-btn"
+              >
+                Json
+              </a>
+              <a
+                href={baseDownloadURL + '&format=xml'}
+                className="download-btn"
+              >
+                Xml
+              </a>
+            </Modal.Footer>
+          </Modal>
           {admin ? (
             <div>
               <Button
