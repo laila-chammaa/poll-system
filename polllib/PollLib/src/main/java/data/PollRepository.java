@@ -8,7 +8,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.io.IOException;
 import java.io.InputStream;
-import javax.persistence.PersistenceContext;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -20,7 +19,6 @@ import java.util.Properties;
 public class PollRepository {
     Connection connection;
 
-    @PersistenceContext
     private EntityManager entityManager;
 
     public PollRepository() {
