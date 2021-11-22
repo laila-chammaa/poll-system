@@ -17,6 +17,16 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -150,11 +160,11 @@ public class Poll {
     public String toStringJSON() {
         //Initializing the JSON package
         JSONObject obj = new JSONObject();
-        JSONArray list = new JSONArray();
-        JSONArray list2 = new JSONArray();
+        JSONArray choiceList = new JSONArray();
+        JSONArray votesList = new JSONArray();
         //Adding the choice in a JSON array
-        list.add(choices);
-        list2.add(votes);
+        choiceList.add(choices);
+        votesList.add(votes);
 
         //Adding to a JSONobject
         obj.put("Poll", id);
@@ -162,12 +172,10 @@ public class Poll {
         obj.put("Name", name);
         obj.put("Question ", question);
         obj.put("Created by", createdBy);
-        obj.put("Choices", list);
-        obj.put("Votes", list2);
+        obj.put("Choices", choiceList);
+        obj.put("Votes", votesList);
 
-        String jsonFormat = obj.toString();
-
-        return jsonFormat;
+        return obj.toString();
     }
 
     public String toStringXML() {
@@ -224,7 +232,6 @@ public class Poll {
             StringWriter writer = new StringWriter();
             transformer.transform(source, new StreamResult(writer));
             output = writer.getBuffer().toString();
-
 
         } catch (ParserConfigurationException | TransformerException ex) {
             ex.printStackTrace();

@@ -38,3 +38,7 @@
 .card-div-body .btn-1.unrelease {
   right: 285px;
 }
+
+.card-div-body .download-btn {
+  border-style: solid;
+}

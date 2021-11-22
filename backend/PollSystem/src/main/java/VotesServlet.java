@@ -1,25 +1,17 @@
 import com.google.gson.Gson;
 import model.Choice;
-import model.Poll;
-import model.PollStatus;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Optional;
 
 @WebServlet(name = "VotesServlet", urlPatterns = "/api/votes")
@@ -27,7 +19,7 @@ public class VotesServlet extends HttpServlet {
 
     PollManager pollManager = new PollManager();
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //get the vote sent by the user
         String choiceName = request.getParameter("choice");
         String pollId = request.getParameter("pollId");
@@ -35,27 +27,39 @@ public class VotesServlet extends HttpServlet {
 
         Optional<Choice> choice = pollManager.accessPoll(pollId).getChoices()
                 .stream().filter(c -> c.getText().equals(choiceName)).findFirst();
-        if (choice.isPresent()) {
-            // returns pin since it might be generated
-            pin = pollManager.vote(pin, pollId, choice.get());
-            String json = new Gson().toJson(pin);
-            OutputStream out = response.getOutputStream();
-            out.write(json.getBytes(StandardCharsets.UTF_8));
-            out.flush();
-            out.close();
-        } else {
-            throw new PollException.InvalidParam(String.format("Invalid choice, choice %s is not found", choiceName));
+        try {
+            if (choice.isPresent()) {
+                // returns pin since it might be generated
+
+                pin = pollManager.vote(pin, pollId, choice.get());
+
+                String json = new Gson().toJson(pin);
+                OutputStream out = response.getOutputStream();
+                out.write(json.getBytes(StandardCharsets.UTF_8));
+                out.flush();
+                out.close();
+            } else {
+                throw new PollException.InvalidParam(String.format("Invalid choice, choice %s is not found", choiceName));
+            }
+        } catch (PollException.IllegalPollOperation | PollException.ChoiceNotFound | PollException.InvalidParam e) {
+            ServletUtil.handleError(e.getMessage(), response);
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String download = request.getParameter("download");
         String format = request.getParameter("format");
         String pollId = request.getParameter("pollId");
-        if (download.equals("true") && format.equals("text")) {
-            download(pollId, format, response);
+        String email = (String) request.getSession().getAttribute("email");
+
+        if (download.equals("true") && (format.equals("text") || format.equals("json") || format.equals("xml"))) {
+            download(pollId, format, email, response);
         } else {
-            sendResults(pollManager.getPollResults(pollId), response);
+            try {
+                sendResults(pollManager.getPollResults(pollId, email), response);
+            } catch (PollException.IllegalPollOperation e) {
+                ServletUtil.handleError(e.getMessage(), response);
+            }
         }
     }
 
@@ -92,16 +96,26 @@ public class VotesServlet extends HttpServlet {
         }
     }
 
-    private void download(String pollId, String format, HttpServletResponse response) throws IOException {
-        String fileExtension = "json";
+    private void download(String pollId, String format, String creator, HttpServletResponse response) throws IOException {
+        String fileExtension = "";
+
+        switch (format) {
+            case "text":
+                fileExtension = "txt";
+                break;
+            case "json":
+                fileExtension = "json";
+                break;
+            case "xml":
+                fileExtension = "xml";
+                break;
+        }
 
         // You must tell the browser the file type you are going to send
         response.setContentType(format);
         String headerKey = "Content-disposition";
         String name = pollManager.accessPoll(pollId).getName();
         String date = LocalDateTime.now().toString();
-        String createdBy = pollManager.accessPoll(pollId).getCreatedBy();
-        String question = pollManager.accessPoll(pollId).getQuestion();
         String fileName = String.format("%s-%s.%s", name, date, fileExtension);
         String headerVal = String.format("attachment; filename=%s", fileName);
         response.setHeader(headerKey, headerVal);
@@ -112,30 +126,13 @@ public class VotesServlet extends HttpServlet {
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0
         response.setDateHeader("Expires", 0); // prevents caching at the proxy server
 
-        JSONObject obj = new JSONObject();
-        JSONArray list = new JSONArray();
-
-        list.add(pollManager.accessPoll(pollId).getChoices());
-
-
-        obj.put("Poll", pollId);
-        obj.put("Time created", date);
-        obj.put("Name", name);
-        obj.put("Question ", question);
-        obj.put("Created by", createdBy);
-        obj.put("Choices", list);
-
         try {
             PrintWriter out = response.getWriter();
-//            pollManager.downloadPollDetails(pollId, out, fileName);
-            out.write(obj.toString());
+            pollManager.downloadPollDetails(pollId, out, creator, format);
             out.flush();
             out.close();
-
-//        } catch (IOException | PollException.IllegalPollOperation e)
-        }catch (IOException e){
+        } catch (IOException | PollException.IllegalPollOperation e) {
             throw new IOException(String.format("Failed to download file %s", name), e);
         }
-
     }
 }

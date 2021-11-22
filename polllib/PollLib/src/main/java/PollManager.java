@@ -221,12 +221,18 @@ public class PollManager {
         }
     }
 
-    public void downloadPollDetails(String pollId, PrintWriter output, String creator) throws
+    public void downloadPollDetails(String pollId, PrintWriter output, String creator, String format) throws
             PollException.IllegalPollOperation {
         Poll poll = accessPoll(pollId);
         if (poll.getStatus() == PollStatus.RELEASED ||
                 (poll.getStatus() == PollStatus.ARCHIVED && creator.equals(poll.getCreatedBy()))) {
-            output.write(poll.toString());
+            if (format.equals("text")) {
+                output.write(poll.toString());
+            } else if (format.equals("json")) {
+                output.write(poll.toStringJSON());
+            } else  if (format.equals("xml")) {
+                output.write(poll.toStringXML());
+            }
         } else {
             throw new PollException.IllegalPollOperation(String.format(
                     "Poll %s is not released. Cannot download details of an unreleased poll", poll.getName()));
