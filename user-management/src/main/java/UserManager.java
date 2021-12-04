@@ -1,5 +1,3 @@
-
-import model.User;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -10,6 +8,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class UserManager {
     private ArrayList<User> listOfUsers;
@@ -43,7 +42,73 @@ public class UserManager {
         }
     }
 
-    public boolean userAuthentication(String email, String password) {
+    public boolean signup(String email, String name, String password) {
+        String encryptedPw = encryptPassword(password);
+
+        for (User user : listOfUsers) {
+            if (user.getEmail().equals(email)) {
+                //user already there
+                return false;
+            }
+        }
+
+        User newUser = new User("", name, email, encryptedPw);
+        //TODO:
+        // append to JSON
+        // generate userID
+        // send email for verification
+        return verifyEmail(newUser);
+    }
+
+    // used for both signups and forgot password processes to send a verification email to user using gateway
+    // and set the record as valid
+    public boolean verifyEmail(User newUser) {
+        //TODO: use gateway to send email
+        newUser.setValid(true);
+        return true;
+    }
+
+    public boolean forgotPassword(String email, String oldPass) {
+        //validate that it's the correct user
+        Optional<User> user = findUser(email, oldPass);
+        if (!user.isPresent()) {
+            return false;
+        }
+
+        //sending verification token
+        if (!verifyEmail(user.get())) {
+            return false;
+        }
+        //TODO: do we get the new password from the user after they verify?
+        //user.setPassword(encryptedNewPass);
+        return true;
+    }
+
+    public boolean changePassword(String email, String oldPass, String newPass) {
+        //validate that it's the correct user
+        Optional<User> user = findUser(email, oldPass);
+        if (!user.isPresent()) {
+            return false;
+        }
+
+        String encryptedNewPass = encryptPassword(newPass);
+
+        user.get().setPassword(encryptedNewPass);
+        return true;
+    }
+
+    public Optional<User> findUser(String email, String password) {
+        String encryptedPw = encryptPassword(password);
+
+        for (User user : listOfUsers) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(encryptedPw)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public boolean authenticateUser(String email, String password) {
         String encryptedPw = encryptPassword(password);
 
         for (User user : listOfUsers) {
