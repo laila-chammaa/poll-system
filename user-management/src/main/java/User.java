@@ -1,5 +1,3 @@
-package model;
-
 import java.util.Objects;
 
 public class User {
@@ -8,6 +6,7 @@ public class User {
     private String name;
     private String email;
     private String password;
+    private boolean valid;
 
     public User() {
     }
@@ -17,6 +16,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.valid = false;
     }
 
     public String getUserID() {
@@ -51,12 +51,21 @@ public class User {
         this.password = password;
     }
 
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(userID, user.userID) &&
+        return valid == user.valid &&
+                Objects.equals(userID, user.userID) &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(password, user.password);
@@ -64,7 +73,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userID, name, email, password);
+        return Objects.hash(userID, name, email, password, valid);
     }
 
     @Override
@@ -74,6 +83,7 @@ public class User {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", valid=" + valid +
                 '}';
     }
 }
