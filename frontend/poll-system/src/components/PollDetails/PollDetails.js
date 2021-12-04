@@ -170,6 +170,20 @@ const PollDetails = () => {
                       clear
                     </Button>
                   </div>
+                ) : poll.status === 'ARCHIVED' ? (
+                  <div>
+                    <Button
+                      className="btn-1 run"
+                      onClick={() => {
+                        history.push({
+                          pathname: `/results/${pollId}`,
+                          state: { admin: false }
+                        });
+                      }}
+                    >
+                      view results
+                    </Button>
+                  </div>
                 ) : null}
               </Card>
             </Card>

@@ -121,7 +121,7 @@ const PollResults = () => {
                 className="btn-2"
                 onClick={() => {
                   updatePollStatus('closed', pollId);
-                  history.push('/create');
+                  history.push('/userPolls');
                 }}
               >
                 close
