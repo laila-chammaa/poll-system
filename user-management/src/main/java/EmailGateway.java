@@ -23,11 +23,7 @@ public class EmailGateway {
     }
 
     public void send() {
-        Session session = Session.getInstance(getProps(), new javax.mail.Authenticator() {
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(from, password);
-            }
-        });
+        Session session = Session.getInstance(getProps(), getPasswordAuthentication());
 
         try {
             MimeMessage message = new MimeMessage(session);
@@ -50,6 +46,16 @@ public class EmailGateway {
         }
     }
 
+    // creating an Authenticator with the email and password from config
+    protected Authenticator getPasswordAuthentication() {
+        return new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, password);
+            }
+        };
+    }
+
+    // setting the mail server props
     private Properties getProps() {
         String host = "smtp.gmail.com";
         Properties properties = System.getProperties();
@@ -67,6 +73,7 @@ public class EmailGateway {
         return properties;
     }
 
+    // reading the sender email and pass from the config file in resources/sender.json
     public void getFromEmailPassword() {
         String filePath = "sender.json";
         JSONParser jsonParser = new JSONParser();
@@ -80,6 +87,7 @@ public class EmailGateway {
         }
     }
 
+    // separating the actual sending to another method for ease of testing
     int doSend(MimeMessage message) throws MessagingException {
         if (to == null || from == null) {
             return NULL_PARAMETER;
