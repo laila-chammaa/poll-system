@@ -62,7 +62,7 @@ public class UserManager {
 
     // used for both signups and forgot password processes to send a verification email to user using gateway
     // and set the record as valid
-    public boolean verifyEmail(User newUser) {
+    private boolean verifyEmail(User newUser) {
         //TODO: use gateway to send email
         newUser.setValid(true);
         return true;
@@ -97,7 +97,7 @@ public class UserManager {
         return true;
     }
 
-    public Optional<User> findUser(String email, String password) {
+    private Optional<User> findUser(String email, String password) {
         String encryptedPw = encryptPassword(password);
 
         for (User user : listOfUsers) {
@@ -119,7 +119,7 @@ public class UserManager {
         return false;
     }
 
-    public String encryptPassword(String password) {
+    private String encryptPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             byte[] messageDigest = md.digest(password.getBytes());
