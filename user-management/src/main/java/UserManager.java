@@ -19,8 +19,7 @@ public class UserManager {
     }
 
     public void loadListOfUsers() {
-
-        String filePath = "authentication/users.json";
+        String filePath = "users.json";
         JSONParser jsonParser = new JSONParser();
         JSONObject jsonObject;
 
@@ -56,6 +55,7 @@ public class UserManager {
         //TODO:
         // append to JSON
         // generate userID
+
         // send email for verification
         return verifyEmail(newUser);
     }
@@ -63,8 +63,14 @@ public class UserManager {
     // used for both signups and forgot password processes to send a verification email to user using gateway
     // and set the record as valid
     private boolean verifyEmail(User newUser) {
-        //TODO: use gateway to send email
-        newUser.setValid(true);
+        //TODO: use factory plugin to create the gateway object?
+        EmailGateway gateway = new EmailGateway(newUser.getEmail());
+        try {
+//        gateway.sendEmail();
+            newUser.setValid(true);
+        } catch (Exception e) {
+            //sending didn't work? try again?
+        }
         return true;
     }
 

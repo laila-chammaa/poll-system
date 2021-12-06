@@ -23,31 +23,26 @@ public class EmailGateway {
     }
 
     public void send() {
-        // Get the default Session object.
         Session session = Session.getInstance(getProps(), new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(from, password);
             }
         });
 
-        session.setDebug(true);
-
         try {
-            // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
-            // Set From: header field of the header.
             message.setFrom(new InternetAddress(from));
-            // Set To: header field of the header.
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            // Set Subject: header field
             message.setSubject("poll-system: validate your email");
-            // Now set the actual message
             message.setText("This is actual message");
 
             // Send message
             int returnCode = doSend(message);
             if (returnCode == NULL_PARAMETER)
                 throw new NullPointerException("Null Parameter passed for to or from: " + to + from);
+            else if (returnCode != SUCCESS) {
+                throw new IllegalStateException("Unexpected error from emailing system #:" + returnCode);
+            }
 
             System.out.println("Sent message successfully.");
         } catch (MessagingException mex) {
@@ -58,20 +53,16 @@ public class EmailGateway {
     private Properties getProps() {
         String host = "smtp.gmail.com";
         Properties properties = System.getProperties();
+        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
         // Setup mail server
         properties.put("mail.smtp.host", host);
         properties.put("mail.smtp.port", "465");
         properties.put("mail.smtp.ssl.enable", "true");
         properties.put("mail.smtp.auth", "true");
-
-        final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-        properties.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
-        properties.setProperty("mail.smtp.socketFactory.fallback", "false");
-        properties.setProperty("mail.smtp.socketFactory.port", "465");
-        properties.put("mail.debug", "true");
-        properties.put("mail.store.protocol", "pop3");
-        properties.put("mail.transport.protocol", "smtp");
+        properties.put("mail.smtp.socketFactory.class", SSL_FACTORY);
+        properties.put("mail.smtp.socketFactory.fallback", "false");
+        properties.put("mail.smtp.socketFactory.port", "465");
 
         return properties;
     }
