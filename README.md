@@ -11,7 +11,18 @@
 
 5. Create polllib.jar by building the polllib project separately. Make sure you're generating a jar by going to File -> Project Structure -> Artifacts -> + JAR
 
-5. Include the polllib.jar in your libraries by clicking File -> Project Structure -> Libraries.
+6. Include the polllib.jar in your libraries by clicking File -> Project Structure -> Libraries.
+
+7. To setup the DB:
+
+      a. create local sql server
+   
+      b. connect thro intellij datasource
+   
+      c. add your database password to resources/META-INF/persistence.xml in the password prop
+      
+8. to get sending emails working, create a sender.json with a valid email+password in the user-management/resources dir
+
 
 ### Frontend:
 
