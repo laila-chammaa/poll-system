@@ -1,4 +1,5 @@
 import com.google.gson.Gson;
+import model.IUserManager;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
-    UserManager userManager = new UserManager();
+    IUserManager userManager = new UserManager(); //TODO: use plugin factory to do this
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -22,7 +23,7 @@ public class LoginServlet extends HttpServlet {
         OutputStream out = response.getOutputStream();
         String result;
 
-        if (userManager.userAuthentication(email, password)) {
+        if (userManager.authenticateUser(email, password)) {
             session.setAttribute("email", email);
             result = new Gson().toJson(true);
         } else {
@@ -32,6 +33,5 @@ public class LoginServlet extends HttpServlet {
         out.write(result.getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();
-
     }
 }

@@ -1,26 +1,20 @@
-package model;
-
 import java.util.Objects;
 
 public class User {
 
-    private String userID;
     private String name;
     private String email;
     private String password;
+    private boolean validated;
 
     public User() {
     }
 
-    public User(String userID, String name, String email, String password) {
-        this.userID = userID;
+    public User(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
-    }
-
-    public String getUserID() {
-        return userID;
+        this.validated = false;
     }
 
     public String getName() {
@@ -35,10 +29,6 @@ public class User {
         return password;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -51,12 +41,20 @@ public class User {
         this.password = password;
     }
 
+    public boolean isValidated() {
+        return validated;
+    }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(userID, user.userID) &&
+        return validated == user.validated &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(password, user.password);
@@ -64,16 +62,16 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userID, name, email, password);
+        return Objects.hash(name, email, password, validated);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userID='" + userID + '\'' +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
+                ", validated=" + validated +
                 '}';
     }
 }
