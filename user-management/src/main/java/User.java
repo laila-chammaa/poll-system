@@ -5,7 +5,7 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private boolean valid;
+    private boolean validated;
 
     public User() {
     }
@@ -14,7 +14,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.valid = false;
+        this.validated = false;
     }
 
     public String getName() {
@@ -41,12 +41,12 @@ public class User {
         this.password = password;
     }
 
-    public boolean isValid() {
-        return valid;
+    public boolean isValidated() {
+        return validated;
     }
 
-    public void setValid(boolean valid) {
-        this.valid = valid;
+    public void setValidated(boolean validated) {
+        this.validated = validated;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return valid == user.valid &&
+        return validated == user.validated &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(password, user.password);
@@ -62,7 +62,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, email, password, valid);
+        return Objects.hash(name, email, password, validated);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class User {
                 "name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", valid=" + valid +
+                ", validated=" + validated +
                 '}';
     }
 }

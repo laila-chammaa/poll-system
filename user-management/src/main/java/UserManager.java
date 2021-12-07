@@ -98,7 +98,7 @@ public class UserManager implements IUserManager {
         if (!user.isPresent()) {
             throw new IllegalStateException("User not found.");
         }
-        user.get().setValid(true);
+        user.get().setValidated(true);
     }
 
     public boolean forgotPassword(String email, String oldPass) {
