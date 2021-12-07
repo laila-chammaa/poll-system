@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
-    IUserManager userManager = new UserManager();
+    IUserManager userManager = new UserManager(); //TODO: use plugin factory to do this
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -33,6 +33,5 @@ public class LoginServlet extends HttpServlet {
         out.write(result.getBytes(StandardCharsets.UTF_8));
         out.flush();
         out.close();
-
     }
 }

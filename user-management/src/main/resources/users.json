@@ -3,17 +3,20 @@
     {
       "name": "lisa",
       "email": "lisa@email.com",
-      "password": "ed14f4a4d7ecddb6dae8e54900300b1e"
+      "password": "ed14f4a4d7ecddb6dae8e54900300b1e",
+      "valid": "true"
     },
     {
       "name": "laila",
       "email": "laila@email.com",
-      "password": "f30618ed64655812746272636a992b95"
+      "password": "f30618ed64655812746272636a992b95",
+      "valid": "true"
     },
     {
       "name": "anthony",
       "email": "anthony@email.com",
-      "password": "65fbef05e01fac390cb3fa073fb3e8cf"
+      "password": "65fbef05e01fac390cb3fa073fb3e8cf",
+      "valid": "true"
     }
   ]
 }

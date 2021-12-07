@@ -4,6 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,20 +15,22 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static util.Constants.USERS_FILEPATH;
+
 public class UserManager implements IUserManager {
     private ArrayList<User> listOfUsers;
 
     public UserManager() {
-        listOfUsers = new ArrayList<>();
         loadListOfUsers();
     }
 
     public void loadListOfUsers() {
-        String filePath = "users.json";
+        listOfUsers = new ArrayList<>();
         JSONParser jsonParser = new JSONParser();
 
-        try (InputStream is = this.getClass().getResourceAsStream(filePath)) {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
+        try (InputStream is = this.getClass().getResourceAsStream(USERS_FILEPATH)) {
+            Object obj = jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
+            JSONObject jsonObject = (JSONObject) obj;
             JSONArray list = (JSONArray) jsonObject.get("listOfUsers");
 
             for (Object o : list) {
@@ -61,18 +64,19 @@ public class UserManager implements IUserManager {
     }
 
     public void saveUserToJson(User user) {
-        String filePath = "users.json";
         JSONParser jsonParser = new JSONParser();
 
-        try (InputStream is = this.getClass().getResourceAsStream(filePath)) {
+        try (InputStream is = this.getClass().getResourceAsStream(USERS_FILEPATH)) {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
             JSONArray list = (JSONArray) jsonObject.get("listOfUsers");
             String jsonInString = new Gson().toJson(user);
             JSONObject userJSON = (JSONObject) jsonParser.parse(jsonInString);
             list.add(userJSON);
 
-            FileWriter file = new FileWriter(filePath);
-            file.write(list.toJSONString());
+            //TODO: doesn't work, is writing to target file instead of resources file
+            FileWriter file = new FileWriter(new File(this.getClass().getResource(USERS_FILEPATH).getPath()));
+            jsonObject.put("listOfUsers", list);
+            file.write(jsonObject.toJSONString());
             file.flush();
             file.close();
         } catch (Exception e) {
@@ -85,13 +89,16 @@ public class UserManager implements IUserManager {
     private void sendVerificationEmail(User newUser) {
         //TODO: use factory plugin to create the gateway object?
         EmailGateway gateway = new EmailGateway(newUser.getEmail());
-        try {
-//        gateway.sendEmail();
-            //TODO: prob not here
-            newUser.setValid(true);
-        } catch (Exception e) {
-            //sending didn't work? try again?
+        gateway.send();
+    }
+
+    // used when the user clicks on the validation link in the email
+    public void validateUser(String email, String password) {
+        Optional<User> user = findUser(email, password);
+        if (!user.isPresent()) {
+            throw new IllegalStateException("User not found.");
         }
+        user.get().setValid(true);
     }
 
     public boolean forgotPassword(String email, String oldPass) {
