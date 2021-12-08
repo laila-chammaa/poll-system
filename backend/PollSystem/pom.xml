@@ -65,6 +65,30 @@
             <artifactId>json-simple</artifactId>
             <version>1.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.soen</groupId>
+            <artifactId>PolLib</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../../polllib/PollLib/out/artifacts/PollLib_jar/PollLib.jar
+            </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>Plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../../Plugin/out/artifacts/Plugin_jar/Plugin.jar
+            </systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>user-management</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../../user-management/out/artifacts/user_management_jar/user-management.jar
+            </systemPath>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

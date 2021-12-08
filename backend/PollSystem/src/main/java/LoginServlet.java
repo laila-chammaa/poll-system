@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import model.IUserManager;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 
 @WebServlet(name = "LoginServlet", urlPatterns = "/api/login")
 public class LoginServlet extends HttpServlet {
-    IUserManager userManager = new UserManager(); //TODO: use plugin factory to do this
+    IUserManager userManager = IUserManager.INSTANCE;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -1,10 +1,10 @@
-package model;
-
 public interface IUserManager {
+
+    public static final IUserManager INSTANCE = (IUserManager) PluginFactory.getPlugin(IUserManager.class);
 
     public boolean signup(String email, String name, String password);
 
-    public boolean forgotPassword(String email, String oldPass);
+    public boolean forgotPassword(String email);
 
     public boolean changePassword(String email, String oldPass, String newPass);
 

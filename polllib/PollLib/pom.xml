@@ -61,5 +61,13 @@
             <artifactId>jaxb-impl</artifactId>
             <version>2.2.5-b10</version>
         </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>Plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../../Plugin/out/artifacts/Plugin_jar/Plugin.jar
+            </systemPath>
+        </dependency>
     </dependencies>
 </project>

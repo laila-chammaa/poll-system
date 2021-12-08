@@ -13,16 +13,15 @@ import static util.Constants.SUCCESS;
 
 public class EmailGateway {
 
+    public static final EmailGateway INSTANCE = (EmailGateway) PluginFactory.getPlugin(EmailGateway.class);
+
     protected String to;
     protected String from;
     protected String password;
 
-    public EmailGateway(String email) {
+    public void send(String email) {
         to = email;
-        getFromEmailPassword();
-    }
-
-    public void send() {
+        getSenderEmailPassword();
         Session session = Session.getInstance(getProps(), getPasswordAuthentication());
 
         try {
@@ -56,7 +55,7 @@ public class EmailGateway {
     }
 
     // setting the mail server props
-    private Properties getProps() {
+    protected Properties getProps() {
         String host = "smtp.gmail.com";
         Properties properties = System.getProperties();
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
@@ -74,7 +73,7 @@ public class EmailGateway {
     }
 
     // reading the sender email and pass from the config file in resources/sender.json
-    public void getFromEmailPassword() {
+    protected void getSenderEmailPassword() {
         String filePath = "sender.json";
         JSONParser jsonParser = new JSONParser();
 
