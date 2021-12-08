@@ -144,7 +144,7 @@ const AdminLogin = () => {
                   your forgot password request is successful. please check your email!
                 </p>
               )}
-              {!displayForgotPwFail ? (
+              {displayForgotPwFail ? (
                   <p className="unsuccessful-message">
                     your forgot password request was unsuccessful. please try again!
                   </p>
