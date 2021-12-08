@@ -42,19 +42,24 @@
   right: -20px;
   bottom: -40px;
   font-size: 27px;
-  box-shadow: 0px 10px 15px 1px rgba(0, 0, 0, 0.329);
+  box-shadow: 0 10px 15px 1px rgba(0, 0, 0, 0.329);
   letter-spacing: -1px;
   text-decoration: none;
   background-color: #0d6efd;
   color: white;
 }
 
-#sign-up {
+.main-div .card-div-body .login-features {
   font-size: 24px;
-  margin-top: 5%;
+  margin-top: 2%;
   color: #0d6efd;
   text-decoration: underline;
   background-color: transparent;
+  border-style: none;
+  box-shadow: none;
+}
+
+.main-div .card-div-body .login-features:hover {
   border-style: none;
   box-shadow: none;
 }
@@ -65,14 +70,64 @@
   color: red;
 }
 
-#popover-basic {
-  background-color: #edf7fb;
-  border-style: none;
+.medium-modal {
+  font-family: "Playfair Display";
+  width: 60%;
 }
 
-#pop-body {
-  font-family: 'Playfair Display';
-  font-size: 16px;
+.modal-description {
+  font-size: 20px;
   font-weight: bold;
+  text-align: center;
+}
+
+.modal-input[type="email"] {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  outline: none;
+  box-shadow: none;
+  border-radius: 20px;
+  font-size: 18px;
+}
+
+.modal-input[type="email"]:focus {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  outline: none;
+  border-style: none;
+  box-shadow: none;
+}
+
+.modal-input[type="text"] {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  outline: none;
+  box-shadow: none;
+  border-radius: 20px;
+  font-size: 18px;
+}
+
+.modal-input[type="text"]:focus {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  outline: none;
+  border-style: none;
+  box-shadow: none;
+}
+
+.modal-signup-label {
+  font-size: 20px;
+}
+
+.center-body {
+  width: 60%;
+  margin: auto auto 2% auto;
+  font-size: 18px;
+}
+
+.unsuccessful-message {
+  font-size: 18px;
+  color: red;
+  margin-top: 3%;
   text-align: center;
 }
