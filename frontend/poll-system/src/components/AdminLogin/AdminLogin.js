@@ -21,7 +21,11 @@ const AdminLogin = () => {
   const history = useHistory();
   const [displayIncorrect, setIncorrect] = useState(false);
   const [forgotPwShow, setForgotPwShow] = useState(false);
+  const [displayForgotPwSuccess, setForgotPwSuccess] = useState(false);
+  const [displayForgotPwFail, setForgotPwFail] = useState(false);
   const [changePwShow, setChangePwShow] = useState(false);
+  const [displayChangePwSuccess, setChangePwSuccess] = useState(false);
+  const [displayChangePwFail, setChangePwFail] = useState(false);
   const [signUpShow, setSignUpShow] = useState(false);
   const [displaySignUpSuccess, setSignUpSuccess] = useState(false);
   const [displaySignUpFail, setSignUpFail] = useState(false);
@@ -119,28 +123,44 @@ const AdminLogin = () => {
               <Modal.Title>forgot your password?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form>
+              {!displayForgotPwSuccess ? (
+                <Form>
+                  <p className="modal-description">
+                    please enter your email to receive it
+                  </p>
+                  <Form.Group className="center-body">
+                    <Form.Label className="login-label">email</Form.Label>
+                    <Form.Control
+                        type="email"
+                        className="modal-input"
+                        aria-label="email"
+                        placeholder="email"
+                        ref={emailInput}
+                    />
+                  </Form.Group>
+                </Form>
+              ) : (
                 <p className="modal-description">
-                  please enter your email to receive it
+                  your forgot password request is successful. please check your email!
                 </p>
-                <Form.Group className="center-body">
-                  <Form.Label className="login-label">email</Form.Label>
-                  <Form.Control
-                      type="email"
-                      className="modal-input"
-                      aria-label="email"
-                      placeholder="email"
-                      ref={emailInput}
-                  />
-                </Form.Group>
-              </Form>
+              )}
+              {!displayForgotPwFail ? (
+                  <p className="unsuccessful-message">
+                    your forgot password request was unsuccessful. please try again!
+                  </p>
+              ) : (
+                  <p></p>
+              )}
             </Modal.Body>
             <Modal.Footer>
               <Button
                   variant="primary"
-                  onClick={() => {
-                    setForgotPwShow(false)
-                    setChangePwShow(true)
+                  onClick={async () => {
+                    if (await checkForgotPwRequest()) {
+                      setForgotPwSuccess(true)
+                    } else {
+                      setForgotPwFail(true)
+                    }
                   }}>
                 enter
               </Button>
@@ -158,21 +178,34 @@ const AdminLogin = () => {
               <Modal.Title>change password?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Form>
+              {!displayChangePwSuccess ? (
+                <Form>
+                  <p className="modal-description">
+                    if you would like to change your current password, please enter a new password
+                  </p>
+                  <Form.Group className="center-body">
+                    <Form.Label className="login-label">new password</Form.Label>
+                    <Form.Control
+                        type="text"
+                        className="modal-input"
+                        aria-label="newPassword"
+                        placeholder="password"
+                        ref={newPasswordInput}
+                    />
+                  </Form.Group>
+                </Form>
+              ) : (
                 <p className="modal-description">
-                  if you would like to change your current password, please enter a new password
+                  your password has been changed. please log in with your new password now!
                 </p>
-                <Form.Group className="center-body">
-                  <Form.Label className="login-label">new password</Form.Label>
-                  <Form.Control
-                      type="text"
-                      className="modal-input"
-                      aria-label="newPassword"
-                      placeholder="password"
-                      ref={newPasswordInput}
-                  />
-                </Form.Group>
-              </Form>
+              )}
+              {displayChangePwFail ? (
+                <p className="unsuccessful-message">
+                  your password change was unsuccessful. please try again!
+                </p>
+              ) : (
+                <p></p>
+              )}
             </Modal.Body>
             <Modal.Footer>
               <Button
@@ -185,10 +218,7 @@ const AdminLogin = () => {
               <Button
                   variant="primary"
                   onClick={() => {
-                    // downloadFile(
-                    //     TextEditor.myRef.current.value,
-                    //     fileNameInput.current.value
-                    // );
+                    // to implement for change password after Transform View
                   }}>
                 enter
               </Button>
@@ -212,49 +242,49 @@ const AdminLogin = () => {
             </Modal.Header>
             <Modal.Body>
               {!displaySignUpSuccess ? (
-                  <Form>
-                    <Form.Group className="center-body">
-                      <Form.Label>name</Form.Label>
-                      <Form.Control
-                          type="text"
-                          className="modal-input"
-                          aria-label="name"
-                          placeholder="name"
-                          ref={nameInput}
-                      />
-                    </Form.Group>
-                    <Form.Group className="center-body">
-                      <Form.Label>email</Form.Label>
-                      <Form.Control
-                          type="email"
-                          className="modal-input"
-                          aria-label="email"
-                          placeholder="email"
-                          ref={emailInput}
-                      />
-                    </Form.Group>
-                    <Form.Group className="center-body">
-                      <Form.Label>password</Form.Label>
-                      <Form.Control
-                          type="text"
-                          className="modal-input"
-                          aria-label="password"
-                          placeholder="password"
-                          ref={passwordInput}
-                      />
-                    </Form.Group>
-                  </Form>
+                <Form>
+                  <Form.Group className="center-body">
+                    <Form.Label>name</Form.Label>
+                    <Form.Control
+                        type="text"
+                        className="modal-input"
+                        aria-label="name"
+                        placeholder="name"
+                        ref={nameInput}
+                    />
+                  </Form.Group>
+                  <Form.Group className="center-body">
+                    <Form.Label>email</Form.Label>
+                    <Form.Control
+                        type="email"
+                        className="modal-input"
+                        aria-label="email"
+                        placeholder="email"
+                        ref={emailInput}
+                    />
+                  </Form.Group>
+                  <Form.Group className="center-body">
+                    <Form.Label>password</Form.Label>
+                    <Form.Control
+                        type="text"
+                        className="modal-input"
+                        aria-label="password"
+                        placeholder="password"
+                        ref={passwordInput}
+                    />
+                  </Form.Group>
+                </Form>
               ) : (
-                  <p className="modal-description">
-                    your sign up was successful. you can log in now!
-                  </p>
+                <p className="modal-description">
+                  your sign up was successful. you can log in now!
+                </p>
               )}
               {displaySignUpFail ? (
-                  <p className="unsuccessful-message">
-                    your sign up was not successful. please try again!
-                  </p>
+                <p className="unsuccessful-message">
+                  your sign up was unsuccessful. please try again!
+                </p>
               ) : (
-                  <p></p>
+                <p></p>
               )}
             </Modal.Body>
             <Modal.Footer>
