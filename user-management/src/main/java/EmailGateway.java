@@ -21,7 +21,7 @@ public class EmailGateway {
 
     public void send(String email) {
         to = email;
-        getFromEmailPassword();
+        getSenderEmailPassword();
         Session session = Session.getInstance(getProps(), getPasswordAuthentication());
 
         try {
@@ -55,7 +55,7 @@ public class EmailGateway {
     }
 
     // setting the mail server props
-    private Properties getProps() {
+    protected Properties getProps() {
         String host = "smtp.gmail.com";
         Properties properties = System.getProperties();
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
@@ -73,7 +73,7 @@ public class EmailGateway {
     }
 
     // reading the sender email and pass from the config file in resources/sender.json
-    public void getFromEmailPassword() {
+    protected void getSenderEmailPassword() {
         String filePath = "sender.json";
         JSONParser jsonParser = new JSONParser();
 

@@ -19,6 +19,8 @@ import static util.Constants.USERS_FILEPATH;
 public class UserManager implements IUserManager {
     private ArrayList<User> listOfUsers;
 
+    protected EmailGateway gateway = EmailGateway.INSTANCE;
+
     public UserManager() {
         loadListOfUsers();
     }
@@ -34,6 +36,7 @@ public class UserManager implements IUserManager {
 
             for (Object o : list) {
                 JSONObject user = (JSONObject) o;
+                if (user.get("email") == null) continue;
                 String name = (String) user.get("name");
                 String email = (String) user.get("email");
                 String password = (String) user.get("password");
@@ -62,7 +65,7 @@ public class UserManager implements IUserManager {
         return true;
     }
 
-    public void saveUserToJson(User user) {
+    private void saveUserToJson(User user) {
         JSONParser jsonParser = new JSONParser();
 
         try (InputStream is = this.getClass().getResourceAsStream(USERS_FILEPATH)) {
@@ -86,7 +89,7 @@ public class UserManager implements IUserManager {
     // used for both signups and forgot password processes to send a verification email to user using gateway
     // and set the record as valid
     private void sendVerificationEmail(User newUser) {
-        EmailGateway.INSTANCE.send(newUser.getEmail());
+        gateway.send(newUser.getEmail());
     }
 
     // used when the user clicks on the validation link in the email
@@ -98,9 +101,9 @@ public class UserManager implements IUserManager {
         user.get().setValidated(true);
     }
 
-    public boolean forgotPassword(String email, String oldPass) {
-        //validate that it's the correct user
-        Optional<User> user = findUser(email, oldPass);
+    public boolean forgotPassword(String email) {
+        //validate that the user exists
+        Optional<User> user = findUserByEmail(email);
         if (!user.isPresent()) {
             return false;
         }
@@ -124,6 +127,15 @@ public class UserManager implements IUserManager {
 
         user.get().setPassword(encryptedNewPass);
         return true;
+    }
+
+    private Optional<User> findUserByEmail(String email) {
+        for (User user : listOfUsers) {
+            if (user.getEmail().equals(email)) {
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
     }
 
     private Optional<User> findUser(String email, String password) {
@@ -161,5 +173,10 @@ public class UserManager implements IUserManager {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // for testing
+    protected void setGateway(EmailGateway gateway) {
+        this.gateway = gateway;
     }
 }

@@ -4,7 +4,7 @@ public interface IUserManager {
 
     public boolean signup(String email, String name, String password);
 
-    public boolean forgotPassword(String email, String oldPass);
+    public boolean forgotPassword(String email);
 
     public boolean changePassword(String email, String oldPass, String newPass);
 
