@@ -81,6 +81,14 @@
             <systemPath>${basedir}/../../Plugin/out/artifacts/Plugin_jar/Plugin.jar
             </systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>user-management</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/../../user-management/out/artifacts/user_management_jar/user-management.jar
+            </systemPath>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
