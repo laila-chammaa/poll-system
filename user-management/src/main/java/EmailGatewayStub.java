@@ -6,10 +6,6 @@ public class EmailGatewayStub extends EmailGateway {
     // used in testing
     private boolean shouldFailAllMessages = false;
 
-    public EmailGatewayStub(String email) {
-        super(email);
-    }
-
     protected int doSend(MimeMessage message) {
         if (shouldFailAllMessages) return -999;
         if (to == null || from == null) {

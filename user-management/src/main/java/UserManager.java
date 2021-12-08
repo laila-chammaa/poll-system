@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import model.IUserManager;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -87,9 +86,7 @@ public class UserManager implements IUserManager {
     // used for both signups and forgot password processes to send a verification email to user using gateway
     // and set the record as valid
     private void sendVerificationEmail(User newUser) {
-        //TODO: use factory plugin to create the gateway object?
-        EmailGateway gateway = new EmailGateway(newUser.getEmail());
-        gateway.send();
+        EmailGateway.INSTANCE.send(newUser.getEmail());
     }
 
     // used when the user clicks on the validation link in the email

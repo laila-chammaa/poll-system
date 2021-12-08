@@ -13,16 +13,15 @@ import static util.Constants.SUCCESS;
 
 public class EmailGateway {
 
+    public static final EmailGateway INSTANCE = (EmailGateway) PluginFactory.getPlugin(EmailGateway.class);
+
     protected String to;
     protected String from;
     protected String password;
 
-    public EmailGateway(String email) {
+    public void send(String email) {
         to = email;
         getFromEmailPassword();
-    }
-
-    public void send() {
         Session session = Session.getInstance(getProps(), getPasswordAuthentication());
 
         try {

@@ -1,6 +1,6 @@
-package model;
-
 public interface IUserManager {
+
+    public static final IUserManager INSTANCE = (IUserManager) PluginFactory.getPlugin(IUserManager.class);
 
     public boolean signup(String email, String name, String password);
 
