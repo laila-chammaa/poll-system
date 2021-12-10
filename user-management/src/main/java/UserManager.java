@@ -13,8 +13,7 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 
-import static util.Constants.TOKENS_FILEPATH;
-import static util.Constants.USERS_FILEPATH;
+import static util.Constants.*;
 
 public class UserManager implements IUserManager {
     private ArrayList<User> listOfUsers;
@@ -65,11 +64,12 @@ public class UserManager implements IUserManager {
         // send email for verification
         String token = generateToken();
         saveToken(email, token);
-        sendVerificationEmail(newUser, token);
+        sendVerificationEmail(newUser, token, SIGNUP);
         return true;
     }
 
     private void saveUserToJson(User user) {
+        listOfUsers.add(user);
         JSONParser jsonParser = new JSONParser();
 
         try (InputStream is = new FileInputStream(USERS_FILEPATH)) {
@@ -79,7 +79,6 @@ public class UserManager implements IUserManager {
             JSONObject userJSON = (JSONObject) jsonParser.parse(jsonInString);
             list.add(userJSON);
 
-            //TODO: doesn't work, is writing to target file instead of resources file
             FileWriter file = new FileWriter(new File(USERS_FILEPATH));
             jsonObject.put("listOfUsers", list);
             file.write(jsonObject.toJSONString());
@@ -92,8 +91,8 @@ public class UserManager implements IUserManager {
 
     // used for both signups and forgot password processes to send a verification email to user using gateway
     // and set the record as valid
-    private void sendVerificationEmail(User newUser, String token) {
-        gateway.send(newUser.getEmail(), newUser.getName(), token);
+    private void sendVerificationEmail(User newUser, String token, String type) {
+        gateway.send(newUser.getEmail(), newUser.getName(), token, type);
     }
 
     private String generateToken() {
@@ -122,12 +121,10 @@ public class UserManager implements IUserManager {
         if (!user.isPresent()) {
             return false;
         }
-        // check if there's already a token for this user
         String token = generateToken();
         saveToken(email, token);
-
         //sending verification token
-        sendVerificationEmail(user.get(), token);
+        sendVerificationEmail(user.get(), token, FORGOT_PASSWORD);
         return true;
     }
 
@@ -167,7 +164,6 @@ public class UserManager implements IUserManager {
                 tokenJSON.put("token", token);
                 list.add(tokenJSON);
             }
-            //TODO: doesn't work, is writing to target file instead of resources file
             FileWriter file = new FileWriter(new File(TOKENS_FILEPATH));
             jsonObject.put("tokens", list);
             file.write(jsonObject.toJSONString());

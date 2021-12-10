@@ -4,7 +4,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 public class EmailGatewayTest {
-    private EmailGatewayStub gate() {
+    private EmailGatewayStub newGate() {
         return (EmailGatewayStub) EmailGateway.INSTANCE;
     }
     private String token = "fake";
@@ -12,28 +12,31 @@ public class EmailGatewayTest {
 
     @Test
     public void testSendNullArg() {
+        EmailGatewayStub stub = (EmailGatewayStub) EmailGateway.INSTANCE;
         try {
-            gate().send(null, name, token);
+            stub.send(null, name, token, "signup");
             Assert.fail("Didn’t detect null argument");
         } catch (NullPointerException expected) {
         }
-        assertEquals(0, gate().getNumberOfEmailsSent());
+        assertEquals(0, stub.getNumberOfEmailsSent());
     }
 
     @Test
     public void testSendCorrectArg() {
-        gate().send("layla@email.com", name, token);
-        assertEquals(1, gate().getNumberOfEmailsSent());
+        EmailGatewayStub stub = (EmailGatewayStub) EmailGateway.INSTANCE;
+        stub.send("layla@email.com", name, token, "signup");
+        assertEquals(1, stub.getNumberOfEmailsSent());
     }
 
     @Test
     public void testGatewayCrash() {
-        gate().failAllMessages();
+        EmailGatewayStub stub = (EmailGatewayStub) EmailGateway.INSTANCE;
+        stub.failAllMessages();
         try {
-            gate().send("layla@email.com", name, token);
+            stub.send("layla@email.com", name, token, "signup");
             Assert.fail("Didn’t detect anything wrong");
         } catch (IllegalStateException expected) {
         }
-        assertEquals(0, gate().getNumberOfEmailsSent());
+        assertEquals(0, stub.getNumberOfEmailsSent());
     }
 }

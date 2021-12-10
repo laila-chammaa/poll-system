@@ -34,9 +34,12 @@ public class EmailGateway {
     protected String from;
     protected String password;
 
-    public void send(String email, String name, String token) {
-        to = email;
+    public EmailGateway() {
         getSenderEmailPassword();
+    }
+
+    public void send(String email, String name, String token, String type) {
+        to = email;
         Session session = Session.getInstance(getProps(), getPasswordAuthentication());
 
         try {
@@ -44,8 +47,7 @@ public class EmailGateway {
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("poll-system: validate your email");
-            message.setText("This is actual message");
-            message.setContent(process(email, name, token), "text/html");
+            message.setContent(process(email, name, token, type), "text/html");
 
             // Send message
             int returnCode = doSend(message);
@@ -112,7 +114,7 @@ public class EmailGateway {
     }
 
     //Transform view data
-    public String process(String email, String name, String token) throws URISyntaxException, ParserConfigurationException {
+    public String process(String email, String name, String token, String type) throws URISyntaxException, ParserConfigurationException {
         String XSLFILE = "template.xsl";
         URL xslresource = getClass().getClassLoader().getResource(XSLFILE);
         StreamSource xslcode = new StreamSource(new File(xslresource.toURI()));
@@ -123,14 +125,14 @@ public class EmailGateway {
         TransformerFactory tf = TransformerFactory.newInstance();
         try {
             Transformer trans = tf.newTransformer(xslcode);
-            trans.transform(new DOMSource(createXML(email, name, token)), result);
+            trans.transform(new DOMSource(createXML(email, name, token, type)), result);
         } catch (TransformerException e) {
             e.printStackTrace();
         }
         return writer.toString();
     }
 
-    private Document createXML(String email, String name, String token) throws ParserConfigurationException {
+    private Document createXML(String email, String name, String token, String type) throws ParserConfigurationException {
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         //Starts the root element.
@@ -143,12 +145,12 @@ public class EmailGateway {
         root.appendChild(username);
 
         Element usertoken = doc.createElement("href");
-        usertoken.appendChild(doc.createTextNode(constructLink(email, token)));
+        usertoken.appendChild(doc.createTextNode(constructLink(email, token, type)));
         root.appendChild(usertoken);
         return doc;
     }
 
-    private String constructLink(String email, String token) {
-        return String.format("http://localhost:3000/login?email=%s&amp;token=%s", email, token);
+    private String constructLink(String email, String token, String type) {
+        return String.format("http://localhost:3000/login?email=%s&amp;token=%s&amp;type=", email, token, type);
     }
 }
