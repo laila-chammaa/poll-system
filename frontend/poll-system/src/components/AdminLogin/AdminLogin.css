@@ -98,6 +98,23 @@
   box-shadow: none;
 }
 
+.modal-input[type="password"] {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  outline: none;
+  box-shadow: none;
+  border-radius: 20px;
+  font-size: 18px;
+}
+
+.modal-input[type="password"]:focus {
+  background-color: #edf7fb;
+  border-color: #edf7fb;
+  outline: none;
+  border-style: none;
+  box-shadow: none;
+}
+
 .modal-input[type="text"] {
   background-color: #edf7fb;
   border-color: #edf7fb;

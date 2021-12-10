@@ -33,7 +33,10 @@ const AdminLogin = () => {
   const checkPassword = async () => {
     let email = emailInput.current.value;
     let password = passwordInput.current.value;
-    let result = await login(email, password);
+    let name = null;
+    let newPassword = null;
+
+    let result = await login(email, password, name, newPassword);
     if (result) {
       localStorage.setItem('email', email);
       setIncorrect(false);
@@ -45,7 +48,21 @@ const AdminLogin = () => {
 
   const checkForgotPwRequest = async () => {
     let email = emailInput.current.value;
-    let result = await login(email)
+    let password = null;
+    let name = null;
+    let newPassword = null;
+
+    let result = await login(email, password, name, newPassword)
+    return !!result;
+  }
+
+  const checkChangePwRequest = async () => {
+    let email = emailInput.current.value;
+    let password = passwordInput.current.value;
+    let name = null;
+    let newPassword = newPasswordInput.current.value;
+
+    let result = await login(email, password, name, newPassword)
     return !!result;
   }
 
@@ -53,7 +70,9 @@ const AdminLogin = () => {
     let email = emailInput.current.value;
     let password = passwordInput.current.value;
     let name = nameInput.current.value;
-    let result = await login(email, name, password)
+    let newPassword = null;
+
+    let result = await login(email, name, password, newPassword)
     return !!result;
   }
 
@@ -126,7 +145,7 @@ const AdminLogin = () => {
               {!displayForgotPwSuccess ? (
                 <Form>
                   <p className="modal-description">
-                    please enter your email to receive it
+                    please enter your email
                   </p>
                   <Form.Group className="center-body">
                     <Form.Label className="login-label">email</Form.Label>
@@ -146,7 +165,7 @@ const AdminLogin = () => {
               )}
               {displayForgotPwFail ? (
                   <p className="unsuccessful-message">
-                    your forgot password request was unsuccessful. please try again!
+                    could not find an account with this email. please try again!
                   </p>
               ) : (
                   <p></p>
@@ -166,6 +185,11 @@ const AdminLogin = () => {
               </Button>
             </Modal.Footer>
           </Modal>
+          <Button
+              className="login-features"
+              onClick={() => setChangePwShow(true)}>
+            change your password?
+          </Button>
           <Modal
               animation={false}
               className="medium-modal"
@@ -175,18 +199,38 @@ const AdminLogin = () => {
               centered
           >
             <Modal.Header closeButton>
-              <Modal.Title>change password?</Modal.Title>
+              <Modal.Title>change your password?</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               {!displayChangePwSuccess ? (
                 <Form>
                   <p className="modal-description">
-                    if you would like to change your current password, please enter a new password
+                    please fill in the fields to change your current password
                   </p>
+                  <Form.Group className="center-body">
+                    <Form.Label className="login-label">email</Form.Label>
+                    <Form.Control
+                        type="text"
+                        className="modal-input"
+                        aria-label="email"
+                        placeholder="email"
+                        ref={emailInput}
+                    />
+                  </Form.Group>
+                  <Form.Group className="center-body">
+                    <Form.Label className="login-label">current password</Form.Label>
+                    <Form.Control
+                        type="password"
+                        className="modal-input"
+                        aria-label="password"
+                        placeholder="password"
+                        ref={passwordInput}
+                    />
+                  </Form.Group>
                   <Form.Group className="center-body">
                     <Form.Label className="login-label">new password</Form.Label>
                     <Form.Control
-                        type="text"
+                        type="password"
                         className="modal-input"
                         aria-label="newPassword"
                         placeholder="password"
@@ -201,7 +245,7 @@ const AdminLogin = () => {
               )}
               {displayChangePwFail ? (
                 <p className="unsuccessful-message">
-                  your password change was unsuccessful. please try again!
+                  your email or password is incorrect. please try again!
                 </p>
               ) : (
                 <p></p>
@@ -210,15 +254,12 @@ const AdminLogin = () => {
             <Modal.Footer>
               <Button
                   variant="primary"
-                  onClick={() => {
-                    setChangePwShow(false)
-                  }}>
-                exit
-              </Button>
-              <Button
-                  variant="primary"
-                  onClick={() => {
-                    // to implement for change password after Transform View
+                  onClick={async () => {
+                    if (await checkChangePwRequest()) {
+                      setChangePwSuccess(true)
+                    } else {
+                      setChangePwFail(true)
+                    }
                   }}>
                 enter
               </Button>
@@ -241,6 +282,9 @@ const AdminLogin = () => {
               <Modal.Title>signing up!</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              <p className="modal-description">
+                please fill in the fields to sign up
+              </p>
               {!displaySignUpSuccess ? (
                 <Form>
                   <Form.Group className="center-body">
@@ -281,7 +325,7 @@ const AdminLogin = () => {
               )}
               {displaySignUpFail ? (
                 <p className="unsuccessful-message">
-                  your sign up was unsuccessful. please try again!
+                  this email already has an account. please try logging in!
                 </p>
               ) : (
                 <p></p>

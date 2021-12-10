@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import model.IUserManager;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
