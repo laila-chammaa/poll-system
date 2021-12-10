@@ -6,24 +6,35 @@ import {
   Card,
   Form,
   Image,
-  OverlayTrigger,
-  Popover
+  Modal,
 } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import React, { useState } from 'react';
 import { login } from '../../api';
 
 const AdminLogin = () => {
-  let passcodeInput = React.createRef();
+  let passwordInput = React.createRef();
   let emailInput = React.createRef();
+  let nameInput = React.createRef();
+  let newPasswordInput = React.createRef();
 
   const history = useHistory();
   const [displayIncorrect, setIncorrect] = useState(false);
+  const [forgotPwShow, setForgotPwShow] = useState(false);
+  const [displayForgotPwSuccess, setForgotPwSuccess] = useState(false);
+  const [displayForgotPwFail, setForgotPwFail] = useState(false);
+  const [changePwShow, setChangePwShow] = useState(false);
+  const [displayChangePwSuccess, setChangePwSuccess] = useState(false);
+  const [displayChangePwFail, setChangePwFail] = useState(false);
+  const [signUpShow, setSignUpShow] = useState(false);
+  const [displaySignUpSuccess, setSignUpSuccess] = useState(false);
+  const [displaySignUpFail, setSignUpFail] = useState(false);
 
-  const checkPasscode = async () => {
+  const checkPassword = async () => {
     let email = emailInput.current.value;
-    let password = passcodeInput.current.value;
-    let result = await login(email, password);
+    let password = passwordInput.current.value;
+
+    let result = await login(email, password, null, null);
     if (result) {
       localStorage.setItem('email', email);
       setIncorrect(false);
@@ -33,13 +44,27 @@ const AdminLogin = () => {
     return false;
   };
 
-  const popover = (
-    <Popover id="popover-basic">
-      <Popover.Body id="pop-body">
-        Sign up will be available in the future! Thank you for your patience!
-      </Popover.Body>
-    </Popover>
-  );
+  const checkForgotPwRequest = async () => {
+    let email = emailInput.current.value;
+
+    return await login(email, null, null, null);
+  }
+
+  const checkChangePwRequest = async () => {
+    let email = emailInput.current.value;
+    let password = passwordInput.current.value;
+    let newPassword = newPasswordInput.current.value;
+
+    return await login(email, password, null, newPassword);
+  }
+
+  const checkSignUpSuccess = async () => {
+    let email = emailInput.current.value;
+    let password = passwordInput.current.value;
+    let name = nameInput.current.value;
+
+    return await login(email, name, password, null);
+  }
 
   return (
     <div className="main-div">
@@ -69,12 +94,12 @@ const AdminLogin = () => {
                 id="pw-box"
                 aria-label="password"
                 placeholder="password"
-                ref={passcodeInput}
+                ref={passwordInput}
               />
               <Button
                 id="enter-btn"
                 onClick={async () => {
-                  if (await checkPasscode()) {
+                  if (await checkPassword()) {
                     history.push('/userPolls');
                   } else {
                     setIncorrect(true);
@@ -90,11 +115,226 @@ const AdminLogin = () => {
           ) : (
             <Card.Text></Card.Text>
           )}
-          <OverlayTrigger trigger="focus" placement="bottom" overlay={popover}>
-            <Card.Text>
-              <Button id="sign-up">sign up</Button>
-            </Card.Text>
-          </OverlayTrigger>
+          <Button
+              className="login-features"
+              onClick={() => setForgotPwShow(true)}>
+            forgot your password?
+          </Button>
+          <Modal
+              animation={false}
+              className="medium-modal"
+              show={forgotPwShow}
+              onHide={() => setForgotPwShow(false)}
+              aria-labelledby="example-modal-sizes-title-sm"
+              centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>forgot your password?</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {!displayForgotPwSuccess ? (
+                <Form>
+                  <p className="modal-description">
+                    please enter your email
+                  </p>
+                  <Form.Group className="center-body">
+                    <Form.Label className="login-label">email</Form.Label>
+                    <Form.Control
+                        type="email"
+                        className="modal-input"
+                        aria-label="email"
+                        placeholder="email"
+                        ref={emailInput}
+                    />
+                  </Form.Group>
+                </Form>
+              ) : (
+                <p className="modal-description">
+                  your forgot password request is successful. please check your email!
+                </p>
+              )}
+              {displayForgotPwFail ? (
+                  <p className="unsuccessful-message">
+                    could not find an account with this email. please try again!
+                  </p>
+              ) : (
+                  <p></p>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                  variant="primary"
+                  onClick={async () => {
+                    if (await checkForgotPwRequest()) {
+                      setForgotPwSuccess(true)
+                    } else {
+                      setForgotPwFail(true)
+                    }
+                  }}>
+                enter
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          <Button
+              className="login-features"
+              onClick={() => setChangePwShow(true)}>
+            change your password?
+          </Button>
+          <Modal
+              animation={false}
+              className="medium-modal"
+              show={changePwShow}
+              onHide={() => setChangePwShow(false)}
+              aria-labelledby="example-modal-sizes-title-sm"
+              centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>change your password?</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {!displayChangePwSuccess ? (
+                <Form>
+                  <p className="modal-description">
+                    please fill in the fields to change your current password
+                  </p>
+                  <Form.Group className="center-body">
+                    <Form.Label className="login-label">email</Form.Label>
+                    <Form.Control
+                        type="text"
+                        className="modal-input"
+                        aria-label="email"
+                        placeholder="email"
+                        ref={emailInput}
+                    />
+                  </Form.Group>
+                  <Form.Group className="center-body">
+                    <Form.Label className="login-label">current password</Form.Label>
+                    <Form.Control
+                        type="password"
+                        className="modal-input"
+                        aria-label="password"
+                        placeholder="password"
+                        ref={passwordInput}
+                    />
+                  </Form.Group>
+                  <Form.Group className="center-body">
+                    <Form.Label className="login-label">new password</Form.Label>
+                    <Form.Control
+                        type="password"
+                        className="modal-input"
+                        aria-label="newPassword"
+                        placeholder="password"
+                        ref={newPasswordInput}
+                    />
+                  </Form.Group>
+                </Form>
+              ) : (
+                <p className="modal-description">
+                  your password has been changed. please log in with your new password now!
+                </p>
+              )}
+              {displayChangePwFail ? (
+                <p className="unsuccessful-message">
+                  your email or password is incorrect. please try again!
+                </p>
+              ) : (
+                <p></p>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                  variant="primary"
+                  onClick={async () => {
+                    if (await checkChangePwRequest()) {
+                      setChangePwSuccess(true)
+                    } else {
+                      setChangePwFail(true)
+                    }
+                  }}>
+                enter
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          <Button
+              className="login-features"
+              onClick={() => setSignUpShow(true)}>
+            sign up
+          </Button>
+          <Modal
+              animation={false}
+              className="medium-modal"
+              show={signUpShow}
+              onHide={() => setSignUpShow(false)}
+              aria-labelledby="example-modal-sizes-title-sm"
+              centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>signing up!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p className="modal-description">
+                please fill in the fields to sign up
+              </p>
+              {!displaySignUpSuccess ? (
+                <Form>
+                  <Form.Group className="center-body">
+                    <Form.Label>name</Form.Label>
+                    <Form.Control
+                        type="text"
+                        className="modal-input"
+                        aria-label="name"
+                        placeholder="name"
+                        ref={nameInput}
+                    />
+                  </Form.Group>
+                  <Form.Group className="center-body">
+                    <Form.Label>email</Form.Label>
+                    <Form.Control
+                        type="email"
+                        className="modal-input"
+                        aria-label="email"
+                        placeholder="email"
+                        ref={emailInput}
+                    />
+                  </Form.Group>
+                  <Form.Group className="center-body">
+                    <Form.Label>password</Form.Label>
+                    <Form.Control
+                        type="text"
+                        className="modal-input"
+                        aria-label="password"
+                        placeholder="password"
+                        ref={passwordInput}
+                    />
+                  </Form.Group>
+                </Form>
+              ) : (
+                <p className="modal-description">
+                  your sign up was successful. you can log in now!
+                </p>
+              )}
+              {displaySignUpFail ? (
+                <p className="unsuccessful-message">
+                  this email already has an account. please try logging in!
+                </p>
+              ) : (
+                <p></p>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                  variant="primary"
+                  onClick={async () => {
+                    if (await checkSignUpSuccess()) {
+                      setSignUpSuccess(true)
+                    } else {
+                      setSignUpFail(true)
+                    }
+                  }}>
+                enter
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </Card>
       </Card>
     </div>
