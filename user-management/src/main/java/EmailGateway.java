@@ -1,11 +1,23 @@
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.Properties;
 
 import static util.Constants.NULL_PARAMETER;
@@ -19,9 +31,12 @@ public class EmailGateway {
     protected String from;
     protected String password;
 
-    public void send(String email) {
-        to = email;
+    public EmailGateway() {
         getSenderEmailPassword();
+    }
+
+    public void send(String email, String name, String token, String type) {
+        to = email;
         Session session = Session.getInstance(getProps(), getPasswordAuthentication());
 
         try {
@@ -29,7 +44,7 @@ public class EmailGateway {
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("poll-system: validate your email");
-            message.setText("This is actual message");
+            message.setContent(process(email, name, token, type), "text/html");
 
             // Send message
             int returnCode = doSend(message);
@@ -40,7 +55,7 @@ public class EmailGateway {
             }
 
             System.out.println("Sent message successfully.");
-        } catch (MessagingException mex) {
+        } catch (MessagingException | ParserConfigurationException mex) {
             mex.printStackTrace();
         }
     }
@@ -93,5 +108,46 @@ public class EmailGateway {
         }
         Transport.send(message);
         return SUCCESS;
+    }
+
+    //Transform view data
+    public String process(String email, String name, String token, String type) throws ParserConfigurationException {
+        String XSLFILE = "template.xsl";
+        InputStream xslresource = getClass().getClassLoader().getResourceAsStream(XSLFILE);
+        StreamSource xslcode = new StreamSource(xslresource);
+
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+
+        TransformerFactory tf = TransformerFactory.newInstance();
+        try {
+            Transformer trans = tf.newTransformer(xslcode);
+            trans.transform(new DOMSource(createXML(email, name, token, type)), result);
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+        return writer.toString();
+    }
+
+    private Document createXML(String email, String name, String token, String type) throws ParserConfigurationException {
+        DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+        //Starts the root element.
+        Document doc = docBuilder.newDocument();
+        Element root = doc.createElement("class");
+        doc.appendChild(root);
+
+        Element username = doc.createElement("name");
+        username.appendChild(doc.createTextNode(name));
+        root.appendChild(username);
+
+        Element usertoken = doc.createElement("href");
+        usertoken.appendChild(doc.createTextNode(constructLink(email, token, type)));
+        root.appendChild(usertoken);
+        return doc;
+    }
+
+    private String constructLink(String email, String token, String type) {
+        return String.format("http://localhost:3000/login?email=%s&amp;token=%s&amp;type=", email, token, type);
     }
 }

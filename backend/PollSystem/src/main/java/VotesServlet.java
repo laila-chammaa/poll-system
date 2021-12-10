@@ -1,7 +1,6 @@
 import com.google.gson.Gson;
 import model.Choice;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,7 @@ import java.util.Optional;
 @WebServlet(name = "VotesServlet", urlPatterns = "/api/votes")
 public class VotesServlet extends HttpServlet {
 
-    PollManager pollManager = new PollManager();
+    PollService pollService = new PollService();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //get the vote sent by the user
@@ -25,13 +24,13 @@ public class VotesServlet extends HttpServlet {
         String pollId = request.getParameter("pollId");
         String pin = request.getParameter("pin");
 
-        Optional<Choice> choice = pollManager.accessPoll(pollId).getChoices()
+        Optional<Choice> choice = pollService.accessPoll(pollId).getChoices()
                 .stream().filter(c -> c.getText().equals(choiceName)).findFirst();
         try {
             if (choice.isPresent()) {
                 // returns pin since it might be generated
 
-                pin = pollManager.vote(pin, pollId, choice.get());
+                pin = pollService.vote(pin, pollId, choice.get());
 
                 String json = new Gson().toJson(pin);
                 OutputStream out = response.getOutputStream();
@@ -56,7 +55,7 @@ public class VotesServlet extends HttpServlet {
             download(pollId, format, email, response);
         } else {
             try {
-                sendResults(pollManager.getPollResults(pollId, email), response);
+                sendResults(pollService.getPollResults(pollId, email), response);
             } catch (PollException.IllegalPollOperation e) {
                 ServletUtil.handleError(e.getMessage(), response);
             }
@@ -114,7 +113,7 @@ public class VotesServlet extends HttpServlet {
         // You must tell the browser the file type you are going to send
         response.setContentType(format);
         String headerKey = "Content-disposition";
-        String name = pollManager.accessPoll(pollId).getName();
+        String name = pollService.accessPoll(pollId).getName();
         String date = LocalDateTime.now().toString();
         String fileName = String.format("%s-%s.%s", name, date, fileExtension);
         String headerVal = String.format("attachment; filename=%s", fileName);
@@ -128,7 +127,7 @@ public class VotesServlet extends HttpServlet {
 
         try {
             PrintWriter out = response.getWriter();
-            pollManager.downloadPollDetails(pollId, out, creator, format);
+            pollService.downloadPollDetails(pollId, out, creator, format);
             out.flush();
             out.close();
         } catch (IOException | PollException.IllegalPollOperation e) {
