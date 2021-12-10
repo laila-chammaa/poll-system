@@ -33,8 +33,8 @@ public class LoginServlet extends HttpServlet {
 
         // if email, pass and token are not null, user already signed up  and is trying to validate
         // their token
-        if (email != null && password != null && name == null && newPassword == null && token != null) {
-            result = new Gson().toJson(userManager.validateUser(email, password, token));
+        if (email != null && password == null && name == null && newPassword == null && token != null) {
+            result = new Gson().toJson(userManager.validateUser(email, token));
         }
 
         // if only email is not null, user clicked on forgot password
