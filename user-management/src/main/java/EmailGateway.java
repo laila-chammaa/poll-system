@@ -15,12 +15,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Properties;
 
 import static util.Constants.NULL_PARAMETER;
@@ -58,7 +55,7 @@ public class EmailGateway {
             }
 
             System.out.println("Sent message successfully.");
-        } catch (MessagingException | URISyntaxException | ParserConfigurationException mex) {
+        } catch (MessagingException | ParserConfigurationException mex) {
             mex.printStackTrace();
         }
     }
@@ -114,10 +111,10 @@ public class EmailGateway {
     }
 
     //Transform view data
-    public String process(String email, String name, String token, String type) throws URISyntaxException, ParserConfigurationException {
+    public String process(String email, String name, String token, String type) throws ParserConfigurationException {
         String XSLFILE = "template.xsl";
-        URL xslresource = getClass().getClassLoader().getResource(XSLFILE);
-        StreamSource xslcode = new StreamSource(new File(xslresource.toURI()));
+        InputStream xslresource = getClass().getClassLoader().getResourceAsStream(XSLFILE);
+        StreamSource xslcode = new StreamSource(xslresource);
 
         StringWriter writer = new StringWriter();
         StreamResult result = new StreamResult(writer);

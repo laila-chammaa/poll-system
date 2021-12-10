@@ -1,11 +1,4 @@
-import com.google.gson.Gson;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.*;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -13,45 +6,25 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.Random;
 
-import static util.Constants.*;
+import static util.Constants.FORGOT_PASSWORD;
+import static util.Constants.SIGNUP;
 
 public class UserManager implements IUserManager {
-    private ArrayList<User> listOfUsers;
+    private ArrayList<User> users;
     HashMap<String, String> tokens;
+    UserRepository userRepository = new UserRepository();
 
     protected EmailGateway gateway = EmailGateway.INSTANCE;
 
     public UserManager() {
-        loadListOfUsers();
-        loadTokens();
-    }
-
-    public void loadListOfUsers() {
-        listOfUsers = new ArrayList<>();
-        JSONParser jsonParser = new JSONParser();
-
-        try (InputStream is = new FileInputStream(USERS_FILEPATH)) {
-            Object obj = jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONArray list = (JSONArray) jsonObject.get("listOfUsers");
-
-            for (Object o : list) {
-                JSONObject user = (JSONObject) o;
-                if (user.get("email") == null) continue;
-                String name = (String) user.get("name");
-                String email = (String) user.get("email");
-                String password = (String) user.get("password");
-                listOfUsers.add(new User(name, email, password));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        users = userRepository.loadUsers();
+        tokens = userRepository.loadTokens();
     }
 
     public boolean signup(String email, String name, String password) {
         String encryptedPw = encryptPassword(password);
 
-        for (User user : listOfUsers) {
+        for (User user : users) {
             if (user.getEmail().equals(email)) {
                 //user already there
                 return false;
@@ -60,7 +33,7 @@ public class UserManager implements IUserManager {
 
         User newUser = new User(name, email, encryptedPw);
 
-        saveUserToJson(newUser);
+        saveUser(newUser);
         // send email for verification
         String token = generateToken();
         saveToken(email, token);
@@ -68,25 +41,9 @@ public class UserManager implements IUserManager {
         return true;
     }
 
-    private void saveUserToJson(User user) {
-        listOfUsers.add(user);
-        JSONParser jsonParser = new JSONParser();
-
-        try (InputStream is = new FileInputStream(USERS_FILEPATH)) {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
-            JSONArray list = (JSONArray) jsonObject.get("listOfUsers");
-            String jsonInString = new Gson().toJson(user);
-            JSONObject userJSON = (JSONObject) jsonParser.parse(jsonInString);
-            list.add(userJSON);
-
-            FileWriter file = new FileWriter(new File(USERS_FILEPATH));
-            jsonObject.put("listOfUsers", list);
-            file.write(jsonObject.toJSONString());
-            file.flush();
-            file.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void saveUser(User user) {
+        users.add(user);
+        userRepository.saveUser(user);
     }
 
     // used for both signups and forgot password processes to send a verification email to user using gateway
@@ -140,66 +97,10 @@ public class UserManager implements IUserManager {
         return true;
     }
 
-    private void overwriteToken(String email, String token, JSONArray list) {
-        for (Object o : list) {
-            JSONObject user = (JSONObject) o;
-            if (user.get("email").equals(email)) {
-                user.put("token", token);
-                return;
-            }
-        }
-    }
-
     private void saveToken(String email, String token) {
-        JSONParser jsonParser = new JSONParser();
-
-        try (InputStream is = new FileInputStream(TOKENS_FILEPATH)) {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
-            JSONArray list = (JSONArray) jsonObject.get("tokens");
-            if (tokenExists(email)) {
-                overwriteToken(email, token, list);
-            } else {
-                JSONObject tokenJSON = new JSONObject();
-                tokenJSON.put("email", email);
-                tokenJSON.put("token", token);
-                list.add(tokenJSON);
-            }
-            FileWriter file = new FileWriter(new File(TOKENS_FILEPATH));
-            jsonObject.put("tokens", list);
-            file.write(jsonObject.toJSONString());
-            file.flush();
-            file.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        userRepository.saveToken(tokens, email, token);
+        tokens.put(email, token);
     }
-
-    private boolean tokenExists(String email) {
-        return tokens.get(email) != null;
-    }
-
-    public void loadTokens() {
-        tokens = new HashMap<>();
-        JSONParser jsonParser = new JSONParser();
-
-        try (InputStream is = new FileInputStream(TOKENS_FILEPATH)) {
-            Object obj = jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONArray list = (JSONArray) jsonObject.get("tokens");
-
-            for (Object o : list) {
-                JSONObject user = (JSONObject) o;
-                if (user.get("token") == null) continue;
-                String token = (String) user.get("token");
-                String email = (String) user.get("email");
-                tokens.put(email, token);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public boolean changePassword(String email, String oldPass, String newPass) {
         //validate that it's the correct user
@@ -215,7 +116,7 @@ public class UserManager implements IUserManager {
     }
 
     private Optional<User> findUserByEmail(String email) {
-        for (User user : listOfUsers) {
+        for (User user : users) {
             if (user.getEmail().equals(email)) {
                 return Optional.of(user);
             }
@@ -226,7 +127,7 @@ public class UserManager implements IUserManager {
     private Optional<User> findUser(String email, String password) {
         String encryptedPw = encryptPassword(password);
 
-        for (User user : listOfUsers) {
+        for (User user : users) {
             if (user.getEmail().equals(email) && user.getPassword().equals(encryptedPw)) {
                 return Optional.of(user);
             }
@@ -237,7 +138,7 @@ public class UserManager implements IUserManager {
     public boolean authenticateUser(String email, String password) {
         String encryptedPw = encryptPassword(password);
 
-        for (User user : listOfUsers) {
+        for (User user : users) {
             if (user.getEmail().equals(email) && user.getPassword().equals(encryptedPw)) {
                 return true;
             }

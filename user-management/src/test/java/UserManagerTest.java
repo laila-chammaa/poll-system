@@ -9,12 +9,8 @@ public class UserManagerTest extends TestCase {
 
     UserManager usermanager = (UserManager) IUserManager.INSTANCE;
 
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
     @Before
-    public void resetUsersDB() {
+    public void cleanup() {
         //TODO: rewrite the users.json
     }
 
