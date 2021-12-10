@@ -3,10 +3,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -34,7 +31,7 @@ public class UserManager implements IUserManager {
         listOfUsers = new ArrayList<>();
         JSONParser jsonParser = new JSONParser();
 
-        try (InputStream is = this.getClass().getResourceAsStream(USERS_FILEPATH)) {
+        try (InputStream is = new FileInputStream(USERS_FILEPATH)) {
             Object obj = jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray list = (JSONArray) jsonObject.get("listOfUsers");
@@ -66,14 +63,16 @@ public class UserManager implements IUserManager {
 
         saveUserToJson(newUser);
         // send email for verification
-        sendVerificationEmail(newUser, generateToken());
+        String token = generateToken();
+        saveToken(email, token);
+        sendVerificationEmail(newUser, token);
         return true;
     }
 
     private void saveUserToJson(User user) {
         JSONParser jsonParser = new JSONParser();
 
-        try (InputStream is = this.getClass().getResourceAsStream(USERS_FILEPATH)) {
+        try (InputStream is = new FileInputStream(USERS_FILEPATH)) {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
             JSONArray list = (JSONArray) jsonObject.get("listOfUsers");
             String jsonInString = new Gson().toJson(user);
@@ -81,7 +80,7 @@ public class UserManager implements IUserManager {
             list.add(userJSON);
 
             //TODO: doesn't work, is writing to target file instead of resources file
-            FileWriter file = new FileWriter(new File(this.getClass().getResource(USERS_FILEPATH).getPath()));
+            FileWriter file = new FileWriter(new File(USERS_FILEPATH));
             jsonObject.put("listOfUsers", list);
             file.write(jsonObject.toJSONString());
             file.flush();
@@ -157,7 +156,7 @@ public class UserManager implements IUserManager {
     private void saveToken(String email, String token) {
         JSONParser jsonParser = new JSONParser();
 
-        try (InputStream is = this.getClass().getResourceAsStream(TOKENS_FILEPATH)) {
+        try (InputStream is = new FileInputStream(TOKENS_FILEPATH)) {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
             JSONArray list = (JSONArray) jsonObject.get("tokens");
             if (tokenExists(email)) {
@@ -169,7 +168,7 @@ public class UserManager implements IUserManager {
                 list.add(tokenJSON);
             }
             //TODO: doesn't work, is writing to target file instead of resources file
-            FileWriter file = new FileWriter(new File(this.getClass().getResource(TOKENS_FILEPATH).getPath()));
+            FileWriter file = new FileWriter(new File(TOKENS_FILEPATH));
             jsonObject.put("tokens", list);
             file.write(jsonObject.toJSONString());
             file.flush();
@@ -188,7 +187,7 @@ public class UserManager implements IUserManager {
         tokens = new HashMap<>();
         JSONParser jsonParser = new JSONParser();
 
-        try (InputStream is = this.getClass().getResourceAsStream(TOKENS_FILEPATH)) {
+        try (InputStream is = new FileInputStream(TOKENS_FILEPATH)) {
             Object obj = jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
             JSONObject jsonObject = (JSONObject) obj;
             JSONArray list = (JSONArray) jsonObject.get("tokens");

@@ -50,7 +50,7 @@
 }
 
 .main-div .card-div-body .login-features {
-  font-size: 24px;
+  font-size: 18px;
   margin-top: 2%;
   color: #0d6efd;
   text-decoration: underline;
@@ -71,7 +71,7 @@
 }
 
 .medium-modal {
-  font-family: "Playfair Display";
+  font-family: 'Playfair Display';
   width: 60%;
 }
 
@@ -81,7 +81,7 @@
   text-align: center;
 }
 
-.modal-input[type="email"] {
+.modal-input[type='email'] {
   background-color: #edf7fb;
   border-color: #edf7fb;
   outline: none;
@@ -90,7 +90,7 @@
   font-size: 18px;
 }
 
-.modal-input[type="email"]:focus {
+.modal-input[type='email']:focus {
   background-color: #edf7fb;
   border-color: #edf7fb;
   outline: none;
@@ -98,7 +98,7 @@
   box-shadow: none;
 }
 
-.modal-input[type="password"] {
+.modal-input[type='password'] {
   background-color: #edf7fb;
   border-color: #edf7fb;
   outline: none;
@@ -107,7 +107,7 @@
   font-size: 18px;
 }
 
-.modal-input[type="password"]:focus {
+.modal-input[type='password']:focus {
   background-color: #edf7fb;
   border-color: #edf7fb;
   outline: none;
@@ -115,7 +115,7 @@
   box-shadow: none;
 }
 
-.modal-input[type="text"] {
+.modal-input[type='text'] {
   background-color: #edf7fb;
   border-color: #edf7fb;
   outline: none;
@@ -124,7 +124,7 @@
   font-size: 18px;
 }
 
-.modal-input[type="text"]:focus {
+.modal-input[type='text']:focus {
   background-color: #edf7fb;
   border-color: #edf7fb;
   outline: none;
