@@ -24,38 +24,28 @@ public class LoginServlet extends HttpServlet {
         OutputStream out = response.getOutputStream();
         String result = "";
 
+        //TODO: add another when user forgot pass and is setting a new pass, and they pass a token
+
         // if only email is not null, user clicked on forgot password
         if (email != null && password == null && name == null && newPassword == null) {
-            if(userManager.forgotPassword(email)){
-                result = new Gson().toJson(true);
-            } else {
-                result = new Gson().toJson(false);
-            }
+            result = new Gson().toJson(userManager.forgotPassword(email));
         }
         // if email, password, and newPassword is not null, user wishes to change their password
         else if (email != null && password != null && newPassword != null) {
-            if(userManager.changePassword(email, password, newPassword)) {
-                result = new Gson().toJson(true);
-            } else {
-                result = new Gson().toJson(false);
-            }
+            result = new Gson().toJson(userManager.changePassword(email, password, newPassword));
         }
         // if email, password, and name is not null, user wishes to sign up
         else if (email != null && password != null && name != null) {
-            if (userManager.signup(email, password, name)) {
-                result = new Gson().toJson(true);
-            } else {
-                result = new Gson().toJson(false);
-            }
+            result = new Gson().toJson(userManager.signup(email, password, name));
         }
         // if other fields are null, except for email and pw, user wishes to log in
         else if (email != null && password != null) {
-            if (userManager.authenticateUser(email, password)) {
+            boolean success = userManager.authenticateUser(email, password);
+            result = new Gson().toJson(success);
+            if (success) {
                 session.setAttribute("email", email);
-                result = new Gson().toJson(true);
             } else {
                 session.invalidate();
-                result = new Gson().toJson(false);
             }
         }
         out.write(result.getBytes(StandardCharsets.UTF_8));
