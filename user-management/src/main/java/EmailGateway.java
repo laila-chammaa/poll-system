@@ -4,6 +4,13 @@ import org.json.simple.parser.JSONParser;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
@@ -30,6 +37,8 @@ public class EmailGateway {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
             message.setSubject("poll-system: validate your email");
             message.setText("This is actual message");
+            message.setContent();
+
 
             // Send message
             int returnCode = doSend(message);
@@ -94,4 +103,30 @@ public class EmailGateway {
         Transport.send(message);
         return SUCCESS;
     }
+
+    //Transform view data
+    public StreamResult process() {
+
+        String XSLFILE = "testing.xsl";
+        String INFILE = "testing.xml";
+        String OUTFILE = "student.xml";
+
+        StreamSource xslcode = new StreamSource(new File(XSLFILE));
+        StreamSource input = new StreamSource(new File (INFILE));
+        StreamResult output = new StreamResult(new File (OUTFILE));
+
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer trans;
+        try {
+            trans = tf.newTransformer(xslcode);
+            trans.transform(input, output);
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+
 }
