@@ -48,32 +48,24 @@ const AdminLogin = () => {
 
   const checkForgotPwRequest = async () => {
     let email = emailInput.current.value;
-    let password = null;
-    let name = null;
-    let newPassword = null;
 
-    let result = await login(email, password, name, newPassword)
-    return !!result;
+    return await login(email, null, null, null);
   }
 
   const checkChangePwRequest = async () => {
     let email = emailInput.current.value;
     let password = passwordInput.current.value;
-    let name = null;
     let newPassword = newPasswordInput.current.value;
 
-    let result = await login(email, password, name, newPassword)
-    return !!result;
+    return await login(email, password, null, newPassword);
   }
 
   const checkSignUpSuccess = async () => {
     let email = emailInput.current.value;
     let password = passwordInput.current.value;
     let name = nameInput.current.value;
-    let newPassword = null;
 
-    let result = await login(email, name, password, newPassword)
-    return !!result;
+    return await login(email, name, password, null);
   }
 
   return (
