@@ -19,7 +19,7 @@ import java.util.List;
 @WebServlet(name = "PollServlet", urlPatterns = "/api/poll")
 public class PollServlet extends HttpServlet {
 
-    PollManager pollManager = new PollManager();
+    PollService pollService = new PollService();
 
     // handles create/update poll
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -62,12 +62,12 @@ public class PollServlet extends HttpServlet {
 
         try {
             if (status == null || pollId == null) {
-                Poll newPoll = pollManager.createPoll(name, question, choiceList, email);
+                Poll newPoll = pollService.createPoll(name, question, choiceList, email);
                 pollId = newPoll.getId();
             } else if (status.equals("CREATED") || status.equals("RUNNING")) {
-                Poll poll = pollManager.accessPoll(pollId);
+                Poll poll = pollService.accessPoll(pollId);
                 if (poll.getCreatedBy().equals(email)) {
-                    pollManager.updatePoll(pollId, name, question, choiceList);
+                    pollService.updatePoll(pollId, name, question, choiceList);
                 } else {
                     Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation. Cannot edit a poll you did not create.");
                     ServletUtil.handleError(e.getMessage(), response);
@@ -93,23 +93,23 @@ public class PollServlet extends HttpServlet {
         String email = (String) request.getSession().getAttribute("email");
         String pollId = request.getParameter("pollId");
         String status = request.getParameter("status");
-        Poll poll = pollManager.accessPoll(pollId);
+        Poll poll = pollService.accessPoll(pollId);
         try {
             if (poll.getCreatedBy().equals(email)) {
                 switch (status) {
                     case "running":
-                        pollManager.runPoll(pollId);
+                        pollService.runPoll(pollId);
                         break;
                     case "released":
-                        pollManager.releasePoll(pollId);
+                        pollService.releasePoll(pollId);
                         break;
                     case "unreleased":
-                        pollManager.unreleasePoll(pollId);
+                        pollService.unreleasePoll(pollId);
                     case "cleared":
-                        pollManager.clearPoll(pollId);
+                        pollService.clearPoll(pollId);
                         break;
                     case "closed":
-                        pollManager.closePoll(pollId);
+                        pollService.closePoll(pollId);
                         break;
                 }
             } else {
@@ -138,10 +138,10 @@ public class PollServlet extends HttpServlet {
         try {
             String json;
             if (email != null && email.equals(creator)) {
-                List<Poll> pollList = pollManager.getAllPollsByUser(creator);
+                List<Poll> pollList = pollService.getAllPollsByUser(creator);
                 json = new Gson().toJson(pollList);
             } else if (pollId != null) {
-                Poll poll = pollManager.accessPoll(pollId);
+                Poll poll = pollService.accessPoll(pollId);
                 json = new Gson().toJson(poll);
             } else {
                 Exception e = new PollException.UnauthorizedOperation("Unauthorized Operation.");
@@ -161,10 +161,10 @@ public class PollServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse resp) throws IOException {
         String email = (String) request.getSession().getAttribute("email");
         String pollId = request.getParameter("pollId");
-        Poll poll = pollManager.accessPoll(pollId);
+        Poll poll = pollService.accessPoll(pollId);
         if (poll.getCreatedBy().equals(email)) {
             try {
-                pollManager.deletePoll(pollId);
+                pollService.deletePoll(pollId);
             } catch (PollException.IllegalPollOperation e) {
                 ServletUtil.handleError(e.getMessage(), resp);
             }

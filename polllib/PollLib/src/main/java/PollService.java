@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PollManager {
+public class PollService {
 
     private PollRepository pollRepository = new PollRepository();
 

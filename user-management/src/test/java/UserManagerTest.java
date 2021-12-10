@@ -14,8 +14,8 @@ public class UserManagerTest extends TestCase {
     }
 
     @Before
-    public void resetUsersDB() throws Exception {
-        //rewrite the users.json
+    public void resetUsersDB() {
+        //TODO: rewrite the users.json
     }
 
     @Test
