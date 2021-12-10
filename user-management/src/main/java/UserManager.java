@@ -12,17 +12,22 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.Random;
 
+import static util.Constants.TOKENS_FILEPATH;
 import static util.Constants.USERS_FILEPATH;
 
 public class UserManager implements IUserManager {
     private ArrayList<User> listOfUsers;
+    HashMap<String, String> tokens;
 
     protected EmailGateway gateway = EmailGateway.INSTANCE;
 
     public UserManager() {
         loadListOfUsers();
+        loadTokens();
     }
 
     public void loadListOfUsers() {
@@ -61,7 +66,7 @@ public class UserManager implements IUserManager {
 
         saveUserToJson(newUser);
         // send email for verification
-        sendVerificationEmail(newUser);
+        sendVerificationEmail(newUser, generateToken());
         return true;
     }
 
@@ -88,8 +93,19 @@ public class UserManager implements IUserManager {
 
     // used for both signups and forgot password processes to send a verification email to user using gateway
     // and set the record as valid
-    private void sendVerificationEmail(User newUser) {
-        gateway.send(newUser.getEmail());
+    private void sendVerificationEmail(User newUser, String token) {
+        gateway.send(newUser.getEmail(), token);
+    }
+
+    private String generateToken() {
+        String SALTCHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHJKMNPQRSTVWXYZ0123456789";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 10) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        return salt.toString();
     }
 
     // used when the user clicks on the validation link in the email
@@ -107,14 +123,88 @@ public class UserManager implements IUserManager {
         if (!user.isPresent()) {
             return false;
         }
+        // check if there's already a token for this user
+        String token = generateToken();
+        saveToken(email, token);
 
         //sending verification token
-        sendVerificationEmail(user.get());
-
-        //TODO: do we get the new password from the user after they verify?
-        //user.setPassword(encryptedNewPass);
+        sendVerificationEmail(user.get(), token);
         return true;
     }
+
+    //used after forgot password
+    private boolean setNewPassword(String email, String password) {
+        //validate that the user exists
+        String encryptedPw = encryptPassword(password);
+        Optional<User> user = findUserByEmail(email);
+        if (!user.isPresent()) {
+            return false;
+        }
+        user.get().setPassword(encryptedPw);
+        return true;
+    }
+
+    private void overwriteToken(String email, String token, JSONArray list) {
+        for (Object o : list) {
+            JSONObject user = (JSONObject) o;
+            if (user.get("email").equals(email)) {
+                user.put("token", token);
+                return;
+            }
+        }
+    }
+
+    private void saveToken(String email, String token) {
+        JSONParser jsonParser = new JSONParser();
+
+        try (InputStream is = this.getClass().getResourceAsStream(TOKENS_FILEPATH)) {
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
+            JSONArray list = (JSONArray) jsonObject.get("tokens");
+            if (tokenExists(email)) {
+                overwriteToken(email, token, list);
+            } else {
+                JSONObject tokenJSON = new JSONObject();
+                tokenJSON.put("email", email);
+                tokenJSON.put("token", token);
+                list.add(tokenJSON);
+            }
+            //TODO: doesn't work, is writing to target file instead of resources file
+            FileWriter file = new FileWriter(new File(this.getClass().getResource(TOKENS_FILEPATH).getPath()));
+            jsonObject.put("tokens", list);
+            file.write(jsonObject.toJSONString());
+            file.flush();
+            file.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private boolean tokenExists(String email) {
+        return tokens.get(email) != null;
+    }
+
+    public void loadTokens() {
+        tokens = new HashMap<>();
+        JSONParser jsonParser = new JSONParser();
+
+        try (InputStream is = this.getClass().getResourceAsStream(TOKENS_FILEPATH)) {
+            Object obj = jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
+            JSONObject jsonObject = (JSONObject) obj;
+            JSONArray list = (JSONArray) jsonObject.get("tokens");
+
+            for (Object o : list) {
+                JSONObject user = (JSONObject) o;
+                if (user.get("token") == null) continue;
+                String token = (String) user.get("token");
+                String email = (String) user.get("email");
+                tokens.put(email, token);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public boolean changePassword(String email, String oldPass, String newPass) {
         //validate that it's the correct user

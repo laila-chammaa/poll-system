@@ -1,4 +1,5 @@
 import junit.framework.TestCase;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -10,6 +11,11 @@ public class UserManagerTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
+    }
+
+    @Before
+    public void resetUsersDB() throws Exception {
+        //rewrite the users.json
     }
 
     @Test
@@ -44,6 +50,7 @@ public class UserManagerTest extends TestCase {
         EmailGateway gateway = Mockito.spy(usermanager.gateway);
         usermanager.setGateway(gateway);
         usermanager.forgotPassword("layla@gmail.com");
-        verify(gateway).send("layla@gmail.com");
+        String token = "fake";
+        verify(gateway).send("layla@gmail.com", token);
     }
 }

@@ -19,7 +19,7 @@ public class EmailGateway {
     protected String from;
     protected String password;
 
-    public void send(String email) {
+    public void send(String email, String token) {
         to = email;
         getSenderEmailPassword();
         Session session = Session.getInstance(getProps(), getPasswordAuthentication());
