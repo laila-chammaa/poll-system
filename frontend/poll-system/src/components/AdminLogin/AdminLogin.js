@@ -33,10 +33,8 @@ const AdminLogin = () => {
   const checkPassword = async () => {
     let email = emailInput.current.value;
     let password = passwordInput.current.value;
-    let name = null;
-    let newPassword = null;
 
-    let result = await login(email, password, name, newPassword);
+    let result = await login(email, password, null, null);
     if (result) {
       localStorage.setItem('email', email);
       setIncorrect(false);
