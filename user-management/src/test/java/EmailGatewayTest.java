@@ -7,11 +7,13 @@ public class EmailGatewayTest {
     private EmailGatewayStub gate() {
         return (EmailGatewayStub) EmailGateway.INSTANCE;
     }
+    private String token = "fake";
+    private String name = "fake";
 
     @Test
     public void testSendNullArg() {
         try {
-            gate().send(null);
+            gate().send(null, name, token);
             Assert.fail("Didn’t detect null argument");
         } catch (NullPointerException expected) {
         }
@@ -20,7 +22,7 @@ public class EmailGatewayTest {
 
     @Test
     public void testSendCorrectArg() {
-        gate().send("layla@email.com");
+        gate().send("layla@email.com", name, token);
         assertEquals(1, gate().getNumberOfEmailsSent());
     }
 
@@ -28,7 +30,7 @@ public class EmailGatewayTest {
     public void testGatewayCrash() {
         gate().failAllMessages();
         try {
-            gate().send("layla@email.com");
+            gate().send("layla@email.com", name, token);
             Assert.fail("Didn’t detect anything wrong");
         } catch (IllegalStateException expected) {
         }

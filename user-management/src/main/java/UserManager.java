@@ -94,7 +94,7 @@ public class UserManager implements IUserManager {
     // used for both signups and forgot password processes to send a verification email to user using gateway
     // and set the record as valid
     private void sendVerificationEmail(User newUser, String token) {
-        gateway.send(newUser.getEmail(), token);
+        gateway.send(newUser.getEmail(), newUser.getName(), token);
     }
 
     private String generateToken() {

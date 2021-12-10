@@ -51,6 +51,6 @@ public class UserManagerTest extends TestCase {
         usermanager.setGateway(gateway);
         usermanager.forgotPassword("layla@gmail.com");
         String token = "fake";
-        verify(gateway).send("layla@gmail.com", token);
+        verify(gateway).send("layla@gmail.com", "fake", token);
     }
 }
