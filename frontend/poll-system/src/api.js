@@ -113,14 +113,15 @@ export const vote = async (pollId, choice, pin = null) => {
   }
 };
 
-export const login = async (email, password = null, name = null, newPassword = null) => {
+export const login = async (email, password = null, name = null, newPassword = null, token = null) => {
   try {
     const data = await axios.post('/api/login', null, {
       params: {
         email: email,
         password: password,
         name: name,
-        newPassword: newPassword
+        newPassword: newPassword,
+        token: token
       }
     });
     return data.data;
