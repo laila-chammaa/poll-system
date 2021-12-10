@@ -1,0 +1,8 @@
+<?xml-stylesheet type = "text/xsl" href = "testing.xsl"?>
+<class>
+    <student>
+        <firstname>Graham</firstname>
+        <lastname>Bell</lastname>
+        <nickname>Garry</nickname>
+    </student>
+</class>
