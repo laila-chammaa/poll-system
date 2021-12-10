@@ -1,18 +1,13 @@
 import junit.framework.TestCase;
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 public class UserManagerTest extends TestCase {
 
     UserManager usermanager = (UserManager) IUserManager.INSTANCE;
-
-    @Before
-    public void cleanup() {
-        //TODO: rewrite the users.json
-    }
 
     @Test
     public void testChangePassWorks() {
@@ -46,7 +41,6 @@ public class UserManagerTest extends TestCase {
         EmailGateway gateway = Mockito.spy(usermanager.gateway);
         usermanager.setGateway(gateway);
         usermanager.forgotPassword("layla@gmail.com");
-        String token = "fake"; //TODO: how to predict random?
-        verify(gateway).send("layla@gmail.com", "name", token, "forgot_pass");
+        verify(gateway).send(eq("layla@gmail.com"), eq("name"), Mockito.any(), eq("forgot_pass"));
     }
 }

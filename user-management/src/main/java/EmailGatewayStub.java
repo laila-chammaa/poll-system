@@ -27,4 +27,9 @@ public class EmailGatewayStub extends EmailGateway {
     public int getNumberOfEmailsSent() {
         return sentEmails;
     }
+
+    public void reset() {
+        shouldFailAllMessages = false;
+        sentEmails = 0;
+    }
 }

@@ -1,9 +1,10 @@
-import com.google.gson.Gson;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,56 +60,10 @@ public class UserRepositoryStub extends UserRepository {
     }
 
     public void saveUser(User user) {
-        JSONParser jsonParser = new JSONParser();
-
-        try (InputStream is = new FileInputStream(USERS_FILEPATH)) {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
-            JSONArray list = (JSONArray) jsonObject.get("listOfUsers");
-            String jsonInString = new Gson().toJson(user);
-            JSONObject userJSON = (JSONObject) jsonParser.parse(jsonInString);
-            list.add(userJSON);
-
-            FileWriter file = new FileWriter(new File(USERS_FILEPATH));
-            jsonObject.put("listOfUsers", list);
-//            file.write(jsonObject.toJSONString());
-            file.flush();
-            file.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //Don't want to save during tests
     }
 
     public void saveToken(HashMap<String, String> tokens, String email, String token) {
-        JSONParser jsonParser = new JSONParser();
-
-        try (InputStream is = new FileInputStream(TOKENS_FILEPATH)) {
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
-            JSONArray list = (JSONArray) jsonObject.get("tokens");
-            if (tokens.get(email) != null) {
-                overwriteToken(email, token, list);
-            } else {
-                JSONObject tokenJSON = new JSONObject();
-                tokenJSON.put("email", email);
-                tokenJSON.put("token", token);
-                list.add(tokenJSON);
-            }
-            FileWriter file = new FileWriter(new File(TOKENS_FILEPATH));
-            jsonObject.put("tokens", list);
-//            file.write(jsonObject.toJSONString());
-            file.flush();
-            file.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void overwriteToken(String email, String token, JSONArray list) {
-        for (Object o : list) {
-            JSONObject user = (JSONObject) o;
-            if (user.get("email").equals(email)) {
-                user.put("token", token);
-                return;
-            }
-        }
+        //Don't want to save during tests
     }
 }
