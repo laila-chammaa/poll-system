@@ -12,8 +12,7 @@ import static util.Constants.SIGNUP;
 public class UserManager implements IUserManager {
     private ArrayList<User> users;
     HashMap<String, String> tokens;
-    UserRepository userRepository = new UserRepository();
-
+    UserRepository userRepository = UserRepository.INSTANCE;
     protected EmailGateway gateway = EmailGateway.INSTANCE;
 
     public UserManager() {
@@ -64,12 +63,16 @@ public class UserManager implements IUserManager {
     }
 
     // used when the user clicks on the validation link in the email
-    public void validateUser(String email, String password) {
+    public boolean validateUser(String email, String password, String token) {
+        if (!tokens.get(email).equals(token)) {
+            return false;
+        }
         Optional<User> user = findUser(email, password);
         if (!user.isPresent()) {
-            throw new IllegalStateException("User not found.");
+            return false;
         }
         user.get().setValidated(true);
+        return true;
     }
 
     public boolean forgotPassword(String email) {
@@ -86,8 +89,11 @@ public class UserManager implements IUserManager {
     }
 
     //used after forgot password
-    private boolean setNewPassword(String email, String password) {
+    public boolean setNewPassword(String email, String password, String token) {
         //validate that the user exists
+        if (!tokens.get(email).equals(token)) {
+            return false;
+        }
         String encryptedPw = encryptPassword(password);
         Optional<User> user = findUserByEmail(email);
         if (!user.isPresent()) {

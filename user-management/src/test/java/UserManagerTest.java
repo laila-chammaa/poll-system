@@ -16,7 +16,7 @@ public class UserManagerTest extends TestCase {
 
     @Test
     public void testChangePassWorks() {
-        boolean results = usermanager.changePassword("layla@gmail.com", "wrong_old_pass", "pass");
+        boolean results = usermanager.changePassword("layla@gmail.com", "pass", "pass1");
         assertTrue(results);
     }
 
@@ -29,7 +29,7 @@ public class UserManagerTest extends TestCase {
     @Test
     public void testAddUserWorks() {
         //uses email gateway stub
-        boolean results = usermanager.signup("layla@gmail.com", "name", "pass");
+        boolean results = usermanager.signup("layla1@gmail.com", "name", "pass");
         assertTrue(results);
     }
 
@@ -46,7 +46,7 @@ public class UserManagerTest extends TestCase {
         EmailGateway gateway = Mockito.spy(usermanager.gateway);
         usermanager.setGateway(gateway);
         usermanager.forgotPassword("layla@gmail.com");
-        String token = "fake";
-        verify(gateway).send("layla@gmail.com", "fake", token, "signup");
+        String token = "fake"; //TODO: how to predict random?
+        verify(gateway).send("layla@gmail.com", "name", token, "forgot_pass");
     }
 }

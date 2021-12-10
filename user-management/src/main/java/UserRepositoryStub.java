@@ -8,12 +8,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static util.Constants.TOKENS_FILEPATH;
-import static util.Constants.USERS_FILEPATH;
+public class UserRepositoryStub extends UserRepository {
 
-public class UserRepository {
-
-    public static final UserRepository INSTANCE = (UserRepository) PluginFactory.getPlugin(UserRepository.class);
+    private static final String USERS_FILEPATH = "src/test/users.json";
+    private static final String TOKENS_FILEPATH = "src/test/tokens.json";
 
     public HashMap<String, String> loadTokens() {
         HashMap<String, String> tokens = new HashMap<>();
@@ -72,7 +70,7 @@ public class UserRepository {
 
             FileWriter file = new FileWriter(new File(USERS_FILEPATH));
             jsonObject.put("listOfUsers", list);
-            file.write(jsonObject.toJSONString());
+//            file.write(jsonObject.toJSONString());
             file.flush();
             file.close();
         } catch (Exception e) {
@@ -96,7 +94,7 @@ public class UserRepository {
             }
             FileWriter file = new FileWriter(new File(TOKENS_FILEPATH));
             jsonObject.put("tokens", list);
-            file.write(jsonObject.toJSONString());
+//            file.write(jsonObject.toJSONString());
             file.flush();
             file.close();
         } catch (Exception e) {

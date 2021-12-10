@@ -10,5 +10,7 @@ public interface IUserManager {
 
     public boolean authenticateUser(String email, String password);
 
-    public void validateUser(String email, String password);
+    public boolean validateUser(String email, String password, String token);
+
+    public boolean setNewPassword(String email, String newPassword, String token);
 }
