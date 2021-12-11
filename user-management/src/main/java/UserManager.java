@@ -12,7 +12,7 @@ import static util.Constants.SIGNUP;
 public class UserManager implements IUserManager {
     private ArrayList<User> users;
     HashMap<String, String> tokens;
-    UserRepository userRepository = UserRepository.INSTANCE;
+    protected UserRepository userRepository = UserRepository.INSTANCE;
     protected EmailGateway gateway = EmailGateway.INSTANCE;
 
     public UserManager() {
