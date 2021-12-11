@@ -12,7 +12,7 @@ import static util.Constants.SIGNUP;
 public class UserManager implements IUserManager {
     private ArrayList<User> users;
     HashMap<String, String> tokens;
-    UserRepository userRepository = UserRepository.INSTANCE;
+    protected UserRepository userRepository = UserRepository.INSTANCE;
     protected EmailGateway gateway = EmailGateway.INSTANCE;
 
     public UserManager() {
@@ -64,7 +64,7 @@ public class UserManager implements IUserManager {
 
     // used when the user clicks on the validation link in the email
     public boolean validateUser(String email, String token) {
-        if (!tokens.get(email).equals(token)) {
+        if (!token.equals(tokens.get(email))) {
             return false;
         }
         Optional<User> user = findUserByEmail(email);
@@ -145,7 +145,7 @@ public class UserManager implements IUserManager {
         String encryptedPw = encryptPassword(password);
 
         for (User user : users) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(encryptedPw)) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(encryptedPw) && user.isValidated()) {
                 return true;
             }
         }

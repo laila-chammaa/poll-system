@@ -8,15 +8,21 @@ import {
   Image,
   Modal,
 } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
-import React, { useState } from 'react';
+import {Link, useHistory} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
 import { login } from '../../api';
 
 const AdminLogin = () => {
-  let passwordInput = React.createRef();
-  let emailInput = React.createRef();
-  let nameInput = React.createRef();
-  let newPasswordInput = React.createRef();
+  let loginEmail = React.createRef();
+  let loginPassword = React.createRef();
+  let signUpEmail = React.createRef();
+  let signUpPassword = React.createRef();
+  let signUpName = React.createRef();
+  let forgotPwEmail = React.createRef();
+  let forgotPwNewPw = React.createRef();
+  let changePwEmail = React.createRef();
+  let changeOldPw = React.createRef();
+  let changeNewPw = React.createRef();
 
   const history = useHistory();
   const [displayIncorrect, setIncorrect] = useState(false);
@@ -29,12 +35,54 @@ const AdminLogin = () => {
   const [signUpShow, setSignUpShow] = useState(false);
   const [displaySignUpSuccess, setSignUpSuccess] = useState(false);
   const [displaySignUpFail, setSignUpFail] = useState(false);
+  const [newPwShow, setNewPwShow] = useState(false);
+  const [displayNewPwSuccess, setNewPwSuccess] = useState(false);
+  const [displayNewPwFail, setNewPwFail] = useState(false);
+  const [validateShow, setValidateShow] = useState(false);
+  const [displayValidateSuccess, setValidateSuccess] = useState(false);
+  const [emailQuery, setEmailQuery] = useState('');
+  const [tokenQuery, setTokenQuery] = useState('');
+
+  let type;
+
+  useEffect(() => {
+    let urlParams;
+    (window.onpopstate = function () {
+      let match,
+          pl = /\+/g, // Regex for replacing addition symbol with a space
+          search = /([^&=]+)=?([^&]*)/g,
+          decode = function (s) {
+            return decodeURIComponent(s.replace(pl, ' '));
+          },
+          query = window.location.search.substring(1);
+
+      urlParams = {};
+      while ((match = search.exec(query)))
+        urlParams[decode(match[1])] = decode(match[2]);
+    })();
+
+    type = urlParams['type'];
+    setEmailQuery(urlParams['email']);
+    setTokenQuery(urlParams['token']);
+
+    if (type === 'signup') {
+      let result = login(emailQuery, null, null, null, tokenQuery);
+      console.log('hello');
+      if (result) {
+        setValidateShow(true);
+        setValidateSuccess(true);
+      }
+      setValidateSuccess(false);
+    } else if (type === 'forgot_pass') {
+      setNewPwShow(true);
+    }
+  }, []);
 
   const checkPassword = async () => {
-    let email = emailInput.current.value;
-    let password = passwordInput.current.value;
+    let email = loginEmail.current.value;
+    let password = loginPassword.current.value;
 
-    let result = await login(email, password, null, null);
+    let result = await login(email, password, null, null, null);
     if (result) {
       localStorage.setItem('email', email);
       setIncorrect(false);
@@ -45,25 +93,31 @@ const AdminLogin = () => {
   };
 
   const checkForgotPwRequest = async () => {
-    let email = emailInput.current.value;
+    let email = forgotPwEmail.current.value;
 
-    return await login(email, null, null, null);
+    return await login(email, null, null, null, null);
   }
 
   const checkChangePwRequest = async () => {
-    let email = emailInput.current.value;
-    let password = passwordInput.current.value;
-    let newPassword = newPasswordInput.current.value;
+    let email = changePwEmail.current.value;
+    let password = changeOldPw.current.value;
+    let newPassword = changeNewPw.current.value;
 
-    return await login(email, password, null, newPassword);
+    return await login(email, password, null, newPassword, null);
   }
 
   const checkSignUpSuccess = async () => {
-    let email = emailInput.current.value;
-    let password = passwordInput.current.value;
-    let name = nameInput.current.value;
+    let email = signUpEmail.current.value;
+    let password = signUpPassword.current.value;
+    let name = signUpName.current.value;
 
-    return await login(email, name, password, null);
+    return await login(email, name, password, null, null);
+  }
+
+  const checkNewPwRequest = async () => {
+    let newPassword = forgotPwNewPw.current.value;
+
+    return await login(emailQuery, null, null, newPassword, tokenQuery);
   }
 
   return (
@@ -84,7 +138,7 @@ const AdminLogin = () => {
                 id="email-box"
                 aria-label="email"
                 placeholder="email"
-                ref={emailInput}
+                ref={loginEmail}
               />
             </Form.Group>
             <Form.Group className="password-group">
@@ -94,7 +148,7 @@ const AdminLogin = () => {
                 id="pw-box"
                 aria-label="password"
                 placeholder="password"
-                ref={passwordInput}
+                ref={loginPassword}
               />
               <Button
                 id="enter-btn"
@@ -124,7 +178,11 @@ const AdminLogin = () => {
               animation={false}
               className="medium-modal"
               show={forgotPwShow}
-              onHide={() => setForgotPwShow(false)}
+              onHide={() => {
+                setForgotPwShow(false);
+                setForgotPwFail(false);
+                setForgotPwSuccess(false);
+              }}
               aria-labelledby="example-modal-sizes-title-sm"
               centered
           >
@@ -144,7 +202,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="email"
                         placeholder="email"
-                        ref={emailInput}
+                        ref={forgotPwEmail}
                     />
                   </Form.Group>
                 </Form>
@@ -162,17 +220,94 @@ const AdminLogin = () => {
               )}
             </Modal.Body>
             <Modal.Footer>
-              <Button
-                  variant="primary"
-                  onClick={async () => {
-                    if (await checkForgotPwRequest()) {
-                      setForgotPwSuccess(true)
-                    } else {
-                      setForgotPwFail(true)
-                    }
-                  }}>
-                enter
-              </Button>
+              {!displayForgotPwSuccess ? (
+                  <Button
+                      variant="primary"
+                      onClick={async () => {
+                        if (await checkForgotPwRequest()) {
+                          setForgotPwSuccess(true)
+                          setForgotPwFail(false)
+                        } else {
+                          setForgotPwFail(true)
+                        }
+                      }}>
+                    enter
+                  </Button>
+              ) : (
+                  <Button
+                      variant="primary"
+                      onClick={() => setForgotPwShow(false)}>
+                    exit
+                  </Button>
+              )}
+            </Modal.Footer>
+          </Modal>
+          <Modal
+              animation={false}
+              className="medium-modal"
+              show={newPwShow}
+              onHide={() => {
+                setNewPwShow(false)
+                setNewPwFail(false);
+                setNewPwSuccess(false);
+              }}
+              aria-labelledby="example-modal-sizes-title-sm"
+              centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>new password!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {!displayNewPwSuccess ? (
+                  <Form>
+                    <p className="modal-description">
+                      please enter your new password
+                    </p>
+                    <Form.Group className="center-body">
+                      <Form.Label className="login-label">new password</Form.Label>
+                      <Form.Control
+                          type="password"
+                          className="modal-input"
+                          aria-label="newPassword"
+                          placeholder="password"
+                          ref={forgotPwNewPw}
+                      />
+                    </Form.Group>
+                  </Form>
+              ) : (
+                  <p className="modal-description">
+                    your password change is successful. please try logging in!
+                  </p>
+              )}
+              {displayNewPwFail ? (
+                  <p className="unsuccessful-message">
+                    your password change was unsuccessful!
+                  </p>
+              ) : (
+                  <p></p>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              {!displayNewPwSuccess ? (
+                  <Button
+                      variant="primary"
+                      onClick={async () => {
+                        if (await checkNewPwRequest()) {
+                          setNewPwSuccess(true)
+                          setNewPwFail(false)
+                        } else {
+                          setNewPwFail(true)
+                        }
+                      }}>
+                    enter
+                  </Button>
+              ) : (
+                  <Button
+                      variant="primary"
+                      onClick={() => setNewPwShow(false)}>
+                    exit
+                  </Button>
+              )}
             </Modal.Footer>
           </Modal>
           <Button
@@ -184,7 +319,11 @@ const AdminLogin = () => {
               animation={false}
               className="medium-modal"
               show={changePwShow}
-              onHide={() => setChangePwShow(false)}
+              onHide={() => {
+                setChangePwShow(false)
+                setChangePwFail(false)
+                setChangePwSuccess(false)
+              }}
               aria-labelledby="example-modal-sizes-title-sm"
               centered
           >
@@ -204,7 +343,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="email"
                         placeholder="email"
-                        ref={emailInput}
+                        ref={changePwEmail}
                     />
                   </Form.Group>
                   <Form.Group className="center-body">
@@ -214,7 +353,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="password"
                         placeholder="password"
-                        ref={passwordInput}
+                        ref={changeOldPw}
                     />
                   </Form.Group>
                   <Form.Group className="center-body">
@@ -224,7 +363,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="newPassword"
                         placeholder="password"
-                        ref={newPasswordInput}
+                        ref={changeNewPw}
                     />
                   </Form.Group>
                 </Form>
@@ -242,17 +381,26 @@ const AdminLogin = () => {
               )}
             </Modal.Body>
             <Modal.Footer>
-              <Button
-                  variant="primary"
-                  onClick={async () => {
-                    if (await checkChangePwRequest()) {
-                      setChangePwSuccess(true)
-                    } else {
-                      setChangePwFail(true)
-                    }
-                  }}>
-                enter
-              </Button>
+              {!displayChangePwSuccess ? (
+                  <Button
+                      variant="primary"
+                      onClick={async () => {
+                        if (await checkChangePwRequest()) {
+                          setChangePwSuccess(true)
+                          setChangePwFail(false)
+                        } else {
+                          setChangePwFail(true)
+                        }
+                      }}>
+                    enter
+                  </Button>
+              ) : (
+                  <Button
+                      variant="primary"
+                      onClick={() => setChangePwShow(false)}>
+                    exit
+                  </Button>
+              ) }
             </Modal.Footer>
           </Modal>
           <Button
@@ -264,7 +412,11 @@ const AdminLogin = () => {
               animation={false}
               className="medium-modal"
               show={signUpShow}
-              onHide={() => setSignUpShow(false)}
+              onHide={() => {
+                setSignUpShow(false)
+                setSignUpFail(false)
+                setSignUpSuccess(false)
+              }}
               aria-labelledby="example-modal-sizes-title-sm"
               centered
           >
@@ -272,11 +424,11 @@ const AdminLogin = () => {
               <Modal.Title>signing up!</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <p className="modal-description">
-                please fill in the fields to sign up
-              </p>
               {!displaySignUpSuccess ? (
                 <Form>
+                  <p className="modal-description">
+                    please fill in the fields to sign up
+                  </p>
                   <Form.Group className="center-body">
                     <Form.Label>name</Form.Label>
                     <Form.Control
@@ -284,7 +436,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="name"
                         placeholder="name"
-                        ref={nameInput}
+                        ref={signUpName}
                     />
                   </Form.Group>
                   <Form.Group className="center-body">
@@ -294,23 +446,23 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="email"
                         placeholder="email"
-                        ref={emailInput}
+                        ref={signUpEmail}
                     />
                   </Form.Group>
                   <Form.Group className="center-body">
                     <Form.Label>password</Form.Label>
                     <Form.Control
-                        type="text"
+                        type="password"
                         className="modal-input"
                         aria-label="password"
                         placeholder="password"
-                        ref={passwordInput}
+                        ref={signUpPassword}
                     />
                   </Form.Group>
                 </Form>
               ) : (
                 <p className="modal-description">
-                  your sign up was successful. you can log in now!
+                  your sign up was successful. please check your email!
                 </p>
               )}
               {displaySignUpFail ? (
@@ -322,16 +474,57 @@ const AdminLogin = () => {
               )}
             </Modal.Body>
             <Modal.Footer>
+              {!displaySignUpSuccess ? (
+                  <Button
+                      variant="primary"
+                      onClick={async () => {
+                        if (await checkSignUpSuccess()) {
+                          setSignUpSuccess(true)
+                          setSignUpFail(false)
+                        } else {
+                          setSignUpFail(true)
+                        }
+                      }}>
+                    enter
+                  </Button>
+              ) : (
+                  <Button
+                      variant="primary"
+                      onClick={() => setSignUpShow(false)}>
+                    exit
+                  </Button>
+              ) }
+            </Modal.Footer>
+          </Modal>
+          <Modal
+              animation={false}
+              className="medium-modal"
+              show={validateShow}
+              onHide={() => {
+                setValidateShow(false)
+              }}
+              aria-labelledby="example-modal-sizes-title-sm"
+              centered
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>validation successful!</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {!displayValidateSuccess ? (
+                  <p className="modal-description">
+                    validation successful! please try logging in!
+                  </p>
+              ) : (
+                  <p className="unsuccessful-message">
+                    validation unsuccessful!
+                  </p>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
               <Button
                   variant="primary"
-                  onClick={async () => {
-                    if (await checkSignUpSuccess()) {
-                      setSignUpSuccess(true)
-                    } else {
-                      setSignUpFail(true)
-                    }
-                  }}>
-                enter
+                  onClick={() => setValidateShow(false)}>
+                exit
               </Button>
             </Modal.Footer>
           </Modal>
