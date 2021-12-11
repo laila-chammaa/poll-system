@@ -148,6 +148,6 @@ public class EmailGateway {
     }
 
     private String constructLink(String email, String token, String type) {
-        return String.format("http://localhost:3000/login?email=%s&amp;token=%s&amp;type=%s", email, token, type);
+        return String.format("http://localhost:3000/login?email=%s&token=%s&type=%s", email, token, type);
     }
 }

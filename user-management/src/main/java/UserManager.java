@@ -145,7 +145,7 @@ public class UserManager implements IUserManager {
         String encryptedPw = encryptPassword(password);
 
         for (User user : users) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(encryptedPw)) {
+            if (user.getEmail().equals(email) && user.getPassword().equals(encryptedPw) && user.isValidated()) {
                 return true;
             }
         }
