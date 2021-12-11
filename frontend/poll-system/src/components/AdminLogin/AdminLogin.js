@@ -8,16 +8,21 @@ import {
   Image,
   Modal,
 } from 'react-bootstrap';
-import {Link, useHistory, useParams} from 'react-router-dom';
-import React, { useState } from 'react';
+import {Link, useHistory} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
 import { login } from '../../api';
 
 const AdminLogin = () => {
-  let passwordInput = React.createRef();
-  let emailInput = React.createRef();
-  let nameInput = React.createRef();
-  let newPasswordInput = React.createRef();
-  const {email, token, type} = useParams();
+  let loginEmail = React.createRef();
+  let loginPassword = React.createRef();
+  let signUpEmail = React.createRef();
+  let signUpPassword = React.createRef();
+  let signUpName = React.createRef();
+  let forgotPwEmail = React.createRef();
+  let forgotPwNewPw = React.createRef();
+  let changePwEmail = React.createRef();
+  let changeOldPw = React.createRef();
+  let changeNewPw = React.createRef();
 
   const history = useHistory();
   const [displayIncorrect, setIncorrect] = useState(false);
@@ -35,40 +40,47 @@ const AdminLogin = () => {
   const [displayNewPwFail, setNewPwFail] = useState(false);
   const [validateShow, setValidateShow] = useState(false);
   const [displayValidateSuccess, setValidateSuccess] = useState(false);
+  const [emailQuery, setEmailQuery] = useState('');
+  const [tokenQuery, setTokenQuery] = useState('');
 
-  // let urlParams;
-  // (window.onpopstate = function () {
-  //   let match,
-  //       pl     = /\+/g,  // Regex for replacing addition symbol with a space
-  //       search = /([^&=]+)=?([^&]*)/g,
-  //       decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
-  //       query  = window.location.search.substring(1);
-  //
-  //   urlParams = {};
-  //   while (match = search.exec(query))
-  //     urlParams[decode(match[1])] = decode(match[2]);
-  // })();
-  //
-  // let type = urlParams["type"];
-  // let email = urlParams["email"];
-  // let token = urlParams["token"];
+  let type;
 
-  console.log(type);
-  if (type === "signup") {
-    let result = login(email, null, null, null, token);
-    console.log("hello")
-    if(result) {
-      setValidateShow(true);
-      setValidateSuccess(true);
+  useEffect(() => {
+    let urlParams;
+    (window.onpopstate = function () {
+      let match,
+          pl = /\+/g, // Regex for replacing addition symbol with a space
+          search = /([^&=]+)=?([^&]*)/g,
+          decode = function (s) {
+            return decodeURIComponent(s.replace(pl, ' '));
+          },
+          query = window.location.search.substring(1);
+
+      urlParams = {};
+      while ((match = search.exec(query)))
+        urlParams[decode(match[1])] = decode(match[2]);
+    })();
+
+    type = urlParams['type'];
+    setEmailQuery(urlParams['email']);
+    setTokenQuery(urlParams['token']);
+
+    if (type === 'signup') {
+      let result = login(emailQuery, null, null, null, tokenQuery);
+      console.log('hello');
+      if (result) {
+        setValidateShow(true);
+        setValidateSuccess(true);
+      }
+      setValidateSuccess(false);
+    } else if (type === 'forgot_pass') {
+      setNewPwShow(true);
     }
-    setValidateSuccess(false);
-  } else if (type === "forgot_pass") {
-    setNewPwShow(true);
-  }
+  }, []);
 
   const checkPassword = async () => {
-    let email = emailInput.current.value;
-    let password = passwordInput.current.value;
+    let email = loginEmail.current.value;
+    let password = loginPassword.current.value;
 
     let result = await login(email, password, null, null, null);
     if (result) {
@@ -81,31 +93,31 @@ const AdminLogin = () => {
   };
 
   const checkForgotPwRequest = async () => {
-    let email = emailInput.current.value;
+    let email = forgotPwEmail.current.value;
 
     return await login(email, null, null, null, null);
   }
 
   const checkChangePwRequest = async () => {
-    let email = emailInput.current.value;
-    let password = passwordInput.current.value;
-    let newPassword = newPasswordInput.current.value;
+    let email = changePwEmail.current.value;
+    let password = changeOldPw.current.value;
+    let newPassword = changeNewPw.current.value;
 
     return await login(email, password, null, newPassword, null);
   }
 
   const checkSignUpSuccess = async () => {
-    let email = emailInput.current.value;
-    let password = passwordInput.current.value;
-    let name = nameInput.current.value;
+    let email = signUpEmail.current.value;
+    let password = signUpPassword.current.value;
+    let name = signUpName.current.value;
 
     return await login(email, name, password, null, null);
   }
 
   const checkNewPwRequest = async () => {
-    let newPassword = newPasswordInput.current.value;
+    let newPassword = forgotPwNewPw.current.value;
 
-    return await login(email, null, null, newPassword, token);
+    return await login(emailQuery, null, null, newPassword, tokenQuery);
   }
 
   return (
@@ -126,7 +138,7 @@ const AdminLogin = () => {
                 id="email-box"
                 aria-label="email"
                 placeholder="email"
-                ref={emailInput}
+                ref={loginEmail}
               />
             </Form.Group>
             <Form.Group className="password-group">
@@ -136,7 +148,7 @@ const AdminLogin = () => {
                 id="pw-box"
                 aria-label="password"
                 placeholder="password"
-                ref={passwordInput}
+                ref={loginPassword}
               />
               <Button
                 id="enter-btn"
@@ -190,7 +202,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="email"
                         placeholder="email"
-                        ref={emailInput}
+                        ref={forgotPwEmail}
                     />
                   </Form.Group>
                 </Form>
@@ -236,6 +248,8 @@ const AdminLogin = () => {
               show={newPwShow}
               onHide={() => {
                 setNewPwShow(false)
+                setNewPwFail(false);
+                setNewPwSuccess(false);
               }}
               aria-labelledby="example-modal-sizes-title-sm"
               centered
@@ -256,7 +270,7 @@ const AdminLogin = () => {
                           className="modal-input"
                           aria-label="newPassword"
                           placeholder="password"
-                          ref={newPasswordInput}
+                          ref={forgotPwNewPw}
                       />
                     </Form.Group>
                   </Form>
@@ -281,7 +295,6 @@ const AdminLogin = () => {
                         if (await checkNewPwRequest()) {
                           setNewPwSuccess(true)
                           setNewPwFail(false)
-                          setNewPwSuccess(false);
                         } else {
                           setNewPwFail(true)
                         }
@@ -330,7 +343,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="email"
                         placeholder="email"
-                        ref={emailInput}
+                        ref={changePwEmail}
                     />
                   </Form.Group>
                   <Form.Group className="center-body">
@@ -340,7 +353,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="password"
                         placeholder="password"
-                        ref={passwordInput}
+                        ref={changeOldPw}
                     />
                   </Form.Group>
                   <Form.Group className="center-body">
@@ -350,7 +363,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="newPassword"
                         placeholder="password"
-                        ref={newPasswordInput}
+                        ref={changeNewPw}
                     />
                   </Form.Group>
                 </Form>
@@ -423,7 +436,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="name"
                         placeholder="name"
-                        ref={nameInput}
+                        ref={signUpName}
                     />
                   </Form.Group>
                   <Form.Group className="center-body">
@@ -433,7 +446,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="email"
                         placeholder="email"
-                        ref={emailInput}
+                        ref={signUpEmail}
                     />
                   </Form.Group>
                   <Form.Group className="center-body">
@@ -443,7 +456,7 @@ const AdminLogin = () => {
                         className="modal-input"
                         aria-label="password"
                         placeholder="password"
-                        ref={passwordInput}
+                        ref={signUpPassword}
                     />
                   </Form.Group>
                 </Form>
