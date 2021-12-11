@@ -17,7 +17,7 @@ const AdminLogin = () => {
   let emailInput = React.createRef();
   let nameInput = React.createRef();
   let newPasswordInput = React.createRef();
-  const { email, token, type } = useParams();
+  const {email, token, type} = useParams();
 
   const history = useHistory();
   const [displayIncorrect, setIncorrect] = useState(false);
@@ -36,8 +36,27 @@ const AdminLogin = () => {
   const [validateShow, setValidateShow] = useState(false);
   const [displayValidateSuccess, setValidateSuccess] = useState(false);
 
+  // let urlParams;
+  // (window.onpopstate = function () {
+  //   let match,
+  //       pl     = /\+/g,  // Regex for replacing addition symbol with a space
+  //       search = /([^&=]+)=?([^&]*)/g,
+  //       decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+  //       query  = window.location.search.substring(1);
+  //
+  //   urlParams = {};
+  //   while (match = search.exec(query))
+  //     urlParams[decode(match[1])] = decode(match[2]);
+  // })();
+  //
+  // let type = urlParams["type"];
+  // let email = urlParams["email"];
+  // let token = urlParams["token"];
+
+  console.log(type);
   if (type === "signup") {
     let result = login(email, null, null, null, token);
+    console.log("hello")
     if(result) {
       setValidateShow(true);
       setValidateSuccess(true);
