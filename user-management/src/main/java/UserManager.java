@@ -64,7 +64,7 @@ public class UserManager implements IUserManager {
 
     // used when the user clicks on the validation link in the email
     public boolean validateUser(String email, String token) {
-        if (!tokens.get(email).equals(token)) {
+        if (!token.equals(tokens.get(email))) {
             return false;
         }
         Optional<User> user = findUserByEmail(email);
