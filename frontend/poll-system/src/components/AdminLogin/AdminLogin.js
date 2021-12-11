@@ -167,8 +167,9 @@ const AdminLogin = () => {
               className="medium-modal"
               show={forgotPwShow}
               onHide={() => {
-                setForgotPwShow(false)
-                setForgotPwFail(false)
+                setForgotPwShow(false);
+                setForgotPwFail(false);
+                setForgotPwSuccess(false);
               }}
               aria-labelledby="example-modal-sizes-title-sm"
               centered
@@ -280,6 +281,7 @@ const AdminLogin = () => {
                         if (await checkNewPwRequest()) {
                           setNewPwSuccess(true)
                           setNewPwFail(false)
+                          setNewPwSuccess(false);
                         } else {
                           setNewPwFail(true)
                         }
@@ -307,6 +309,7 @@ const AdminLogin = () => {
               onHide={() => {
                 setChangePwShow(false)
                 setChangePwFail(false)
+                setChangePwSuccess(false)
               }}
               aria-labelledby="example-modal-sizes-title-sm"
               centered
@@ -399,6 +402,7 @@ const AdminLogin = () => {
               onHide={() => {
                 setSignUpShow(false)
                 setSignUpFail(false)
+                setSignUpSuccess(false)
               }}
               aria-labelledby="example-modal-sizes-title-sm"
               centered
