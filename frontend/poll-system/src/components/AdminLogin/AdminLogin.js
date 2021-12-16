@@ -66,8 +66,7 @@ const AdminLogin = () => {
     setTokenQuery(urlParams['token']);
 
     if (type === 'signup') {
-      let result = login(emailQuery, null, null, null, tokenQuery);
-      console.log('hello');
+      let result = login(urlParams['email'], null, null, null, urlParams['token']);
       if (result) {
         setValidateShow(true);
         setValidateSuccess(true);
